@@ -45,6 +45,7 @@ How to define space, tiles, paths, movement of markers
 
 ---GAME OBJECTS ----
 -----------
+```
 ////DECK////
 
 	Deck = [tiles{}]
@@ -99,7 +100,6 @@ bottom edge => x=5, space.4 = space.5 = "edge" OR this.edge= true;
 
 ----
 
-```
 Tile = {
 	paths: [connections] //-> e.g. [4,7,3,2,0,6,5,1],
 	image : //url
