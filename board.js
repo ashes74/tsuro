@@ -13,7 +13,7 @@ function Space(x, y) {
     this.x = x;
     this.y = y;
     this.image = null;
-    this.points = [null,null,null,null,null,null,null,null]
+    this.points = [null,null,null,null,null,null,null,null];
 
     for (var i = 0; i < 8 ; i++) {
         let corresponding;
@@ -36,7 +36,17 @@ function Space(x, y) {
     }
 }
 
+//edge = boolean
 function Point(edge){
     this.edge = edge;
     this.neighbors = [];
+}
+
+function Player(name, marker, startingPoint, nextSpace){
+    this.name = name;
+    this.marker = marker;
+    this.position = startingPoint;
+    this.nextSpace = nextSpace; //at first, the space that the starting point is neighboring
+    this.history = []; //history is every point that player has been to
+    this.tiles = [];
 }
