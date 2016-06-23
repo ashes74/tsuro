@@ -1,0 +1,113 @@
+Assign marker to players
+
+Gameplay
+- Create turnOrderArray[player1, player2]
+- Who goes first? - randomly pick a player
+- Player pick a start point on the board -> number 1-168
+- Next Player pick a different start point
+
+Marker
+--Assign 3 tiles to each player
+Tiles unique to each player. Known only to owners
+
+First player places tile in the space next to current space
+Assign path based on tile paths
+Move markers to the end of any new path
+Assign new card to player
+
+Placing tile
+Assign space numbers to tile letter paths
+Resolve number-letter paths to number-number paths in board
+Move all markers adjacent to the
+
+
+Paths
+Stored as array of endpoints
+
+Dragon
+
+
+
+
+
+------
+Deck remembered by app - copied and shuffled for each game
+
+--Functions--
+Game Start
+
+
+Game Play
+
+
+Win Conditions - checking functions
+
+-----
+tile:{}
+player { role, position, direction, tiles[]}
+board{paths{}, count = 35}
+deck = [tiles{}]
+
+space = {
+	00: [tl:null, tr:null, rt: 01 rb: 01, br:10, bl: 10, lt: null, lb :null],
+	01:
+	}
+
+
+Challenges
+How to define space, tiles, paths, movement of markers
+Functions
+
+//
+AI: distributed alpha-beta minimax
+
+
+Tile = array [of 'in' paths]
+Rotate
+CW = +2 -> pop (2)-> unshift (2)
+CCW = -2 -> shift(2)-> push (2)
+
+
+Board{
+	[{spaces}]
+	- > e.g.[ {space(0,0), space(0,1)}
+				{space(1,0), space(1,1)}]
+
+}
+Space
+{
+	coordinates : [x, y],
+	points = [array of points ] -> points is array of neighbors
+	path: [tile]
+}
+
+//  	0 1
+//   _____
+// 7 | 		| 2
+// 6 |____|3
+//  	5 4
+
+Points
+{
+edge: boolean,
+neighbors = []
+}
+
+Tile = {
+	paths: [connections] //-> e.g. [4,7,3,2,0,6,5,1],
+	image : //url
+}
+
+
+
+####################################
+Points {this.player, this.in, this.out}
+//this.out is initialized to neighboring tile (or "edge" for edge spaces)
+left edge => y = 0 , space.7 and space.6 = "edge" OR this.edge= true;
+top edge => x = 0, space.0 and space.1 = "edge" OR this.edge= true;
+right edge => y = 5, space.2 and space.3 = "edge" OR this.edge= true;
+bottom edge => x=5, space.4 = space.5 = "edge" OR this.edge= true;
+
+Board [rows[Space]]
+
+PlaceTile = forEach =>this[idx].in = this[tile[idx]]
