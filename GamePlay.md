@@ -41,8 +41,6 @@ Turn()
 	- Check win conditions
 	- Refresh player hands
 
-PlaceTile = forEach =>this[idx].in = this[tile[idx]]
-
 Win Conditions - checking functions
  - If only one player left
  - If all tiles played (tiles) && Game.Players >0
