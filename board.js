@@ -42,11 +42,3 @@ function Point(edge){
     this.neighbors = [];
 }
 
-function Player(name, marker, startingPoint, nextSpace){
-    this.name = name;
-    this.marker = marker;
-    this.position = startingPoint;
-    this.nextSpace = nextSpace; //at first, the space that the starting point is neighboring
-    this.history = []; //history is every point that player has been to
-    this.tiles = [];
-}
