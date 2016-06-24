@@ -1,15 +1,15 @@
 //Updating points
 function Point(edge) {
     this.edge = edge;
-    this.neighbors = []; //hold more points & tile?
+    this.neighbors = []; //hold more points & tile of points?
     this.travelled = false;
 }
 
-function Player(name, marker, startingPoint, nextSpace) {
+function Player(name, marker, startingPoint, nextSpace) { //might change this and use ...spread?
     this.name = name;
     this.marker = marker;
     this.position = startingPoint; //0 
-    this.nextSpace = nextSpace; // Space(0,0)
+    this.nextSpace = nextSpace; // Space(0,0) - need Space for starting point - but not after?
     this.tiles = [];
 }
 
@@ -33,10 +33,10 @@ function rotateTileCcw(tile) {
 
 // when we get the tile, it is already rotated or not, from angular.
 Player.prototype.placeTile = function(tile) {
-    let index = this.tiles.indexOf(tile);
+    const index = this.tiles.indexOf(tile);
     this.tiles.splice(index, 1);
-    let currentPoint = this.nextSpace.points;
-    let obj = {'tile': tile, 'currentPoint': currentPoint};
+    const currentPoint = this.nextSpace.points;
+    const obj = {'tile': tile, 'currentPoint': currentPoint};
 
     for (let i = 0; i < 8; i++) {
         currentPoint[i].neighbors.push(obj);
@@ -76,18 +76,19 @@ function newSpace(oldSpace) {
 };
 
 Player.prototype.move = function(tile) {
-    let prev = this.position;
-    let oldSpace = this.nextSpace;
+    const prev = this.position;
+    const oldSpace = this.nextSpace;
 
     this.nextSpace.points[prev].travelled = true;
     //this.checkNeighbors();
 
-    let currentTilePoint = tile.paths[prev]
+    const currentTilePoint = tile.paths[prev]
     if (this.nextSpace.points[currentTilePoint].edge === true) {
         return gameOver(); //need to create Game Over function
     };
-
-    // if () { //if 2 players collide
+    
+    //if 2 players collide
+    // if () { 
     //     return gameOver();
     // }
 
