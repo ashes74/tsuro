@@ -51,7 +51,6 @@ class Game {
 			//move through turn array, wrap around when get to end
 			idx = (idx+1)%this.turnOrderArray.length
 		}
-
 	}
 
 	getCurrentPlayer(){
