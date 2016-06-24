@@ -1,5 +1,6 @@
 'use strict';
 var _ = require('lodash');
+var Deck = require('./deck');
 //GAME///
 
 class Game {
@@ -9,7 +10,7 @@ class Game {
 		this.players = [];
 		// this.activeSpace = [x,y] //The next space of the currentPlayer
 		this.currPlayer;   //ask turn for next player
-		this.deck = [];
+		this.deck = new Deck ();
 		this.turnOrderArray = [] //holds all the players still on the board.
 		this.dragon = "";// Player.Marker
 	}
@@ -24,7 +25,7 @@ class Game {
 		this.players = new Array(numOfPlayers);
 		// -	Shuffle deck
 		// this.deck.shuffle();
-		_.shuffle(this.deck)
+		this.deck.shuffle();
 		// -	Deal Tiles
 		// TODO:  deal those tiles
 	};
