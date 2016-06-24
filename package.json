@@ -1,0 +1,27 @@
+{
+  "name": "tsuro",
+  "version": "1.0.0",
+  "description": "A game of paths :) ",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ashes74/tsuro.git"
+  },
+  "keywords": [
+    "Game"
+  ],
+  "author": "ashes74, maxww, kimber-no-ly, cenjennifer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ashes74/tsuro/issues"
+  },
+  "homepage": "https://github.com/ashes74/tsuro#readme",
+  "dependencies": {
+    "chai": "^3.5.0",
+    "lodash": "^4.13.1",
+    "mocha": "^2.5.3"
+  }
+}

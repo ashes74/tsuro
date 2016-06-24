@@ -13,14 +13,14 @@ __Gameplay__
 
 Functions
 ------------
-Game Start()
--	Generate a board
--	Create Players
+#### Game Start() - Game.initializeGame()
+- [x]	Generate a board
+- [ ]	Create Players
 		Create turnOrderArray[player1, player2...]    
--	Shuffle deck
--	Deal Tiles
-- Players pick a start point on the board -> edge Point
-- Next Player picks a different start point (i.e. points must be unique)
+-	[x]Shuffle deck
+-	[ ]Deal Tiles
+- [ ]Players pick a start point on the board -> edge Point
+- [ ]Next Player picks a different start point (i.e. points must be unique)
 
 Game Play ()  
 
