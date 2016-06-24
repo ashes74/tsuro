@@ -1,7 +1,7 @@
 
 __Gameplay__
 ----------
-Start and turn
+#### Start and turn
 - Each Player has to have 3 tiles unless deck is empty
 - Tiles unique to each player. Known only to owners
 - First player places tile in the space next to current space
@@ -106,6 +106,7 @@ Tile = {
 }
 
 Game = {
+	board;
 	count = 35;   
 	players = [array of Players]   
 	activeSpace = [x,y] //The next space of the currentPlayer
