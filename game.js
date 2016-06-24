@@ -47,7 +47,7 @@ class Game {
 		var idx = 0; //turn pointer
 		while (this.turnOrderArray.length>1 || this.deck.length>0){
 			this.currPlayer = this.turnOrderArray[idx];
-
+			//TODO: game mechanics
 			//move through turn array, wrap around when get to end
 			idx = (idx+1)%this.turnOrderArray.length
 		}
