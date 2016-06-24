@@ -8,8 +8,9 @@
 function Player(name, marker, startingPoint, nextSpace) {
     this.name = name;
     this.marker = marker;
+
     this.point = startingPoint; // should be a Point object
-    this.nextSpace = nextSpace; // [x, y]
+    this.nextSpace = nextSpace; // [x, y] // depends on the angular Space.x, Space.y
 
     // in each Space.points array, find this specific point and get the position (integer) inside this space.
     this.nextSpacePointsIndex = this.nextSpace.points.indexOf(this.point)
@@ -107,7 +108,7 @@ Player.prototype.move = function () {
 function checkBumping(self) {
     const index = Game.players.indexOf(self);
     Game.players.splice(index, 1).forEach(function (player) {
-        if (player.point === self.point) {
+        if (JSON.stringify(player.point) === JSON.stringify(self.point)) {
             // need to write a Game.prototype.die function
             Game.die(player)
             Game.die(self)
