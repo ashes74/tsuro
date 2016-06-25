@@ -4,6 +4,7 @@
   "description": "[![Stories in Ready](https://badge.waffle.io/ashes74/tsuro.png?label=ready&title=Ready)](http://waffle.io/ashes74/tsuro)",
   "main": "gulpfile.js",
   "scripts": {
+    "start": "nodemon server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +16,12 @@
   "bugs": {
     "url": "https://github.com/ashes74/tsuro/issues"
   },
-  "homepage": "https://github.com/ashes74/tsuro#readme"
+  "homepage": "https://github.com/ashes74/tsuro#readme",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.9.2"
+  }
 }
