@@ -5,21 +5,35 @@
 //     this.travelled = false;
 // }
 
-function Player(name, marker, startingPoint, nextSpace) {
+// remove startingPoint and nextSpace
+function Player(name) {
     this.name = name;
-    this.marker = marker;
+    this.marker = null;
 
-    this.point = startingPoint; // should be a Point object
-    this.nextSpace = nextSpace; // [x, y] // depends on the angular Space.x, Space.y
+    this.point = null; // should be a Point object
+    this.nextSpace = null; // [x, y] // depends on the angular Space.x, Space.y
 
     // in each Space.points array, find this specific point and get the position (integer) inside this space.
-    this.nextSpacePointsIndex = this.nextSpace.points.indexOf(this.point)
+    this.nextSpacePointsIndex = null;
 
     // maximun 3 tiles
     this.tiles = [];
 
     // if a player dies, it will be changed to false
     this.canPlay = true;
+}
+
+Player.prototype.pickMarker = function (marker) {
+    this.marker = marker;
+}
+
+// Placing marker for the first time
+Player.prototype.placeMarker = function (point, nextSpace) {
+    this.point = point;
+    this.point.travelled = true;
+    this.nextSpace = nextSpace;
+    // in each Space.points array, find this specific point and get the position (integer) inside this space.
+    this.nextSpacePointsIndex = this.nextSpace.points.indexOf(this.point)
 }
 
 function rotateTileCw(tile) {
@@ -49,16 +63,10 @@ Player.prototype.placeTile = function (tile) {
         this.nextSpace.points[i].neighbors.push(points[tile[i]]);
     }
 
-    // where does the tile come from?
-    this.drawOne();
 }
 
 
-// where does the tile come from?
-Player.prototype.drawOne = function () {
-    const newTile = Game.deck.splice(0, 1); //draw a card from _.shuffle deck
-    this.tiles.push(newTile);
-};
+
 
 
 // if a plyer is on the edge, then no need to run this function
@@ -74,34 +82,57 @@ function newSpace(oldSpace) {
     }
 };
 
-Player.prototype.move = function () {
-    // should be a Point object
-    var moveTo = this.point.neighbors.filter(function (neighbor) {
+// Player.prototype.move = function () {
+//     // should be a Point object
+//     var moveTo = this.point.neighbors.filter(function (neighbor) {
+//         return !neighbor.travelled;
+//     })[0]
+//
+//     if (moveTo) {
+//         this.point.travelled = true;
+//         this.point = moveTo;
+//     }
+//
+//     const oldSpace = this.nextSpace;
+//     const newSpace = newSpace(oldSpace);
+//     this.nextSpace = newSpace;
+//
+//     checkBumping(this)
+//
+// };
+
+Player.prototype.keepMoving() {
+    let pointer = this.point;
+    let moveTo = pointer.neighbors.filter(function (neighbor) {
         return !neighbor.travelled;
     })[0]
 
-    if (moveTo) {
+    while (moveTo) {
         this.point.travelled = true;
         this.point = moveTo;
+        let oldSpace = this.nextSpace;
+        let newSpace = newSpace(oldSpace);
+        this.nextSpace = newSpace;
+
+        checkBumping(this)
+
+        pointer = this.point;
+        moveTo = pointer.neighbors.filter(function (neighbor) {
+            return !neighbor.travelled;
+        })[0]
     }
+}
 
-    const oldSpace = this.nextSpace;
-    const newSpace = newSpace(oldSpace);
-    this.nextSpace = newSpace;
-
-    checkBumping(this)
-
-};
 
 
 // Game should have a function for each player to check if they can move, if can, player.prototype.move();
-// Player.prototype.checkNeighbors = function () {
-//     this.nextSpace.points[this.point].neighbors.forEach(function (neighbor) {
-//         if (neighbor.currentPoint.travelled === false) { // Can I say that in all cases, there will definitely be only 1 or less neighbor that isn't travelled?
-//             this.move(neighbor.tile); //how do we know when a tile is on a space?
-//         }
-//     });
-// };
+Player.prototype.checkNeighbors = function () {
+    this.nextSpace.points[this.point].neighbors.forEach(function (neighbor) {
+        if (neighbor.currentPoint.travelled === false) { // Can I say that in all cases, there will definitely be only 1 or less neighbor that isn't travelled?
+            this.move(neighbor.tile); //how do we know when a tile is on a space?
+        }
+    });
+};
 
 
 
