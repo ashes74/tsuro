@@ -24,55 +24,120 @@ footer {
   background-color: #eeeeee;
 }
 
-.flex-wrapper {
-  display: flex;
-  justify-content: space-between;
+#game {
+	#board{
+		width: 100vh;
+		height: 100vh;
 
-  #board {
-    width: 90vh;
-    height: 90vh;
-    background-color: #ccc;
-    flex-shrink: 0;
+		display: flex;
+		flex-wrap: wrap;
+		
+		.corner {
+			width: 5vh;
+			height: 5vh;
+			background-color: #bbb;
+		}
+		.frame {
+			background-color: #ddd;
+			&.horizontal {
+				height:5vh;
+				width:90vh;
 
-  	display: flex;
-  	flex-wrap: wrap;
+				.startpoints {
+					height: 100%;
+					width: calc(100%/12);
+					display: inline-block;
+					box-sizing: border-box;
+					border: 1px dashed cyan;
+				}
+			}
+			&.vertical {
+				height:90vh;
+				width:5vh;
 
-    .space {
-    	background-image: url('images/tsuro-tile1.png');
-    	background-size: contain;
-    	box-sizing: border-box;
-    	width: calc(100%/6);
-    	height: calc(100%/6);
-    	border: 1px dashed cyan;
-    }
+				.startpoints {
+					height: calc(100%/12);
+					width: 100%;
+					display: inline-block;
+					box-sizing: border-box;
+					border: 1px dashed cyan;
+				}
+			}
+		}
+		.space-container {
+			height:90vh;
+			width:90vh;
+			background-color: blue;
+			display: flex;
+			flex-wrap: wrap;
 
-  }
-  aside {
-    display: flex;
-    height: 90vh;
-    background-color: #333;
-    justify-content: space-around;
-    align-items: center;
-    flex-direction: column;
-
-    &.tiles {
-	    .tile {
-	      width: 150px;
-  			height: 150px;
-	      background-color: #eee;
-	      border-radius: 25px;
-	      margin: 10px 20px;
+			.space {
+	    	background-image: url('images/tsuro-tile1.png');
+	    	background-size: contain;
+	    	box-sizing: border-box;
+	    	width: calc(100%/6);
+	    	height: calc(100%/6);
+	    	border: 1px dashed cyan;
 	    }
-    }
-    .players {
-    	width: 25vw;
+		}
 
-      .player {
-        width: 90%;
-        background-color: #efefef;
-        padding: 5%;
-        border-bottom: 1px solid #ddd;
-      }
-    }
-  }
+
+	}
 }
+// #game {
+// 	flex-direction: column;
+// 	.start-spaces {
+// 		background-color: red;
+// 		div {
+// 			display: inline-block;
+// 			width: 
+// 		}
+// 	}
+//   #board {
+//     width: 90vh;
+//     height: 90vh;
+//     background-color: #ccc;
+//     flex-shrink: 0;
+
+//   	display: flex;
+//   	flex-wrap: wrap;
+
+//     .space {
+//     	background-image: url('images/tsuro-tile1.png');
+//     	background-size: contain;
+//     	box-sizing: border-box;
+//     	width: calc(100%/6);
+//     	height: calc(100%/6);
+//     	border: 1px dashed cyan;
+//     }
+
+//   }
+//   aside {
+//     display: flex;
+//     height: 90vh;
+//     background-color: #333;
+//     justify-content: space-around;
+//     align-items: center;
+//     flex-direction: column;
+
+//     &.tiles {
+// 	    .tile {
+// 	      width: 150px;
+//   			height: 150px;
+// 	      background-color: #eee;
+// 	      border-radius: 25px;
+// 	      margin: 10px 20px;
+// 	    }
+//     }
+//     .players {
+//     	width: 25vw;
+
+//       .player {
+//         width: 90%;
+//         background-color: #efefef;
+//         padding: 5%;
+//         border-bottom: 1px solid #ddd;
+//       }
+//     }
+//   }
+// }

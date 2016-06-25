@@ -11,7 +11,7 @@ app.use(express.static('./node_modules'));
 app.use(express.static('./browser'));
 
 app.get('/', function(req, res, next){
-	res.sendFile(__dirname + '/index.html');
+	res.sendFile('public/index.html');
 });
 
 app.use(function (err, req, res, next) {
