@@ -3,6 +3,20 @@ body {
   font-size: 12px;
 }
 
+section.wrapper {
+	height: 100vh;
+	width: 100vw;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#home {
+	background-image: url('https://s-media-cache-ak0.pinimg.com/originals/53/b4/44/53b444ea99a7b8c7e90631ea6e81e877.jpg');
+	background-size: cover;
+}
+
 header,
 footer {
   width: 100%;

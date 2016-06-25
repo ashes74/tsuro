@@ -4,74 +4,16 @@
   <title>Tsuro</title>
   <link rel="stylesheet" type="text/css" href="normalize.css" />
   <link rel="stylesheet" type="text/css" href="style.css" />
+
+  <script src="/angular/angular.js" defer></script>
+  <script src="/angular-ui-router/release/angular-ui-router.js" defer></script>
+  <script src="/main.js" defer></script>
+  <base href="/">
 </head>
 
-<body>
-<header>Tsuro</header>
-  <div class="flex-wrapper">
-		<aside>
-			<div class="players">
-				<div class="player">Player 1</div>
-				<div class="player">Player 2</div>
-				<div class="player">Player 3</div>
-				<div class="player">Player 4</div>
-				<div class="player">Player 5</div>
-				<div class="player">Player 6</div>
-				<div class="player">Player 7</div>
-				<div class="player">Player 8</div>
-			</div>
- 		</aside>
-		<main id="board">
-			<div class="space"></div>
-			<div class="space"></div>
-			<div class="space"></div>
-			<div class="space"></div>
-			<div class="space"></div>
-			<div class="space"></div>
-
-			<div class="space"></div>
-			<div class="space"></div>
-			<div class="space"></div>
-			<div class="space"></div>
-			<div class="space"></div>
-			<div class="space"></div>
-
-			<div class="space"></div>
-			<div class="space"></div>
-			<div class="space"></div>
-			<div class="space"></div>
-			<div class="space"></div>
-			<div class="space"></div>
-
-			<div class="space"></div>
-			<div class="space"></div>
-			<div class="space"></div>
-			<div class="space"></div>
-			<div class="space"></div>
-			<div class="space"></div>
-
-			<div class="space"></div>
-			<div class="space"></div>
-			<div class="space"></div>
-			<div class="space"></div>
-			<div class="space"></div>
-			<div class="space"></div>
-
-			<div class="space"></div>
-			<div class="space"></div>
-			<div class="space"></div>
-			<div class="space"></div>
-			<div class="space"></div>
-			<div class="space"></div>
-
-		</main>
-		<aside class="tiles">
-			<div class="tile">Tile</div>
-			<div class="tile">Tile</div>
-			<div class="tile">Tile</div>
-		</aside>
- </div>
- <footer>Footer</footer>
+<body ng-app="Tsuro">
+<div ui-view></div>
+ 
 </body>
 
 </html>
