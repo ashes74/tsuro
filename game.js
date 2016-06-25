@@ -1,66 +1,55 @@
 'use strict';
 var _ = require('lodash');
 var Deck = require('./deck');
+var Player = require('./player');
 //GAME///
 
 class Game {
 	constructor(){
 		this.count = 35;
-		this.board;
+		this.board = new Board();
 		this.players = [];
-		// this.activeSpace = [x,y] //The next space of the currentPlayer
+		this.activeSpace = [x,y] //The next space of the currentPlayer
 		this.currPlayer;   //ask turn for next player
-		this.deck = new Deck ();
+		this.deck = new Deck().shuffle();
 		this.turnOrderArray = [] //holds all the players still on the board.
 		this.dragon = "";// Player.Marker
 	}
 
-	//initializeGame: Generate new game, shuffle deck
-	// IDEA: numOfPlayers is if we initializeGame with a choose number of players option
-	//XXX: Should we dynamically createPlayers? SEE: initializePlayers
-	initializeGame(numOfPlayers) {
-		// Generate a board
-		this.board = new Board();
-		// -	Create Players
-		this.players = new Array(numOfPlayers);
-		// -	Shuffle deck
-		// this.deck.shuffle();
-		this.deck.shuffle();
-		// -	Deal Tiles
-		// TODO:  deal those tiles
-	};
-
-	//createPlayers - add players to game's player array
-	// function[players: Array] -> return turnOrderArray
-//IDEA:  have an elimination flag on players and filter by them
-//TODO: how are we doing the placement of a marker
-	initializePlayers(players) {
-		this.players = players;
-		// - Players pick a start point on the board -> edge Point
-		this.turnOrderArray = getCanPlay(this.players);
-		// - Next Player picks a different start point (i.e. points must be unique)
+	addPlayer(player) {
+		this.players.length < 8 ? this.players.push(player): throw new Error "Room full" ;
 	};
 
 	//Run the game
-	play(){
+	run(){
+		this.turnOrderArray = getCanPlay(this.players);
 		//while more than 1 player on board and deck non empty -> play
 		var idx = 0; //turn pointer
-		while (this.turnOrderArray.length>1 || this.deck.length>0){
+		while (count > 0 && this.turnOrderArray.length>1){
 			this.currPlayer = this.turnOrderArray[idx];
 			//TODO: game mechanics
+			
 			//move through turn array, wrap around when get to end
 			idx = (idx+1)%this.turnOrderArray.length
+			count --;
 		}
+	}
+
+	start(){
+		//for each player dealThree
 	}
 
 	getCurrentPlayer(){
 		return this.currPlayer;
 	}
 
+	moveAllPlayers(){
+		this.players.forEach((player)=>player.move())
+	}
 
 }
 
-
+/////END OF GAME CLASS/////
 //get Eligible players
 let getCanPlay = function(players){
 	players.filter((player) => {return player.canPlay})
