@@ -142,7 +142,7 @@ Player.prototype.checkNeighbors = function() {
 
 
 function checkDeath(self) {
-    self.point.edge ? Game.die(self) : bumpPlayers();
+    self.point.edge ? Game.die(self) : bumpPlayers;
     let bumpPlayers = Game.players.forEach(function(player) {
         if (JSON.stringify(player.point) === JSON.stringify(self.point)) {
             Game.die(self); //This is for Way 1 & 2
