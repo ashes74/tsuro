@@ -87,10 +87,10 @@ function newSpace(oldSpace) {
 
 function moveTo(pointer) {
     let pointer = pointer;
-    let moveTo = pointer.neighbors.filter(function (neighbor) {
+    let nextPoint = pointer.neighbors.filter(function (neighbor) {
         return !neighbor.travelled;
     })[0]; //always be returning 0 or 1 point in the array
-    return moveTo;
+    return nextPoint;
 }
 
 Player.prototype.keepMoving() {
