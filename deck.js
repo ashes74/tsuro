@@ -8,6 +8,7 @@ class Deck {
 
 	shuffle(){
 		this.tiles =	_.shuffle(this.tiles)
+		return this;
 	}
 
 	dealThree(){
@@ -16,6 +17,11 @@ class Deck {
 
 	deal(num){
 		return this.tiles.splice(0, num);
+	}
+
+	reload(tiles){
+		this.tiles.push(tiles)
+		return this
 	}
 }
 
