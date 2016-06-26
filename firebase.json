@@ -1,0 +1,60 @@
+{
+  "games":{
+    "one":{
+      "title": "original game room",
+      "timestamp": 1459361875666
+    }
+  },
+  "players":{
+    "one":{
+      "jennifer":true,
+      "kimber": true,
+      "lori": true,
+      "taffy": true
+    }
+  },
+  "boards":{
+    "one":{
+      "m1": {
+        "name": "jennifer",
+        "marker": "red",
+        "nextSpace": null,
+        "nextSpacePointsIndex": null,
+        "tiles": [],
+        "canPlay": true
+      },
+      "m2": {
+        "name": "kimber",
+        "marker": "yellow",
+        "nextSpace": null,
+        "nextSpacePointsIndex": null,
+        "tiles": [],
+        "canPlay": true
+      },
+      "m3":{
+        "name": "lori",
+        "marker": "blue",
+        "nextSpace": null,
+        "nextSpacePointsIndex": null,
+        "tiles": [],
+        "canPlay": true
+      },
+      "m4":{
+        "name": "taffy",
+        "marker": "aqua",
+        "nextSpace": null,
+        "nextSpacePointsIndex": null,
+        "tiles": [],
+        "canPlay": true
+      }
+    }
+  },
+  "users":{
+    "jennifer": {
+      "name" : "Jennifer Cen",
+      "games":{
+        "one": true
+      }
+    }
+  }
+}
