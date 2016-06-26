@@ -74,11 +74,11 @@ Player.prototype.placeTile = function (tile) {
 
 // if a plyer is on the edge, then no need to run this function
 function newSpace(oldSpace) {
-    if (this.nextSpacePointsIndex === 0 && this.nextSpacePointsIndex === 1) {
+    if (this.nextSpacePointsIndex === 0 || this.nextSpacePointsIndex === 1) {
         return board[oldSpace.y - 1][oldSpace.x];
-    } else if (this.nextSpacePointsIndex === 2 && this.nextSpacePointsIndex === 3) {
+    } else if (this.nextSpacePointsIndex === 2 || this.nextSpacePointsIndex === 3) {
         return board[oldSpace.y][oldSpace.x + 1];
-    } else if (this.nextSpacePointsIndex === 4 && this.nextSpacePointsIndex === 5) {
+    } else if (this.nextSpacePointsIndex === 4 || this.nextSpacePointsIndex === 5) {
         return board[oldSpace.y + 1][oldSpace.x];
     } else {
         return board[oldSpace.y][oldSpace.x - 1];
