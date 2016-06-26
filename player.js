@@ -108,9 +108,9 @@ Player.prototype.keepMoving() {
 
 function checkDeath(self) {
     self.point.edge ? (
-        Game.die(self)
+        Player.die(self)
     ) : (
-        Game.players.forEach(function (player) {
+        Player.players.forEach(function (player) {
             if (JSON.stringify(player.point) === JSON.stringify(self.point)) {
                 Game.die(self);
             };
@@ -118,7 +118,7 @@ function checkDeath(self) {
     )
 }
 
-Game.prototype.die = function (player) {
+Player.prototype.die = function (player) {
     //sets the player canPlay to false;
     player.canPlay = false;
 }
