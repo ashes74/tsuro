@@ -10,7 +10,7 @@ class Game {
 		this.board = new Board();
 		this.players = [];
 		this.activeSpace = [x,y] //The next space of the currentPlayer
-		this.currPlayer;   //ask turn for next player
+		this.currPlayer;   //index of the currentPlayer in the turnOrderArray
 		this.deck = new Deck().shuffle();
 		this.turnOrderArray = [] //holds all the players still on the board.
 		this.dragon = "";// Player.Marker
@@ -52,26 +52,39 @@ class Game {
 	}
 
 	getCurrentPlayer(){
-		return this.currPlayer;
+		if(this.currPlayer===-1) return;
+		return this.turnOrderArray[this.currPlayer];
 	}
 
 	moveAllPlayers(){
 		this.players.forEach((player)=>player.move())
 	}
 
-	nextPlayer(){
-
+	//to be called at the end of a turn to set the currPlayer to the next eligible player in the turnOrderArray
+	goToNextPlayer(){
+		if (getCanPlay(this.turnOrderArray).length>1) {
+			let newIdx = this.currPlayer+1;
+			while (!this.turnOrderArray[newIdx%8].canPlay) {
+				newIdx ++;
+			}
+			this.currPlayer = newIdx;
+		}
+		else {
+			this.currPlayer= -1
+		}
+		return this.getCurrentPlayer()
 	}
 
 	//restart the game
 	reset(){
-		//retrieve all tiles
 		this.players.forEach(player=>{
+			//retrieve all tiles
 			//return player's tiles to the deck and shuffle
 			this.deck.reload(player.tiles).shuffle();
 			player.tiles=[];
 			//reset all players playability
 			player.canPlay = true;
+			//TODO: are we assuming all people in the room want to play? Do we want watchers at all?
 
 		})
 	}
@@ -82,7 +95,7 @@ class Game {
 
 //get Eligible players
 let getCanPlay = function(players){
-	players.filter((player) => {return player.canPlay})
+	return players.filter((player) => {return player.canPlay})
 }
 
 module.exports = Game
