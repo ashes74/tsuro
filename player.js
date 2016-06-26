@@ -16,12 +16,12 @@ function Player(name) {
     this.canPlay = true;
 }
 
-Player.prototype.pickMarker = function (marker) {
+Player.prototype.pickMarker = function(marker) {
     this.marker = marker;
 }
 
 // Placing marker for the first time
-Player.prototype.placeMarker = function (point, nextSpace) {
+Player.prototype.placeMarker = function(point, nextSpace) {
     this.point = point;
     this.point.travelled = true;
     this.nextSpace = nextSpace;
@@ -30,7 +30,7 @@ Player.prototype.placeMarker = function (point, nextSpace) {
 }
 
 function rotateTileCw(tile) {
-    var addTwo = tile.map(function (connection) {
+    var addTwo = tile.map(function(connection) {
         return connection + 2;
     });
     addTwo.unshift(addTwo.pop());
@@ -39,7 +39,7 @@ function rotateTileCw(tile) {
 }
 
 function rotateTileCcw(tile) {
-    var minusTwo = tile.map(function (connection) {
+    var minusTwo = tile.map(function(connection) {
         return connection - 2;
     });
     minusTwo.push(minusTwo.shift());
@@ -48,7 +48,7 @@ function rotateTileCcw(tile) {
 }
 
 // when we get the tile, it is already rotated or not, from angular.
-Player.prototype.placeTile = function (tile) {
+Player.prototype.placeTile = function(tile) {
     var index = this.tiles.indexOf(tile)
     this.tiles.splice(index, 1);
 
@@ -56,12 +56,12 @@ Player.prototype.placeTile = function (tile) {
         this.nextSpace.points[i].neighbors.push(points[tile[i]]);
     }
 
-    let playersWhoCanPlay = Game.players.filter(function (player) {
+    let playersWhoCanPlay = Game.players.filter(function(player) {
         return player.canPlay;
     });
 
     // after a player placed a tile, we check all canPlay players to use keepMoving function to see if can move and/or die
-    playersWhoCanPlay.forEach(function (player) {
+    playersWhoCanPlay.forEach(function(player) {
         player.keepMoving();
     });
 
@@ -87,14 +87,15 @@ function newSpace(oldSpace) {
 
 function moveTo(pointer) {
     let pointer = pointer;
-    let nextPoint = pointer.neighbors.filter(function (neighbor) {
+    let nextPoint = pointer.neighbors.filter(function(neighbor) {
         return !neighbor.travelled;
     })[0]; //always be returning 0 or 1 point in the array
     return nextPoint;
 }
 
-Player.prototype.keepMoving() {
-    while (moveTo(this.point)) {
+Player.prototype.keepMoving = function() {
+    let movable = moveTo(this.point);
+    while (movable) {
         this.point.travelled = true;
         this.point = moveTo(this.point);
         let oldSpace = this.nextSpace;
@@ -102,7 +103,7 @@ Player.prototype.keepMoving() {
         this.nextSpace = newSpace;
 
         checkDeath(this);
-        moveTo(this.point);
+        movable = moveTo(this.point);
     };
 };
 
@@ -110,15 +111,15 @@ function checkDeath(self) {
     self.point.edge ? (
         Player.die(self)
     ) : (
-        Player.players.forEach(function (player) {
+        Player.players.forEach(function(player) {
             if (JSON.stringify(player.point) === JSON.stringify(self.point)) {
                 Game.die(self);
             };
         });
-    )
+    );
 }
 
-Player.prototype.die = function (player) {
+Player.prototype.die = function(player) {
     //sets the player canPlay to false;
     player.canPlay = false;
 }
