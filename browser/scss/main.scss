@@ -1,143 +1,158 @@
+$geosans: 'Raleway', sans-serif;
+$red: #ED3F2F;
+$orange: #E86C25;
+$yellow: #EEBD1C;
+$green: #718B40;
+$aqua: #5EADA3;
+$blue: #5285C2;
+$navy: #2A485F;
+$purple: #923F7C;
+
+/////STRUCTURE/////
 body {
-  font-family: sans-serif;
-  font-size: 12px;
+  font-family: $geosans;
+   text-align: center;
+
 }
 
 section.wrapper {
-	height: 100vh;
-	width: 100vw;
-
-	display: flex;
-	justify-content: center;
-	align-items: center;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
+/////HOME PAGE/////
 #home {
-	background-image: url('https://s-media-cache-ak0.pinimg.com/originals/53/b4/44/53b444ea99a7b8c7e90631ea6e81e877.jpg');
-	background-size: cover;
+  background-size: cover;
 }
 
-header,
-footer {
-  width: 100%;
-  height: 5vh;
-  background-color: #eeeeee;
-}
 
+/////GAME PAGE/////
 #game {
-	#board{
-		width: 100vh;
-		height: 100vh;
+  #board {
+    width: 95vh;
+    height: 95vh;
+    display: flex;
+    flex-wrap: wrap;
 
-		display: flex;
-		flex-wrap: wrap;
-		
-		.corner {
-			width: 5vh;
-			height: 5vh;
-			background-color: #bbb;
-		}
-		.frame {
-			background-color: #ddd;
-			&.horizontal {
-				height:5vh;
-				width:90vh;
+    .corner {
+      width: 5%;
+      height: 5%;
+    }
+    .frame {
+      background-color: #ddd;
 
-				.startpoints {
-					height: 100%;
-					width: calc(100%/12);
-					display: inline-block;
-					box-sizing: border-box;
-					border: 1px dashed cyan;
-				}
-			}
-			&.vertical {
-				height:90vh;
-				width:5vh;
+      &.horizontal {
+        height: 5%;
+        width: 90%;
 
-				.startpoints {
-					height: calc(100%/12);
-					width: 100%;
-					display: inline-block;
-					box-sizing: border-box;
-					border: 1px dashed cyan;
-				}
-			}
-		}
-		.space-container {
-			height:90vh;
-			width:90vh;
-			background-color: blue;
-			display: flex;
-			flex-wrap: wrap;
+        .startpoints {
+          height: 100%;
+          width: calc(100%/12);
+          display: inline-block;
+          box-sizing: border-box;
+          border: 1px dashed cyan;
+        }
+      }
+      &.vertical {
+        height: 90%;
+        width: 5%;
 
-			.space {
-	    	background-image: url('images/tsuro-tile1.png');
-	    	background-size: contain;
-	    	box-sizing: border-box;
-	    	width: calc(100%/6);
-	    	height: calc(100%/6);
-	    	border: 1px dashed cyan;
-	    }
-		}
+        .startpoints {
+          height: calc(100%/12);
+          width: 100%;
+          display: inline-block;
+          box-sizing: border-box;
+          border: 1px dashed cyan;
+        }
+      }
+    }
+    .space-container {
+      height: 90%;
+      width: 90%;
+      background-color: blue;
+      display: flex;
+      flex-wrap: wrap;
 
+      .space {
+        background-image: url('images/tsuro-tile1.png');
+        background-size: contain;
+        box-sizing: border-box;
+        width: calc(100%/6);
+        height: calc(100%/6);
+        border: 1px dashed cyan;
+      }
+    }
+  }
+}
+
+/////MARKER MODAL/////
+.markermodal {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+
+	width: 50vw;
+	padding: 50px;
+	
+	background-color: #fff;
+	border-radius: 25px;
+	box-shadow: 0 0 10px #808080;
+
+	p {
+		font-size: 2em;
+		margin: 0 0 40px 0;
+		width: 100%;
+	}
+
+	.circle {
+		display: inline-block;
+		width: 100px;
+		height: 100px;
+		border-radius: 50%;
+		margin: 10px;
+
+		&.red{ background-color: $red; }
+		&.orange{ background-color: $orange; }
+		&.yellow{ background-color: $yellow; }
+		&.green{ background-color: $green; }
+		&.aqua{ background-color: $aqua; }
+		&.blue{ background-color: $blue; }
+		&.navy{ background-color: $navy; }
+		&.purple{ background-color: $purple; }
 
 	}
 }
-// #game {
-// 	flex-direction: column;
-// 	.start-spaces {
-// 		background-color: red;
-// 		div {
-// 			display: inline-block;
-// 			width: 
-// 		}
-// 	}
-//   #board {
-//     width: 90vh;
-//     height: 90vh;
-//     background-color: #ccc;
-//     flex-shrink: 0;
 
-//   	display: flex;
-//   	flex-wrap: wrap;
+/////TYPOGRAPHY/////
+h1 {
+  font-size: 4em;
+  letter-spacing: 8px;
+  font-weight: 300;
+  span {
+    font-size: .5em;
+    font-weight: 300;
+    letter-spacing: 10px;
+  }
+}
 
-//     .space {
-//     	background-image: url('images/tsuro-tile1.png');
-//     	background-size: contain;
-//     	box-sizing: border-box;
-//     	width: calc(100%/6);
-//     	height: calc(100%/6);
-//     	border: 1px dashed cyan;
-//     }
+a {
+	text-decoration: none;
+}
 
-//   }
-//   aside {
-//     display: flex;
-//     height: 90vh;
-//     background-color: #333;
-//     justify-content: space-around;
-//     align-items: center;
-//     flex-direction: column;
+/////FORMS/////
+input {
+  width: 100%;
+  margin: 10px 0;
+  padding: 5px;
+}
 
-//     &.tiles {
-// 	    .tile {
-// 	      width: 150px;
-//   			height: 150px;
-// 	      background-color: #eee;
-// 	      border-radius: 25px;
-// 	      margin: 10px 20px;
-// 	    }
-//     }
-//     .players {
-//     	width: 25vw;
-
-//       .player {
-//         width: 90%;
-//         background-color: #efefef;
-//         padding: 5%;
-//         border-bottom: 1px solid #ddd;
-//       }
-//     }
-//   }
-// }
+.button {
+	display:inline-block;
+	padding: 5px;
+	margin: 10px;
+	border: 1px solid #ccc;
+}

@@ -26,3 +26,8 @@
     <div class="corner"></div>
   </main>
 </section>
+
+<div class="markermodal" ng-show="!markerPicked">
+	<p>Choose your dragon wisely...</p>
+	<div ng-repeat="marker in availableMarkers" class="circle {{marker}}" ng-click="pickMarker(marker)"></div>
+</div>
