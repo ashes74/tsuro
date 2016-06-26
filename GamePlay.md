@@ -1,7 +1,7 @@
 
 __Gameplay__
 ----------
-Start and turn
+#### Start and turn
 - Each Player has to have 3 tiles unless deck is empty
 - Tiles unique to each player. Known only to owners
 - First player places tile in the space next to current space
@@ -13,14 +13,14 @@ Start and turn
 
 Functions
 ------------
-Game Start()
--	Generate a board
--	Create Players
+#### Game Start() - Game.initializeGame()
+- [x]	Generate a board
+- [ ]	Create Players
 		Create turnOrderArray[player1, player2...]    
--	Shuffle deck
--	Deal Tiles
-- Players pick a start point on the board -> edge Point
-- Next Player picks a different start point (i.e. points must be unique)
+-	[x]Shuffle deck
+-	[ ]Deal Tiles
+- [ ]Players pick a start point on the board -> edge Point
+- [ ]Next Player picks a different start point (i.e. points must be unique)
 
 Game Play ()  
 
@@ -106,6 +106,7 @@ Tile = {
 }
 
 Game = {
+	board;
 	count = 35;   
 	players = [array of Players]   
 	activeSpace = [x,y] //The next space of the currentPlayer
