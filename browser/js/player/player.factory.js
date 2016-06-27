@@ -60,9 +60,9 @@ module.exports = function () {
                 player.nextSpace.points[i].neighbors.push(points[tile[i]]);
             }
 
-            $scope.turnOrderArray.forEach(function (player) {
-                keepMoving(player)
-            })
+            // $scope.turnOrderArray.forEach(function (player) {
+            //     keepMoving(player)
+            // })
         },
         moveTo: function (pointer) {
             let pointer = pointer;

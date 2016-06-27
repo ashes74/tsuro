@@ -1,12 +1,14 @@
 'use strict';
+var Game = require('../../game')
+tsuro.controller('gameCtrl', function ($scope, gameFactory, playerFactory, tiles) {
+    $scope.game = new Game();
 
-var Deck = require('./deck');
+    $scope.count = ; // frome firebase, how to set the default value
 
-tsuro.controller('gameCtrl', function ($scope, gameFactory, playerFactory) {
-    // maybe there's a game id for each game room (do we need this at all?)
-    $scope.game;
-    $scope.count = 35;
-    $scope.deck = new Deck().shuffle;
+    $scope.deck = tiles;
+    $scope.shuffle = function () {
+        // shuffle the $scope.deck
+    }
 
     $scope.players = [];
 
@@ -38,9 +40,12 @@ tsuro.controller('gameCtrl', function ($scope, gameFactory, playerFactory) {
     $scope.rotateTileCcw = playerFactory.rotateTileCcw;
 
     // after placing tile, this function will move all players in the same function.
-    $scope.placeTile = playerFactory.placeTile;
+    $scope.placeTile = function () {
+            playerFactory.placeTile();
+            // TODO: move keepMoving to gameFty: gameFactory.moveAllPlayers()
 
-    // can we use this to set the player.nextSpace?
+        }
+        // can we use this to set the player.nextSpace?
     $scope.spaces = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36];
 
     $scope.starttop = [

@@ -2,7 +2,18 @@
   "games":{
     "one":{
       "title": "original game room",
-      "timestamp": 1459361875666
+      "board": "one",
+      "count": 35,
+      "deck": "",
+      "currentPlayer": "",
+      "turnOrderArray": [],
+      "dragon": "",
+      "players":{
+        "jennifer":true,
+        "kimber": true,
+        "lori": true,
+        "taffy": true
+      }
     }
   },
   "players":{
@@ -52,9 +63,10 @@
   "users":{
     "jennifer": {
       "name" : "Jennifer Cen",
-      "games":{
-        "one": true
-      }
+      "game": "one"
     }
+  },
+  "tiles":{
+    
   }
 }

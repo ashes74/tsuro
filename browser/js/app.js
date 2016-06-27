@@ -1,4 +1,5 @@
 'use strict';
+
 var tsuro = require('angular').module('Tsuro', ['ui.router']);
 tsuro.controller('gameCtrl', require('./game/game.controller'));
 tsuro.factory('gameFactory', require('./game.factory'));

@@ -3,5 +3,6 @@ tsuro.config(function ($stateProvider) {
         url: '/game/',
         templateUrl: '/js/game/game.html',
         controller: 'gameCtrl',
+        resolve: tiles
     });
 });
