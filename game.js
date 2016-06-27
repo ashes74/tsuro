@@ -5,13 +5,15 @@ var Player = require('./player');
 //GAME///
 
 class Game {
-    constructor() {
+    constructor(name) {
+        this.name = name;
         this.count = 35;
         this.board = new Board();
-        this.players = [];
-        this.activeSpace = [x, y] //The next space of the currentPlayer
-        this.currPlayer; //index of the currentPlayer in the turnOrderArray
         this.deck = new Deck().shuffle();
+        this.players = [];
+        this.availableMarkers = ["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]
+
+        this.currPlayer; //index of the currentPlayer in the turnOrderArray
         this.turnOrderArray = [] //holds all the players still on the board.
         this.dragon = ""; // Player.Marker
     }

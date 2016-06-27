@@ -18,10 +18,11 @@ module.exports = function () {
             this.canPlay = true;
 
         },
-        placeMarker: function (player, point, nextSpace) {
+        placeMarker: function (point) {
+            // TODO: fix this function, point looks like [x, y, index]
             player.point = point;
             player.point.travelled = true;
-            player.nextSpace = nextSpace;
+            player.nextSpace = nextSpace; //[x, y] from the point
             // in each Space.points array, find this specific point and get the position (integer) inside this space.
             player.nextSpacePointsIndex = this.nextSpace.points.indexOf(player.point)
         },
@@ -97,7 +98,7 @@ module.exports = function () {
         },
         die: function (player) {
             player.canPlay = false;
-            // need to send an alert or message to the player who just died.
+            // TODO: need to send an alert or message to the player who just died.
         }
     }
 }

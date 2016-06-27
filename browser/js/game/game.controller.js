@@ -1,37 +1,38 @@
 'use strict';
-var Game = require('../../game')
-tsuro.controller('gameCtrl', function ($scope, gameFactory, playerFactory, tiles) {
-    $scope.game = new Game();
 
-    $scope.count = ; // frome firebase, how to set the default value
+tsuro.controller('gameCtrl', function ($scope, gameFactory, playerFactory, game, player) {
+    // resolved from game state, pulled from firebase
+    $scope.game = game
 
-    $scope.deck = tiles;
-    $scope.shuffle = function () {
-        // shuffle the $scope.deck
-    }
 
-    $scope.players = [];
+    $scope.deck = game.deck;
+    $scope.players = game.players;
+    $scope.master = game.master;
 
-    // should probably send this player info to firebase
-    $scope.createPlayer = function (name) {
-        return new playerFactory.player(name);
-    }
+    // resolved by game state based on login info
+    $scope.player = player;
 
-    // the actual player object (should include this player's nextSpace)
-    $scope.currentPlayer;
+    $scope.availableMarkers = game.availableMarkers;
 
-    // when a player joins a room, we run this function (on join game button maybe)
-    $scope.addPlayer = gameFactory.addPlayer;
+    $scope.pickMarker = function (marker) {
+        $scop.player.marker = marker;
+        // TODO: send this info to firebase game, remove the marker from availableMarkers
+    };
 
-    $scope.dragon;
+    $scope.placeMarker = playerFactory.placeMarker;
+
+    // the index of players (should include this player's nextSpace)
+    $scope.currentPlayer = gameFactory.getCurrentPlayer();
+
+    $scope.dragon = game.dragon;
 
     // holds all the players still on the board.
     $scope.turnOrderArray = gameFactory.getCanPlay();
 
+
     $scope.start = function () {
         $scope.turnOrderArray.forEach(function (player) {
             player.tiles = $scope.deck.dealThree()
-            $scope.currentPlayer = player;
         })
     }
 
@@ -39,13 +40,27 @@ tsuro.controller('gameCtrl', function ($scope, gameFactory, playerFactory, tiles
     $scope.rotateTileCw = playerFactory.rotateTileCw;
     $scope.rotateTileCcw = playerFactory.rotateTileCcw;
 
+    $scope.myTurn = function () {
+        $scope.player === $scope.currentPlayer;
+    };
+
     // after placing tile, this function will move all players in the same function.
     $scope.placeTile = function () {
-            playerFactory.placeTile();
-            // TODO: move keepMoving to gameFty: gameFactory.moveAllPlayers()
+        playerFactory.placeTile();
+        // TODO: move keepMoving to gameFty:
+        gameFactory.moveAllPlayers();
 
-        }
-        // can we use this to set the player.nextSpace?
+        // TODO: checkOver() check game.getCanPlay.length <= 1
+
+        // TODO: drawOne();
+        gameFactory.goToNextPlayer();
+    };
+
+    // TODO: game.players slice $scope.player out
+    $scope.leave;
+    $scope.reset;
+
+    // can we use this to set the player.nextSpace?
     $scope.spaces = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36];
 
     $scope.starttop = [
@@ -105,14 +120,7 @@ tsuro.controller('gameCtrl', function ($scope, gameFactory, playerFactory, tiles
         [5, 5, 3]
     ];
 
-    $scope.availableMarkers = ["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"];
 
-    $scope.pickMarker = function (marker, player) {
-        player.marker = marker;
-        $scope.availableMarkers = $scope.availableMarkers.filter(function (m) {
-            return m !== marker;
-        });
-    };
 });
 
 var spaces = new Array(36);

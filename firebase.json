@@ -6,19 +6,25 @@
       "count": 35,
       "deck": "",
       "currentPlayer": "",
-      "turnOrderArray": [],
+      "turnOrderArray": {},
       "dragon": "",
+      "master": "jennifer",
+      "availableMarkers": {}
       "players":{
-        "jennifer":true,
-        "kimber": true,
-        "lori": true,
-        "taffy": true
+        0: {"name":"jennifer", "marker": "red"},
+        1: "kimber",
+        2: "lori",
+        3: "taffy"
       }
     }
   },
   "players":{
     "one":{
-      "jennifer":true,
+      "jennifer": {
+        "master": true,
+        "tiles": {},
+        /*other Player constructor function stuff*/
+      },
       "kimber": true,
       "lori": true,
       "taffy": true
@@ -67,6 +73,6 @@
     }
   },
   "tiles":{
-    
+
   }
 }

@@ -1,8 +1,8 @@
 tsuro.config(function ($stateProvider) {
-    $stateProvider.state('game', {
-        url: '/game/',
-        templateUrl: '/js/game/game.html',
-        controller: 'gameCtrl',
-        resolve: tiles
-    });
+    $stateProvider
+        .state('game', {
+            url: '/game/:gameName',
+            templateUrl: '/js/game/game.html',
+            controller: 'gameCtrl'
+        });
 });
