@@ -1,4 +1,4 @@
-const markers = {
+const markers = [
     {
         'id': 1,
         'image': url
@@ -31,4 +31,4 @@ const markers = {
         'id': 8,
         'image': url
     }
-}
+];
