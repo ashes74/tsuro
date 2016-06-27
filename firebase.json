@@ -1,0 +1,77 @@
+{
+  "games":{
+    "one":{
+      "title": "original game room",
+      "board": "one",
+      "count": 35,
+      "deck": "",
+      "currentPlayer": "",
+      "turnOrderArray": {},
+      "dragon": "",
+      "master": "jennifer",
+      "availableMarkers": {}
+      "players":{
+        0: {"name":"jennifer", "marker": "red"},
+        1: "kimber",
+        2: "lori",
+        3: "taffy"
+      }
+    }
+  },
+  "players":{
+    "one":{
+      "jennifer": {
+        "tiles": {},
+        /*other Player constructor function stuff*/
+      },
+      "kimber": true,
+      "lori": true,
+      "taffy": true
+    }
+  },
+  "boards":{
+    "one":{
+      "m1": {
+        "name": "jennifer",
+        "marker": "red",
+        "nextSpace": null,
+        "nextSpacePointsIndex": null,
+        "tiles": [],
+        "canPlay": true
+      },
+      "m2": {
+        "name": "kimber",
+        "marker": "yellow",
+        "nextSpace": null,
+        "nextSpacePointsIndex": null,
+        "tiles": [],
+        "canPlay": true
+      },
+      "m3":{
+        "name": "lori",
+        "marker": "blue",
+        "nextSpace": null,
+        "nextSpacePointsIndex": null,
+        "tiles": [],
+        "canPlay": true
+      },
+      "m4":{
+        "name": "taffy",
+        "marker": "aqua",
+        "nextSpace": null,
+        "nextSpacePointsIndex": null,
+        "tiles": [],
+        "canPlay": true
+      }
+    }
+  },
+  "users":{
+    "jennifer": {
+      "name" : "Jennifer Cen",
+      "game": "one"
+    }
+  },
+  "tiles":{
+
+  }
+}
