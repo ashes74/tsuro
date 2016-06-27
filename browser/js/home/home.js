@@ -15,12 +15,15 @@ tsuro.controller('signIn', function ($scope) {
 })
 
 var Game = require('../../game')
+var Player = require('../player/player')
 
 tsuro.controller('homeCtrl', function ($scope, $state, gameFactory, playerFactory) {
-    $scope.createGame = function () {
+
+    $scope.createGame = function (gameName) {
         // TODO: new Game() then put in firebase, make gameFactory and playerFactory
-        var player = playerFactory.createPlayer(username);
-        var game = gameFactory.createGame($scope.game.name)
+        //  TODO: uid from auth
+        var player = new Player(uid)
+        var game = gameFactory.createGame(gameName)
 
         // TODO: put game.js into game.factory.js
         gameFactory.addMaster(player);
@@ -29,7 +32,7 @@ tsuro.controller('homeCtrl', function ($scope, $state, gameFactory, playerFactor
         // also need to updat the players model with game # and Player properties
 
         $state.go("game", {
-            "gameName": $scope.game.name
+            "gameName": gameName
         })
     }
 

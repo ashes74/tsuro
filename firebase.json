@@ -21,7 +21,6 @@
   "players":{
     "one":{
       "jennifer": {
-        "master": true,
         "tiles": {},
         /*other Player constructor function stuff*/
       },

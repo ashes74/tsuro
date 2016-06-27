@@ -85,8 +85,6 @@ class Game {
             player.tiles = [];
             //reset all players playability
             player.canPlay = true;
-            //TODO: are we assuming all people in the room want to play? Do we want watchers at all?
-
         })
     }
 
