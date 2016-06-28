@@ -1,0 +1,35 @@
+<html>
+
+<head>
+  <title>Tsuro</title>
+  <link rel="stylesheet" type="text/css" href="normalize.css" />
+  <link rel="stylesheet" type="text/css" href="style.css" />
+  <link href="https://fonts.googleapis.com/css?family=Raleway:300,600" rel="stylesheet">
+
+  <script src="/angular/angular.js"></script>
+  <script src="/angular-ui-router/release/angular-ui-router.js"></script>
+
+  <script src="https://www.gstatic.com/firebasejs/3.0.3/firebase.js"></script>
+  <script src="https://cdn.firebase.com/libs/angularfire/2.0.1/angularfire.min.js" defer></script>
+  <script>
+	  // Initialize Firebase
+	  var config = {
+	    apiKey: "AIzaSyA66RYlAJh20GOq04qgLc3c3OKy5yC-zH8",
+	    authDomain: "path-of-the-dragon.firebaseapp.com",
+	    databaseURL: "https://path-of-the-dragon.firebaseio.com",
+	    storageBucket: "path-of-the-dragon.appspot.com",
+	  };
+	  firebase.initializeApp(config);
+  </script>
+  <script src="/main.js"></script>
+
+  <base href="/">
+</head>
+
+<body ng-app="Tsuro">
+  <div ui-view></div>
+  
+
+</body>
+
+</html>
