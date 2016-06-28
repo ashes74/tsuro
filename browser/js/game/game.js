@@ -13,11 +13,20 @@ tsuro.controller('gameCtrl', function ($scope,$firebaseAuth,firebaseUrl, $stateP
     var gameRef = firebaseUrl + 'games/' + $stateParams.gameName;
     var deckRef = new Firebase(gameRef + '/initialDeck');
     var playersRef = new Firebase(gameRef + '/players');
+    var markersRef = new Firebase(gameRef + '/availableMarkers');
 
     //intialize game
     $scope.game = new Game($stateParams.gameName);
     $scope.game.deck = $firebaseObject(deckRef);
+
+    markersRef.on('value', function(availableMarkers){
+        $scope.availableMarkers = Object.keys(availableMarkers).map(function(i){
+            return availableMarkers[i];
+        });
+    });
+
     var board = $scope.game.board;
+
 
     //take all players on firebase and turn them into local player
     playersRef.on("child_added", function(player){
@@ -46,6 +55,11 @@ tsuro.controller('gameCtrl', function ($scope,$firebaseAuth,firebaseUrl, $stateP
     //Have player pick the marker
     $scope.pickMarker = function (board, marker) {
         $scope.player.marker = marker;
+        var markers = $firebaseArray(markersRef);
+        var idx = markers.indexOf(marker);
+        markers.$remove(markers[idx]).then(function(ref){
+            console.log(ref.key);
+        });
     };
 
     //Have player pick their start point
@@ -56,8 +70,9 @@ tsuro.controller('gameCtrl', function ($scope,$firebaseAuth,firebaseUrl, $stateP
         gameRef.child('players').child(player.uid).push({ 'marker': player.marker, 'startingPosition': player.startingPosition });
     };
 
+    // TODO: we probably need this on firebase so other people can't pick what's been picked
 
-    ////GAME MOVE LOOP/UPDATE    
+    ////GAME FB - MOVES UPDATE LOOP
     //if something is added to moves
     //watcher for added children
     //ref.on child added
@@ -88,18 +103,9 @@ tsuro.controller('gameCtrl', function ($scope,$firebaseAuth,firebaseUrl, $stateP
     // CMT: assuming we use new Game() for each game, holds all the players still on the board.
     $scope.turnOrderArray = $scope.game.getCanPlay();
 
-    // TODO: need this info for firebase, already shuffled tiles. Is it from new Game() ?
-    $scope.deck;
-
-    // QUESTION: do we need master to be stored in firebase?
-    // TODO: get who's the master
-    $scope.master;
-
     // TODO: need a function to assign dragon
     $scope.dragon;
 
-    // TODO: we probably need this on firebase so other people can't pick what's been picked
-    $scope.availableMarkers;
 
 
     // CMT: assuming we are using new Game() for $scope.game
@@ -113,47 +119,48 @@ tsuro.controller('gameCtrl', function ($scope,$firebaseAuth,firebaseUrl, $stateP
     };
 
     $scope.myTurn = function () {
-        $scope.player === $scope.currentPlayer;
+        $scope.me === $scope.currentPlayer;
     };
 
+    //these are tied to angular ng-click buttons
     $scope.rotateTileCw = function (tile) {
-        var addTwo = tile.map(function (connection) {
-            return connection + 2;
-        });
-        addTwo.unshift(addTwo.pop());
-        addTwo.unshift(addTwo.pop());
-        return Player.placeTile(addTwo);
+        tile.rotation++;
+        if(tile.rotation === 4) tile.rotation = 0;
     };
 
     $scope.rotateTileCcw = function (tile) {
-        var minusTwo = tile.map(function (connection) {
-            return connection - 2;
-        });
-        minusTwo.push(minusTwo.shift());
-        minusTwo.push(minusTwo.shift());
-        return Player.placeTile(minusTwo);
+        tile.rotation--;
+        if(tile.rotation === -4) tile.rotation = 0;
     };
 
     // CMT: assuming we use new Game()
     // CMT: use player's and game's prototype function to place tile and then move all players
     $scope.placeTile = function (tile) {
         // TODO: send this state to firebase every time it's called
+        if(tile.rotation > 0){
+            tile.paths = tile.paths.map(function (connection) {
+                return connection + 2;
+            });
+            tile.paths.unshift(tile.paths.pop());
+            tile.paths.unshift(tile.paths.pop());
+        } else if (tile.rotation < 0) {
+            tile.paths = tile.paths.map(function (connection) {
+                return connection - 2;
+            });
+            tile.paths.push(tile.paths.shift());
+            tile.paths.push(tile.paths.shift());
+        }
 
-
-        $scope.player.placeTile(tile);
+        $scope.me.placeTile(tile);
         $scope.game.moveAllplayers();
 
         if ($scope.game.checkOver()) {
             // TODO: need to tell the player she won
-            $scope.winner = $scope.game.checkOver().winner;
-
-            // TODO: make a gameOver function on Game contructor
-            $scope.gameOver();
-
+            $scope.winner = $scope.game.getCanPlay()[0];
+            $scope.gameOver = true;
         } else {
             // CMT: draw one tile and push it to the player.tiles array
-            $scope.player.tiles.push($scope.game.deck.deal(1))
-
+            $scope.me.tiles.push($scope.game.deck.deal(1));
             $scope.game.goToNextPlayer();
         }
     };

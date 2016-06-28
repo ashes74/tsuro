@@ -31,25 +31,8 @@ class Game {
     };
 
     checkOver() {
-        if (getCanPlay().length === 1) {
-            var overObj = {
-                "winner": getCanPlay()[0]
-            }
-        } else if (getCanPlay().length <= 1) {
-            var overObj = {
-                "winner": null
-            }
-            return overObj;
-        } else {
-            return false;
-        }
-
-    };
-
-    // TODO: fill in this function
-    gameOver() {
-
-    };
+        return getCanPlay().length <= 1;
+    }
 
     //to be called at the end of a turn to set the currPlayer to the next eligible player in the turnOrderArray
     goToNextPlayer() {

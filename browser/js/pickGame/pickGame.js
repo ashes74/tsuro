@@ -12,7 +12,8 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseAuth, fireba
     $scope.createGame = function (gameName) {
         // var game = new Game(gameName);
         var deck = new Deck().shuffle;
-        ref.child('games').child(gameName).child('initialDeck').push(deck);       
+        ref.child('games').child(gameName).child('initialDeck').push(deck);
+        ref.child('games').child(gameName).child('availableMarkers').push(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"])       
         $state.go('game', {"gameName": gameName});
     };
 
