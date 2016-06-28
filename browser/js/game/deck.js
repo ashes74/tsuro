@@ -1,5 +1,4 @@
 'use strict';
-var _ = require('lodash');
 
 class Deck {
     constructor(tiles) {
@@ -24,5 +23,3 @@ class Deck {
         return this
     }
 }
-
-module.exports = Deck
