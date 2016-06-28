@@ -3,24 +3,20 @@ tsuro.config(function ($stateProvider) {
         url: '/pickgame',
         templateUrl: '/js/pickGame/pickGame.html',
         controller: 'pickGameCtrl'
-    })
-})
+    });
+});
 
-tsuro.controller('pickGameCtrl', function ($scope, $state) {
-    // TODO: write createGame function with firebase
-    $scope.createGame = function (gameNmae) {
-        // TODO: create player and add as master for this new game
-
-        // TODO: game = new Game(gameName)
-
-        $state.go('game', {
-            "gameName": gameName
-        })
-
+tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseAuth, firebaseUrl) {
+    var ref = new Firebase(firebaseUrl);
+    
+    $scope.createGame = function (gameName) {
+        // var game = new Game(gameName);
+        var deck = new Deck().shuffle;
+        ref.child('games').child(gameName).child('initialDeck').push(deck);       
+        $state.go('game', {"gameName": gameName});
     };
 
-    // TODO: create player for the game (?)
     $scope.goToGameList = function () {
-        $state.go('gamelist')
-    }
-})
+        $state.go('gamelist');
+    };
+});

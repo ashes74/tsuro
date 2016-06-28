@@ -7,13 +7,14 @@ class Game {
         this.name = name;
         this.count = 35;
         this.board = new Board();
-        this.deck = new Deck().shuffle();
+        // this.deck;
         this.players = [];
         this.availableMarkers = ["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]
 
         this.currPlayer; //index of the currentPlayer in the turnOrderArray
         this.turnOrderArray = [] //holds all the players still on the board.
         this.dragon = ""; // Player.Marker
+        this.moves;
     }
 
     addPlayer(player) {

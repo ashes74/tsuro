@@ -3,10 +3,10 @@ tsuro.config(function ($stateProvider) {
         url: '/login',
         templateUrl: '/js/login/login.html',
         controller: 'loginCtrl'
-    })
-})
+    });
+});
 
-tsuro.controller('loginCtrl', function ($scope) {
+tsuro.controller('loginCtrl', function ($scope, $state) {
     var auth = $firebaseAuth();
 
     $scope.logInWithGoogle = function () {
@@ -15,8 +15,8 @@ tsuro.controller('loginCtrl', function ($scope) {
         }).catch(function (error) {
             console.error("Authentication failed:", error);
         });
+
+        $state.go('pickGame');
     };
 
-    // TODO: get user from auth
-    $scope.user;
-})
+});

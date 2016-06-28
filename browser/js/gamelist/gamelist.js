@@ -2,20 +2,18 @@ tsuro.config(function ($stateProvider) {
     $stateProvider.state('gamelist', {
         url: '/gamelist',
         templateUrl: '/js/gamelist/gamelist.html',
-        controller: 'gameList'
+        controller: 'gameList',
     });
 });
 
-tsuro.controller('gameList', function ($scope) {
-    // TODO: get game list from firebase (?)
-    $scope.gamelist = [];
+tsuro.controller('gameList', function ($scope, firebaseUrl, $firebaseObject) {
+    //For synchronizingGameList...
+    var synchRef = new Firebase(firebaseUrl + games);
+    var synchronizedObj = $firebaseObject(synchRef);
+    //This returns a promise... you can .then() and assign value to $scope.variable
+    synchronizedObj.$bindTo($scope, gamelist); //data is whatever we are calling it in the angular html.    
 
     $scope.join = function (gameName) {
-        // TODO: new Player() for this game room, need the uid or something from the auth;
-
-
-        $state.go('game', {
-            "gameName": gameName
-        })
-    }
+        $state.go('game', {"gameName": gameName});
+    };
 });
