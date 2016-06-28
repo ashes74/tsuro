@@ -6,7 +6,7 @@ tsuro.config(function ($stateProvider) {
     });
 });
 
-tsuro.controller('gameCtrl', function ($scope,$firebaseAuth,firebaseUrl, $stateParams, $firebaseObject) {
+tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stateParams, $firebaseObject) {
 
     var auth = $firebaseAuth();
     var firebaseUser = $scope.authObj.$getAuth();
@@ -19,8 +19,8 @@ tsuro.controller('gameCtrl', function ($scope,$firebaseAuth,firebaseUrl, $stateP
     $scope.game = new Game($stateParams.gameName);
     $scope.game.deck = $firebaseObject(deckRef);
 
-    markersRef.on('value', function(availableMarkers){
-        $scope.availableMarkers = Object.keys(availableMarkers).map(function(i){
+    markersRef.on('value', function (availableMarkers) {
+        $scope.availableMarkers = Object.keys(availableMarkers).map(function (i) {
             return availableMarkers[i];
         });
     });
@@ -29,7 +29,7 @@ tsuro.controller('gameCtrl', function ($scope,$firebaseAuth,firebaseUrl, $stateP
 
 
     //take all players on firebase and turn them into local player
-    playersRef.on("child_added", function(player){
+    playersRef.on("child_added", function (player) {
         var newPlayer = new Player(player.uid);
         newPlayer.marker = player.marker;
 
@@ -47,7 +47,7 @@ tsuro.controller('gameCtrl', function ($scope,$firebaseAuth,firebaseUrl, $stateP
     });
 
     //get 'me'
-    $scope.me = $scope.game.players.filter(function(player){
+    $scope.me = $scope.game.players.filter(function (player) {
         return player.uid === firebaseUser.uid;
     })[0];
 
@@ -57,7 +57,7 @@ tsuro.controller('gameCtrl', function ($scope,$firebaseAuth,firebaseUrl, $stateP
         $scope.player.marker = marker;
         var markers = $firebaseArray(markersRef);
         var idx = markers.indexOf(marker);
-        markers.$remove(markers[idx]).then(function(ref){
+        markers.$remove(markers[idx]).then(function (ref) {
             console.log(ref.key);
         });
     };
@@ -67,7 +67,10 @@ tsuro.controller('gameCtrl', function ($scope,$firebaseAuth,firebaseUrl, $stateP
         $scope.player.placeMarker(point);
         $scope.game.players.push($scope.player);
 
-        gameRef.child('players').child(player.uid).push({ 'marker': player.marker, 'startingPosition': player.startingPosition });
+        gameRef.child('players').child(player.uid).push({
+            'marker': player.marker,
+            'startingPosition': player.startingPosition
+        });
     };
 
     // TODO: we probably need this on firebase so other people can't pick what's been picked
@@ -108,15 +111,6 @@ tsuro.controller('gameCtrl', function ($scope,$firebaseAuth,firebaseUrl, $stateP
 
 
 
-    // CMT: assuming we are using new Game() for $scope.game
-    $scope.start = function () {
-        // TODO: add game init state with shuffled deck
-
-        // TODO: need to add to firebase (?)
-        $scope.game.turnOrderArray.forEach(function (player) {
-            player.tiles = $scope.game.deck.dealThree();
-        })
-    };
 
     $scope.myTurn = function () {
         $scope.me === $scope.currentPlayer;
@@ -125,19 +119,19 @@ tsuro.controller('gameCtrl', function ($scope,$firebaseAuth,firebaseUrl, $stateP
     //these are tied to angular ng-click buttons
     $scope.rotateTileCw = function (tile) {
         tile.rotation++;
-        if(tile.rotation === 4) tile.rotation = 0;
+        if (tile.rotation === 4) tile.rotation = 0;
     };
 
     $scope.rotateTileCcw = function (tile) {
         tile.rotation--;
-        if(tile.rotation === -4) tile.rotation = 0;
+        if (tile.rotation === -4) tile.rotation = 0;
     };
 
     // CMT: assuming we use new Game()
     // CMT: use player's and game's prototype function to place tile and then move all players
     $scope.placeTile = function (tile) {
         // TODO: send this state to firebase every time it's called
-        if(tile.rotation > 0){
+        if (tile.rotation > 0) {
             tile.paths = tile.paths.map(function (connection) {
                 return connection + 2;
             });
@@ -232,6 +226,3 @@ tsuro.controller('gameCtrl', function ($scope,$firebaseAuth,firebaseUrl, $stateP
 
 
 });
-
-
-       
