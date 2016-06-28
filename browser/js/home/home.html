@@ -1,8 +1,9 @@
 <section id="home" class="wrapper">
 	<main>
 		<h1><span>PATH OF THE</span><br/> DRAGON</h1>
-		<input type="text" ng-model="player.name" placeholder="what is your name?" /><br/>
-		<a ui-sref="game" class="button">Create a Game</a>
-		<a ui-sref="game" class="button">Join a Game</a>
+<!-- 		<input type="text" ng-model="user.name" placeholder="what is your name?" /><br/>-->		
+		<input type="text" ng-model="game.name" placeholder="what is the room name?" /><br/>
+		<a class="button" ng-click="createGame()">Create a Game</a>
+		<a class="button" ng-click="goToGameList()">Join a Game</a>
 	</main>
 </section>

@@ -1,8 +1,17 @@
 tsuro.config(function ($stateProvider) {
 	$stateProvider.state('game', {
-		url: '/game/',
+		// url: '/game/:gameName/',
+		url: '/game',
 		templateUrl: '/js/game/game.html',
 		controller: 'gameCtrl',
+		// resolve: {
+		// 	game: function($stateParams){
+		// 		//lookup in firebase by $stateParams.gameName
+		// 	},
+		// 	player: function(){
+		// 		//get player object for logged in user
+		// 	}
+		// }
 	});
 });
 
@@ -68,6 +77,7 @@ tsuro.controller('gameCtrl', function ($scope) {
 
 	$scope.availableMarkers = ["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"];
 	$scope.markerPicked = false;
+	
 	$scope.pickMarker = function (marker) {
 		$scope.markerPicked = true;
 		$scope.availableMarkers = $scope.availableMarkers.filter(function (m) {
