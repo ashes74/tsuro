@@ -6,6 +6,21 @@ tsuro.config(function ($stateProvider) {
     })
 })
 
-tsuro.controller('pickGameCtrl', function ($scope) {
+tsuro.controller('pickGameCtrl', function ($scope, $state) {
+    // TODO: write createGame function with firebase
+    $scope.createGame = function (gameNmae) {
+        // TODO: create player and add as master for this new game
 
+        // TODO: game = new Game(gameName)
+
+        $state.go('game', {
+            "gameName": gameName
+        })
+
+    };
+
+    // TODO: create player for the game (?)
+    $scope.goToGameList = function () {
+        $state.go('gamelist')
+    }
 })

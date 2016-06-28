@@ -3,6 +3,7 @@
   <div ng-repeat="game in gamelist">
     <p>{{game.name}}</p>
     <p>{{game.players}}</p>
+    <button ng-click="join(game.name)">Join This Game</button>
   </div>
 	</main>
 </section>

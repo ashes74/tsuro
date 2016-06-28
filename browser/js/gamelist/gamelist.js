@@ -2,22 +2,20 @@ tsuro.config(function ($stateProvider) {
     $stateProvider.state('gamelist', {
         url: '/gamelist',
         templateUrl: '/js/gamelist/gamelist.html',
-        controller: 'gameList',
-        resolve: {
-            allGames: function () {
-                //lookup gamelist with players included
-            }
-        }
+        controller: 'gameList'
     });
 });
 
 tsuro.controller('gameList', function ($scope) {
-    //inject game factory here!!!
-    $scope.gamelist = [{
-        name: 'best game ever',
-        players: 'kimber, lori'
-    }, {
-        name: 'this game is awesome',
-        players: 'taffy, jennifer, biru'
-    }];
+    // TODO: get game list from firebase (?)
+    $scope.gamelist = [];
+
+    $scope.join = function (gameName) {
+        // TODO: new Player() for this game room, need the uid or something from the auth;
+
+
+        $state.go('game', {
+            "gameName": gameName
+        })
+    }
 });
