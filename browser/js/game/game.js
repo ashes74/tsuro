@@ -54,7 +54,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
     //Have player pick the marker
     $scope.pickMarker = function (board, marker) {
-        $scope.player.marker = marker;
+        $scope.me.marker = marker;
         var markers = $firebaseArray(markersRef);
         var idx = markers.indexOf(marker);
         markers.$remove(markers[idx]).then(function (ref) {
@@ -64,7 +64,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
     //Have player pick their start point
     $scope.placeMarker = function (board, point) {
-        $scope.player.placeMarker(point);
+        $scope.me.placeMarker(point);
         $scope.game.players.push($scope.player);
 
         gameRef.child('players').child(player.uid).push({
