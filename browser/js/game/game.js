@@ -7,6 +7,11 @@ tsuro.config(function ($stateProvider) {
 })
 
 tsuro.controller('gameCtrl', function ($scope) {
+    // TODO: how do we show the tiles for player?
+
+    // TODO: how to show the rotated tile?
+
+
     // TODO: store game and moves on firebase
     $scope.game;
 
@@ -48,6 +53,8 @@ tsuro.controller('gameCtrl', function ($scope) {
 
     // CMT: assuming we are using new Game() for $scope.game
     $scope.start = function () {
+        // TODO: add game init state with shuffled deck
+
         // TODO: need to add to firebase (?)
         $scope.game.turnOrderArray.forEach(function (player) {
             player.tiles = $scope.game.deck.dealThree();
@@ -79,20 +86,21 @@ tsuro.controller('gameCtrl', function ($scope) {
     // CMT: assuming we use new Game()
     // CMT: use player's and game's prototype function to place tile and then move all players
     $scope.placeTile = function (tile) {
+        // TODO: send this state to firebase every time it's called
+
+
         $scope.player.placeTile(tile)
         $scope.game.moveAllplayers();
 
-        // TODO: checkOver() check game.getCanPlay.length <= 1
-        // move this function to the Game.prototype
-        // Game.prototype.checkOver = function () {
-        //         return (this.getCanPlay().length <= 1)
-        //     };
+        if ($scope.game.checkOver()) {
+            // TODO: need to tell the player she won
+            $scope.winner = $scope.game.checkOver().winner;
 
+            // TODO: make a gameOver function on Game contructor
+            $scope.gameOver();
 
-        // TODO: make a gameOver function on Game contructor
-        if ($scope.game.checkOver) gameOver()
-        else {
-            // CMT: draw one tile;
+        } else {
+            // CMT: draw one tile and push it to the player.tiles array
             $scope.player.tiles.push($scope.game.deck.deal(1))
 
             $scope.game.goToNextPlayer();
@@ -102,6 +110,7 @@ tsuro.controller('gameCtrl', function ($scope) {
     // TODO: firebase game.players slice $scope.player out
     $scope.leaveGame;
 
+    // TODO: do we remove this game room's moves from firebase?
     $scope.reset = $scope.game.reset;
 
 })
