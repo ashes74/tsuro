@@ -7,9 +7,14 @@ tsuro.config(function ($stateProvider) {
 })
 
 tsuro.controller('loginCtrl', function ($scope) {
-    // TODO: write login function with firebase
-    $scope.login = function () {
+    var auth = $firebaseAuth();
 
+    $scope.logInWithGoogle = function () {
+        auth.$signInWithPopup("google").then(function (authData) {
+            console.log("Logged in as:", authData);
+        }).catch(function (error) {
+            console.error("Authentication failed:", error);
+        });
     };
 
     // TODO: get user from auth
