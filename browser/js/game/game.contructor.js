@@ -17,9 +17,9 @@ class Game {
         this.moves;
     }
 
-    addPlayer(player) {
-        this.players.length < 8 ? this.players.push(player) : throw new Error "Room full";
-    };
+    // addPlayer(player) {
+    //     this.players.length < 8 ? this.players.push(player) : throw new Error "Room full";
+    // };
 
     getCurrentPlayer() {
         if (this.currPlayer === -1) return;
