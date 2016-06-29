@@ -1,12 +1,12 @@
-tsuro.config(function($stateProvider) {
+tsuro.config(function ($stateProvider) {
     $stateProvider.state('game', {
         url: '/game/:gameName',
-        templateUrl: '/js/game/game.html',
+        templateUrl: '/browser/js/game/game.html',
         controller: 'gameCtrl'
     });
 });
 
-tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $stateParams, $firebaseObject) {
+tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stateParams, $firebaseObject) {
     var auth = $firebaseAuth();
     var firebaseUser = $scope.authObj.$getAuth();
     var gameRef = firebaseUrl + 'games/' + $stateParams.gameName;
@@ -49,7 +49,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
     });
 
     //get 'me'
-    $scope.me = $scope.game.players.filter(function(player) {
+    $scope.me = $scope.game.players.filter(function (player) {
         return player.uid === firebaseUser.uid;
     })[0];
 
@@ -80,7 +80,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
     //For synchronizingGame...
     var syncRef = new Firebase(gameRef + '/moves');
-    syncRef.on('child_added', function(childSnapshot, prevChildKey) {
+    syncRef.on('child_added', function (childSnapshot, prevChildKey) {
         //NEED TO DOUBLE CHECK!! What does childSnap returns?
         console.log('childSnapshot_SyncGame', childSnapshot);
         //depending on what childSnapshot gives me...I think it's one child per on call? It doesn't return an array of changes...I believe!
@@ -109,37 +109,37 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
     var awaitingDragonHolders = [];
 
 
-    $scope.start = function() {
+    $scope.start = function () {
         //
     };
 
-    $scope.myTurn = function() {
+    $scope.myTurn = function () {
         $scope.me === $scope.currentPlayer;
     };
 
     //these are tied to angular ng-click buttons
-    $scope.rotateTileCw = function(tile) {
+    $scope.rotateTileCw = function (tile) {
         tile.rotation++;
         if (tile.rotation === 4) tile.rotation = 0;
     };
 
-    $scope.rotateTileCcw = function(tile) {
+    $scope.rotateTileCcw = function (tile) {
         tile.rotation--;
         if (tile.rotation === -4) tile.rotation = 0;
     };
 
     // CMT: assuming we use new Game()
     // CMT: use player's and game's prototype function to place tile and then move all players
-    $scope.placeTile = function(tile) {
+    $scope.placeTile = function (tile) {
         // TODO: send this state to firebase every time it's called
         if (tile.rotation > 0) {
-            tile.paths = tile.paths.map(function(connection) {
+            tile.paths = tile.paths.map(function (connection) {
                 return connection + 2;
             });
             tile.paths.unshift(tile.paths.pop());
             tile.paths.unshift(tile.paths.pop());
         } else if (tile.rotation < 0) {
-            tile.paths = tile.paths.map(function(connection) {
+            tile.paths = tile.paths.map(function (connection) {
                 return connection - 2;
             });
             tile.paths.push(tile.paths.shift());
@@ -147,7 +147,10 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
         }
 
         $scope.me.placeTile(tile);
-        gameRef.child('moves').push({ 'type': 'placeTile', 'tile': tile });
+        gameRef.child('moves').push({
+            'type': 'placeTile',
+            'tile': tile
+        });
 
         $scope.game.moveAllplayers();
 
@@ -167,14 +170,17 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
                 //if dead players, then push their cards back to the deck & reshuffle
                 if ($scope.game.deadPlayers().length) {
                     //with new cards & need to reshuffle
-                    $scope.game.deadPlayers().forEach(function(deadPlayerTiles) {
-                        deadPlayerTiles.forEach(function(tile) {
+                    $scope.game.deadPlayers().forEach(function (deadPlayerTiles) {
+                        deadPlayerTiles.forEach(function (tile) {
                             $scope.game.deck.push(tile);
                         });
                     });
                     $scope.game.deck = $scope.game.deck.shuffle();
                     //send firebase a new move
-                    gameRef.child('moves').push({ 'type': 'updateDeck', 'updateDeck': $scope.game.deck });
+                    gameRef.child('moves').push({
+                        'type': 'updateDeck',
+                        'updateDeck': $scope.game.deck
+                    });
                     if ($scope.dragon) {
                         $scope.dragon.tiles.push($scope.game.deck.deal(1));
                         $scope.dragon = null;
