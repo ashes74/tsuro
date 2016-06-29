@@ -14,7 +14,7 @@ function Space(x, y) {
     this.y = y;
     this.image = null;
     this.points = [null,null,null,null,null,null,null,null];
-
+    this.tileUrl;
     for (var i = 0; i < 8 ; i++) {
         let corresponding;
 

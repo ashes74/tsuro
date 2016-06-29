@@ -1,0 +1,50 @@
+{
+  "name": "tsuro",
+  "version": "1.0.0",
+  "description": "A game of paths :) ",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ashes74/tsuro.git"
+  },
+  "keywords": [
+    "Game"
+  ],
+  "author": "ashes74, maxww, kimber-no-ly, cenjennifer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ashes74/tsuro/issues"
+  },
+  "homepage": "https://github.com/ashes74/tsuro#readme",
+  "dependencies": {
+    "angular": "^1.5.7",
+    "firebase": "^3.1.0",
+    "lodash": "^4.13.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.10.4",
+    "babel-preset-es2015": "^6.9.0",
+    "chai": "^3.5.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-concat": "^2.6.0",
+    "gulp-eslint": "^2.0.0",
+    "gulp-istanbul": "^1.0.0",
+    "gulp-livereload": "^3.8.1",
+    "gulp-minify-css": "^1.2.4",
+    "gulp-mocha": "^2.2.0",
+    "gulp-ng-annotate": "^2.0.0",
+    "gulp-notify": "^2.2.0",
+    "gulp-plumber": "^1.1.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.3.2",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-uglify": "^1.5.4",
+    "karma": "^1.1.0",
+    "mocha": "^2.5.3",
+    "run-sequence": "^1.2.1"
+  }
+}
