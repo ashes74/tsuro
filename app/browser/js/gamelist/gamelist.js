@@ -8,7 +8,8 @@ tsuro.config(function ($stateProvider) {
 
 tsuro.controller('gameList', function ($scope, firebaseUrl, $firebaseObject) {
     //For synchronizingGameList...
-    var synchRef = new Firebase(firebaseUrl + games);
+     var ref = firebase.database().ref();
+    var synchRef = ref.child("games");
     var synchronizedObj = $firebaseObject(synchRef);
     //This returns a promise... you can .then() and assign value to $scope.variable
     synchronizedObj.$bindTo($scope, gamelist); //data is whatever we are calling it in the angular html.

@@ -1,13 +1,12 @@
-tsuro.config(function ($stateProvider) {
+tsuro.config(function($stateProvider) {
     $stateProvider.state('game', {
         url: '/game/:gameName',
-        templateUrl: './browser/js/game/game.html',
+        templateUrl: '/js/game/game.html',
         controller: 'gameCtrl'
     });
 });
 
-tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, $firebaseArray, firebaseUrl, $stateParams, $firebaseObject) {
-
+tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $stateParams, $firebaseObject) {
     var auth = $firebaseAuth();
     var firebaseUser = $scope.authObj.$getAuth();
     var gameRef = firebaseUrl + 'games/' + $stateParams.gameName;
@@ -16,11 +15,14 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, $firebaseArray, fi
     var markersRef = new Firebase(gameRef + '/availableMarkers');
 
     //intialize game
-    $scope.game = new Game($stateParams.gameName);
+    $scope.game = new Game($stateParams.gameName, $stateParams.deck);
+
     $scope.game.deck = $firebaseObject(deckRef);
+
 
     markersRef.on('value', function (availableMarkers) {
         $scope.availableMarkers = Object.keys(availableMarkers).map(function (i) {
+
             return availableMarkers[i];
         });
     });
@@ -38,7 +40,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, $firebaseArray, fi
         var pointsIndex = player.startingPosition[2];
 
         newPlayer.point = board[y][x].points[pointsIndex];
-        newplayer.nextSpace = board[y][x];
+        newPlayer.nextSpace = board[y][x];
         newPlayer.nextSpacePointsIndex = player.startingPosition[2];
 
         newPlayer.tiles = $scope.game.deck.dealThree();
@@ -47,7 +49,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, $firebaseArray, fi
     });
 
     //get 'me'
-    $scope.me = $scope.game.players.filter(function (player) {
+    $scope.me = $scope.game.players.filter(function(player) {
         return player.uid === firebaseUser.uid;
     })[0];
 
@@ -63,6 +65,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, $firebaseArray, fi
     };
 
     //Have player pick their start point
+
     $scope.placeMarker = function (board, point) {
         $scope.me.placeMarker(point);
         $scope.game.players.push($scope.player);
@@ -75,26 +78,21 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, $firebaseArray, fi
 
     // TODO: we probably need this on firebase so other people can't pick what's been picked
 
-    ////GAME FB - MOVES UPDATE LOOP
-    //if something is added to moves
-    //watcher for added children
-    //ref.on child added
-
-
-
     //For synchronizingGame...
-    // var synchRef = new Firebase(gameRef + '/moves');
-    // var synchronizedObj = $firebaseObject(synchRef);
-    // //This returns a promise... you can .then() and assign value to $scope.variable
-    // synchronizedObj
-    // .$bindTo($scope, game.moves); //do we need this?
-
+    var syncRef = new Firebase(gameRef + '/moves');
+    syncRef.on('child_added', function(childSnapshot, prevChildKey) {
+        //NEED TO DOUBLE CHECK!! What does childSnap returns?
+        console.log('childSnapshot_SyncGame', childSnapshot);
+        //depending on what childSnapshot gives me...I think it's one child per on call? It doesn't return an array of changes...I believe!
+        if (childSnapshot.type === 'updateDeck') {
+            $scope.game.deck = childSnapshot.updateDeck;
+        } else {
+            $scope.placeTile(childSnapshot.tile);
+        }
+    });
 
     // TODO: how to re-do the moves?
     // $scope.game.moves;
-
-
-
 
     // TODO: how do we show the tiles for player?
 
@@ -108,37 +106,40 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, $firebaseArray, fi
 
     // TODO: need a function to assign dragon
     $scope.dragon;
+    var awaitingDragonHolders = [];
 
 
+    $scope.start = function() {
+        //
+    };
 
-
-    $scope.myTurn = function () {
+    $scope.myTurn = function() {
         $scope.me === $scope.currentPlayer;
     };
 
     //these are tied to angular ng-click buttons
-    $scope.rotateTileCw = function (tile) {
+    $scope.rotateTileCw = function(tile) {
         tile.rotation++;
         if (tile.rotation === 4) tile.rotation = 0;
     };
 
-    $scope.rotateTileCcw = function (tile) {
+    $scope.rotateTileCcw = function(tile) {
         tile.rotation--;
         if (tile.rotation === -4) tile.rotation = 0;
     };
 
     // CMT: assuming we use new Game()
     // CMT: use player's and game's prototype function to place tile and then move all players
-    $scope.placeTile = function (tile) {
+    $scope.placeTile = function(tile) {
         // TODO: send this state to firebase every time it's called
         if (tile.rotation > 0) {
-            tile.paths = tile.paths.map(function (connection) {
+            tile.paths = tile.paths.map(function(connection) {
                 return connection + 2;
             });
             tile.paths.unshift(tile.paths.pop());
             tile.paths.unshift(tile.paths.pop());
         } else if (tile.rotation < 0) {
-            tile.paths = tile.paths.map(function (connection) {
+            tile.paths = tile.paths.map(function(connection) {
                 return connection - 2;
             });
             tile.paths.push(tile.paths.shift());
@@ -146,6 +147,8 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, $firebaseArray, fi
         }
 
         $scope.me.placeTile(tile);
+        gameRef.child('moves').push({ 'type': 'placeTile', 'tile': tile });
+
         $scope.game.moveAllplayers();
 
         if ($scope.game.checkOver()) {
@@ -153,8 +156,39 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, $firebaseArray, fi
             $scope.winner = $scope.game.getCanPlay()[0];
             $scope.gameOver = true;
         } else {
-            // CMT: draw one tile and push it to the player.tiles array
-            $scope.me.tiles.push($scope.game.deck.deal(1));
+            // If deck is empty & no one is dragon, set me as dragon
+            if ($scope.game.deck.length === 0 && !$scope.dragon) {
+                $scope.dragon = $scope.me;
+            } else if ($scope.game.deck.length === 0 && $scope.dragon) {
+                awaitingDragonHolders.push($scope.me);
+            } else {
+                // CMT: draw one tile and push it to the player.tiles array
+                $scope.me.tiles.push($scope.game.deck.deal(1));
+                //if dead players, then push their cards back to the deck & reshuffle
+                if ($scope.game.deadPlayers().length) {
+                    //with new cards & need to reshuffle
+                    $scope.game.deadPlayers().forEach(function(deadPlayerTiles) {
+                        deadPlayerTiles.forEach(function(tile) {
+                            $scope.game.deck.push(tile);
+                        });
+                    });
+                    $scope.game.deck = $scope.game.deck.shuffle();
+                    //send firebase a new move
+                    gameRef.child('moves').push({ 'type': 'updateDeck', 'updateDeck': $scope.game.deck });
+                    if ($scope.dragon) {
+                        $scope.dragon.tiles.push($scope.game.deck.deal(1));
+                        $scope.dragon = null;
+                        //NEED TO DISCUSS: Might need to modify this if we want to use up the cards and give each awaiting players' up to 3 cards
+                        while ($scope.game.deck.length && $scope.awaitingDragonHolders.length) {
+                            $scope.awaitingDragonHolders.shift().tiles.push($scope.game.deck.deal(1));
+                        };
+                        if ($scope.awaitingDragonHolders.length) {
+                            $scope.dragon = $scope.awaitingDragonHolders.shift();
+                        }
+                    };
+                }
+
+            }
             $scope.game.goToNextPlayer();
         }
     };
@@ -222,7 +256,5 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, $firebaseArray, fi
         [5, 5, 2],
         [5, 5, 3]
     ];
-
-
 
 });

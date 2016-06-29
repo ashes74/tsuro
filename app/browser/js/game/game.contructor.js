@@ -7,7 +7,6 @@ class Game {
         this.name = name;
         this.count = 35;
         this.board = new Board();
-        // this.deck;
         this.players = [];
         this.availableMarkers = ["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]
 
@@ -29,6 +28,16 @@ class Game {
     moveAllPlayers() {
         this.players.forEach((player) => player.keepMoving())
     };
+    deadPlayers(){
+        var deadPlayersTiles = [];
+        this.players.forEach(function(player){
+            if (!player.canPlay && player.tiles.length > 0){
+                deadPlayersTiles.push(player.tiles);
+                isDeadPlayer = true;
+            }
+        });
+        return deadPlayersTiles;
+    };
 
     checkOver() {
         return getCanPlay().length <= 1;
@@ -43,9 +52,9 @@ class Game {
             }
             this.currPlayer = newIdx;
         } else {
-            this.currPlayer = -1
+            this.currPlayer = -1;
         }
-        return this.getCurrentPlayer()
+        return this.getCurrentPlayer();
     };
 
     //restart the game
@@ -58,14 +67,14 @@ class Game {
             //reset all players playability
             player.canPlay = true;
         })
-    }
+    };
 
 }
 
 /////END OF GAME CLASS/////
 
 //get Eligible players
-let getCanPlay = function (players) {
+let getCanPlay = function(players) {
     return players.filter((player) => {
         return player.canPlay
     })
