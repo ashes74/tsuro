@@ -8,11 +8,15 @@ tsuro.config(function ($stateProvider) {
 
 tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stateParams, $firebaseObject) {
     var auth = $firebaseAuth();
-    var firebaseUser = $scope.authObj.$getAuth();
-    var gameRef = firebaseUrl + 'games/' + $stateParams.gameName;
-    var deckRef = new Firebase(gameRef + '/initialDeck');
-    var playersRef = new Firebase(gameRef + '/players');
-    var markersRef = new Firebase(gameRef + '/availableMarkers');
+    var firebaseUser = auth.$getAuth();
+
+    var ref = firebase.database().ref();
+    var obj = $firebaseObject(ref);
+
+    var gameRef = ref.child('games').child($stateParams.gameName);
+    var deckRef = gameRef.child('initialDeck');
+    var playersRef = gameRef.child('players');
+    var markersRef = gameRef.child('availableMarkers');
 
     //intialize game
     $scope.game = new Game($stateParams.gameName, $stateParams.deck);
@@ -26,7 +30,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             return availableMarkers[i];
         });
     });
-
+    console.log($scope.game)
     var board = $scope.game.board;
 
 

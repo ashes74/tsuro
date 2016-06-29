@@ -6,7 +6,7 @@ class Game {
     constructor(name) {
         this.name = name;
         this.count = 35;
-        this.board = new Board();
+        this.board = new Board().drawBoard();
         this.players = [];
         this.availableMarkers = ["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]
 
@@ -16,10 +16,6 @@ class Game {
         this.moves;
     }
 
-    // addPlayer(player) {
-    //     this.players.length < 8 ? this.players.push(player) : throw new Error "Room full";
-    // };
-
     getCurrentPlayer() {
         if (this.currPlayer === -1) return;
         return this.turnOrderArray[this.currPlayer];
@@ -28,10 +24,10 @@ class Game {
     moveAllPlayers() {
         this.players.forEach((player) => player.keepMoving())
     };
-    deadPlayers(){
+    deadPlayers() {
         var deadPlayersTiles = [];
-        this.players.forEach(function(player){
-            if (!player.canPlay && player.tiles.length > 0){
+        this.players.forEach(function (player) {
+            if (!player.canPlay && player.tiles.length > 0) {
                 deadPlayersTiles.push(player.tiles);
                 isDeadPlayer = true;
             }
@@ -74,7 +70,7 @@ class Game {
 /////END OF GAME CLASS/////
 
 //get Eligible players
-let getCanPlay = function(players) {
+let getCanPlay = function (players) {
     return players.filter((player) => {
         return player.canPlay
     })
