@@ -32,15 +32,16 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         });
     });
 
+    // assign $scope.me to the signed in user
     firebase.auth().onAuthStateChanged(function (user) {
+
         var firebasePlayersArr = $firebaseArray(playersRef)
         firebasePlayersArr.$loaded().then(function (data) {
             var FBplayers = data;
-            console.log("players", FBplayers)
+
             if (user) {
                 var userAuthId = user.uid;
-                var me = $scope.FBplayers.filter(player => player.uid === userAuthId)[0];
-                console.log("me idx", FBplayers.indexOf(me))
+                var me = FBplayers.filter(player => player.uid === userAuthId)[0];
                 if (me) $scope.me = me;
                 if ($scope.me.marker === "n") $scope.me.marker = null;
 
@@ -48,6 +49,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 // No user is signed in.
                 console.log("nothing")
             }
+
         })
     });
 
