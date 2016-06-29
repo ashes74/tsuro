@@ -6,16 +6,16 @@ tsuro.config(function ($stateProvider) {
     });
 });
 
-tsuro.controller('gameList', function ($scope, firebaseUrl, $firebaseObject, $state) {
+tsuro.controller('gameList', function ($scope, firebaseUrl, $firebaseObject, $state, $firebaseAuth, $firebaseArray) {
     //For synchronizingGameList...
     var ref = firebase.database().ref();
     var obj = $firebaseObject(ref);
 
-    var synchRef = ref.child("games");
-    console.log(synchRef);
+    var auth = $firebaseAuth();
+    var firebaseUser = auth.$getAuth();
 
+    var synchRef = ref.child("games");
     var synchronizedObj = $firebaseObject(synchRef);
-    console.log(synchronizedObj)
 
     // This returns a promise...you can.then() and assign value to $scope.variable
     // gamelist is whatever we are calling it in the angular html.
@@ -30,7 +30,13 @@ tsuro.controller('gameList', function ($scope, firebaseUrl, $firebaseObject, $st
 
 
     $scope.join = function (gameName) {
-        console.log(gameName)
+        var gameNameRef = ref.child('games').child(gameName);
+        var playersRef = gameNameRef.child('players');
+
+        $firebaseArray(playersRef).$add({
+            'uid': firebaseUser.uid
+        })
+
         $state.go('game', {
             "gameName": gameName
         });

@@ -27,9 +27,9 @@
     </main>
 </section>
 
-<div class="markermodal" ng-show="!markerPicked">
+<div class="markermodal" ng-show="!me.marker">
     <p>Choose your dragon wisely...</p>
-    <div ng-repeat="marker in availableMarkers" class="circle {{marker}}" ng-disable="!me" ng-click="pickMarker(marker)"></div>
+    <div ng-repeat="marker in availableMarkers" class="circle {{marker}}" ng-disable="me.marker || !me" ng-click="pickMarker(game.board, marker)"></div>
 </div>
 
 <!-- TODO: We should just place the tile on the nextSpace for the player (floating on the board), and they can rotate, then click on the place the tile button to place it down ng-click="placeTile(tile)"-->

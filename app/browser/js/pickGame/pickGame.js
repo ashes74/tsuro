@@ -6,17 +6,23 @@ tsuro.config(function ($stateProvider) {
     });
 });
 
-tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $firebaseObject) {
+tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $firebaseObject, $firebaseAuth) {
     var ref = firebase.database().ref();
     var obj = $firebaseObject(ref);
 
-    $scope.test = "hi";
+    var auth = $firebaseAuth();
+    var firebaseUser = auth.$getAuth();
 
     $scope.createGame = function (gameName) {
         var gameNameRef = ref.child('games').child(gameName);
+        var playersRef = gameNameRef.child('players');
+
         $firebaseArray(gameNameRef).$add({
             "gameName": gameName
         });
+
+        var newPlayer = new Player(firebaseUser.uid)
+        $firebaseArray(playersRef).$add(newPlayer)
 
         obj.$loaded().then(function (data) {
             var tiles = data.tiles
@@ -28,6 +34,7 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
 
         var initialMarkersRef = ref.child('games').child(gameName).child('availableMarkers');
         $firebaseArray(initialMarkersRef).$add(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]);
+
 
         $state.go('game', {
             "gameName": gameName

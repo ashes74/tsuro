@@ -4,20 +4,20 @@ function Player(uid) {
     // TODO: get uid from firebase auth
     this.uid = uid;
 
-    this.marker = null;
+    this.marker = "n";
 
     // should be a Point object
-    this.point = null;
+    this.point = "n";
 
     // [x, y]
     // depends on the angular Space.x, Space.y
-    this.nextSpace = null;
+    this.nextSpace = "n";
 
     // in each Space.points array, find this specific point and get the position (integer) inside this space.
-    this.nextSpacePointsIndex = null;
+    this.nextSpacePointsIndex = "n";
 
     // maximun 3 tiles
-    this.tiles = [];
+    this.tiles = 'n';
 
     // if a player dies, it will be changed to false
     this.canPlay = true;
