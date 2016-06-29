@@ -7,7 +7,8 @@ tsuro.config(function ($stateProvider) {
 });
 
 tsuro.controller('pickGameCtrl', function ($scope, $state) {
-    var ref = new Firebase(firebaseUrl);
+    var ref = firebase.database().ref();
+    // var ref = new Firebase(firebaseUrl);
     $scope.test = "hi";
     $scope.createGame = function (gameName) {
         // var game = new Game(gameName);
