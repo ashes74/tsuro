@@ -6,7 +6,7 @@ tsuro.config(function ($stateProvider) {
     });
 });
 
-tsuro.controller('loginCtrl', function ($scope, $state) {
+tsuro.controller('loginCtrl', function ($scope, $state, $firebaseAuth) {
     var auth = $firebaseAuth();
 
     $scope.logInWithGoogle = function () {

@@ -26,12 +26,12 @@ gulp.task('reload', function () {
 });
 
 gulp.task('reloadCSS', function () {
-    return gulp.src('./public/style.css').pipe(livereload());
+    return gulp.src('./app/public/style.css').pipe(livereload());
 });
 
 gulp.task('lintJS', function () {
 
-    return gulp.src(['./browser/js/**/*.js', './server/**/*.js'])
+    return gulp.src(['./app/browser/js/**/*.js', './server/**/*.js'])
         .pipe(plumber({
             errorHandler: notify.onError('Linting FAILED! Check your gulp process.')
         }))
@@ -42,7 +42,7 @@ gulp.task('lintJS', function () {
 });
 
 gulp.task('buildJS', ['lintJS'], function () {
-    return gulp.src(['./browser/js/app.js', './browser/js/**/*.js'])
+    return gulp.src(['./app/browser/js/app.js', './app/browser/js/**/*.js'])
         .pipe(plumber())
         .pipe(sourcemaps.init())
         .pipe(concat('main.js'))
@@ -55,9 +55,11 @@ gulp.task('buildJS', ['lintJS'], function () {
 
 gulp.task('testServerJS', function () {
     require('babel-register');
-	return gulp.src('./tests/server/**/*.js', {
-		read: false
-	}).pipe(mocha({ reporter: 'spec' }));
+    return gulp.src('./tests/server/**/*.js', {
+        read: false
+    }).pipe(mocha({
+        reporter: 'spec'
+    }));
 });
 
 gulp.task('testServerJSWithCoverage', function (done) {
@@ -67,8 +69,12 @@ gulp.task('testServerJSWithCoverage', function (done) {
         }))
         .pipe(istanbul.hookRequire())
         .on('finish', function () {
-            gulp.src('./tests/server/**/*.js', {read: false})
-                .pipe(mocha({reporter: 'spec'}))
+            gulp.src('./tests/server/**/*.js', {
+                    read: false
+                })
+                .pipe(mocha({
+                    reporter: 'spec'
+                }))
                 .pipe(istanbul.writeReports({
                     dir: './coverage/server/',
                     reporters: ['html', 'text']
@@ -89,7 +95,7 @@ gulp.task('buildCSS', function () {
     var sassCompilation = sass();
     sassCompilation.on('error', console.error.bind(console));
 
-    return gulp.src('./browser/scss/main.scss')
+    return gulp.src('./app/browser/scss/main.scss')
         .pipe(plumber({
             errorHandler: notify.onError('SASS processing failed! Check your gulp process.')
         }))
@@ -97,14 +103,14 @@ gulp.task('buildCSS', function () {
         .pipe(sassCompilation)
         .pipe(sourcemaps.write())
         .pipe(rename('style.css'))
-        .pipe(gulp.dest('./public'));
+        .pipe(gulp.dest('./app/public'));
 });
 
 // Production tasks
 // --------------------------------------------------------------
 
 gulp.task('buildCSSProduction', function () {
-    return gulp.src('./browser/scss/main.scss')
+    return gulp.src('./app/browser/scss/main.scss')
         .pipe(sass())
         .pipe(rename('style.css'))
         .pipe(minifyCSS())
@@ -112,7 +118,7 @@ gulp.task('buildCSSProduction', function () {
 });
 
 gulp.task('buildJSProduction', function () {
-    return gulp.src(['./browser/js/app.js', './browser/js/**/*.js'])
+    return gulp.src(['./app/browser/js/app.js', './app/browser/js/**/*.js'])
         .pipe(concat('main.js'))
         .pipe(babel({
             presets: ['es2015']
@@ -140,19 +146,19 @@ gulp.task('default', function () {
     gulp.start('build');
 
     // Run when anything inside of browser/js changes.
-    gulp.watch('browser/js/**', function () {
+    gulp.watch('app/browser/js/**', function () {
         runSeq('buildJS', 'reload');
     });
 
     // Run when anything inside of browser/scss changes.
-    gulp.watch('browser/scss/**', function () {
+    gulp.watch('app/browser/scss/**', function () {
         runSeq('buildCSS', 'reloadCSS');
     });
 
     gulp.watch('server/**/*.js', ['lintJS']);
 
     // Reload when a template (.html) file changes.
-    gulp.watch(['browser/**/*.html', 'server/app/views/*.html'], ['reload']);
+    gulp.watch(['app/browser/**/*.html', 'server/app/views/*.html'], ['reload']);
 
     // Run server tests when a server file or server test file changes.
     gulp.watch(['tests/server/**/*.js'], ['testServerJS']);

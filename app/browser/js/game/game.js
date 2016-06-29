@@ -1,12 +1,12 @@
 tsuro.config(function ($stateProvider) {
     $stateProvider.state('game', {
         url: '/game/:gameName',
-        templateUrl: '/browser/js/game/game.html',
+        templateUrl: './browser/js/game/game.html',
         controller: 'gameCtrl'
     });
 });
 
-tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stateParams, $firebaseObject) {
+tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, $firebaseArray, firebaseUrl, $stateParams, $firebaseObject) {
 
     var auth = $firebaseAuth();
     var firebaseUser = $scope.authObj.$getAuth();
