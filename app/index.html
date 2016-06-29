@@ -13,31 +13,24 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.1/angular-ui-router.js"></script>
 
         <!-- Firebase -->
-        <script src="./node_modules/firebase.js"></script>
-
+        <script src="https://www.gstatic.com/firebasejs/3.1.0/firebase.js"></script>
+        <script>
+            // Initialize Firebase
+            var config = {
+                apiKey: "AIzaSyCLm3jkk5ppMqeQxKoH-dZ9CdYMaDGWWqU",
+                authDomain: "the-paths-of-dragons.firebaseapp.com",
+                databaseURL: "https://the-paths-of-dragons.firebaseio.com",
+                storageBucket: "the-paths-of-dragons.appspot.com"
+            };
+            firebase.initializeApp(config);
+        </script>
         <!-- AngularFire -->
         <script src="./node_modules/angularfire.js" defer></script>
 
         <!--Loadash -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.13.1/lodash.js"></script>
-        <script src="./browser/js/app.js"></script>
-        <script src="./browser/js/game/game.js"></script>
-        <script src="./browser/js/gamelist/gamelist.js"></script>
-        <script src="./browser/js/login/login.js"></script>
-        <script src="./browser/js/pickGame/pickGame.js"></script>
 
-        <script>
-            // Initialize Firebase
-            var config = {
-                apiKey: "AIzaSyDp1kxI3DuTczrRLBjTA3aRJoObnrKPG2U",
-                authDomain: "the-paths-of-the-dragons.firebaseapp.com",
-                databaseURL: "https://the-paths-of-the-dragons.firebaseio.com",
-                storageBucket: "the-paths-of-the-dragons.appspot.com"
-            };
-            firebase.initializeApp(config);
-        </script>
-
-        <script src="./public/main.js"></script>
+        <script src="../public/main.js"></script>
 
         <base href="/">
     </head>

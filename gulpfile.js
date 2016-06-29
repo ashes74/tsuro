@@ -50,7 +50,7 @@ gulp.task('buildJS', ['lintJS'], function () {
             presets: ['es2015']
         }))
         .pipe(sourcemaps.write())
-        .pipe(gulp.dest('./public'));
+        .pipe(gulp.dest('./app/public'));
 });
 
 gulp.task('testServerJS', function () {

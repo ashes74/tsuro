@@ -6,20 +6,20 @@ tsuro.config(function ($stateProvider) {
     });
 });
 
-tsuro.controller('pickGameCtrl', function ($scope, $state, firebaseUrl) {
-    // var ref = new Firebase(firebaseUrl);
-    $scope.test = "hi"
-        // $scope.createGame = function (gameName) {
-        //     // var game = new Game(gameName);
-        //     var deck = new Deck().shuffle;
-        //     ref.child('games').child(gameName).child('initialDeck').push(deck);
-        //     ref.child('games').child(gameName).child('availableMarkers').push(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"])
-        //     $state.go('game', {
-        //         "gameName": gameName
-        //     });
-        // };
-        //
-        // $scope.goToGameList = function () {
-        //     $state.go('gamelist');
-        // };
+tsuro.controller('pickGameCtrl', function ($scope, $state) {
+    var ref = new Firebase(firebaseUrl);
+    $scope.test = "hi";
+    $scope.createGame = function (gameName) {
+        // var game = new Game(gameName);
+        var deck = new Deck().shuffle;
+        ref.child('games').child(gameName).child('initialDeck').push(deck);
+        ref.child('games').child(gameName).child('availableMarkers').push(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"])
+        $state.go('game', {
+            "gameName": gameName
+        });
+    };
+
+    $scope.goToGameList = function () {
+        $state.go('gamelist');
+    };
 });
