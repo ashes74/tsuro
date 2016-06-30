@@ -23,6 +23,7 @@ function Player(uid) {
     this.canPlay = true;
 }
 
+// need to use self becuse we need to change $scope.me on gameCtrl and send to firebase
 Player.prototype.placeMarker = function (board, point, self) {
     // point looks like [x, y, pointsIndex] in the space
     var x = point[0];
@@ -53,19 +54,19 @@ Player.prototype.newSpace = function (board, oldSpace) {
     }
 };
 
-Player.prototype.placeTile = function (tile) {
-    var index = this.tiles.indexOf(tile);
-    this.tiles.splice(index, 1);
+// need to use self becuse we need to change $scope.me on gameCtrl and send to firebase
+Player.prototype.placeTile = function (tile, self) {
+    var index = self.tiles.indexOf(tile);
+    self.tiles.splice(index, 1);
 
-    this.nextSpace.tileUrl = tile.imageUrl;
+    self.nextSpace.tileUrl = tile.imageUrl;
 
     for (var i = 0; i < tile.length; i++) {
-        this.nextSpace.points[i].neighbors.push(this.nextSpace.points[tile[i]]);
+        self.nextSpace.points[i].neighbors.push(self.nextSpace.points[tile[i]]);
     }
 };
 
 Player.prototype.moveTo = function (pointer) {
-    // let pointer = pointer;
 
     //always be returning 0 or 1 point in the array
     let nextPoint = pointer.neighbors.filter(function (neighbor) {
@@ -75,6 +76,7 @@ Player.prototype.moveTo = function (pointer) {
     return nextPoint;
 };
 
+// TODO: not sure how to make this keep moving with players instead of self
 Player.prototype.keepMoving = function () {
     let movable = this.moveTo(this.point);
     while (movable) {

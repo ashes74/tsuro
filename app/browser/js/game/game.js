@@ -21,8 +21,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     $scope.game.deck = $firebaseObject(deckRef);
 
     var markersArr = $firebaseArray(markersRef);
-
-
     markersArr.$loaded().then(function (data) {
         $scope.game.availableMarkers = data[0];
         $scope.game.availableMarkers = $scope.game.availableMarkers.filter(function (elem) {
@@ -87,8 +85,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
     $scope.placeMarker = function (board, point) {
         $scope.me.prototype.placeMarker(board, point, $scope.me);
-        $scope.game.players.push($scope.player);
-
+        $scope.game.players.push($scope.me);
         var firebasePlayersArr = $firebaseArray(playersRef);
 
         firebasePlayersArr.$loaded()
@@ -154,13 +151,9 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     // CMT: assuming we use new Game() for each game
     $scope.currentPlayer = $scope.game.getCurrentPlayer();
 
-    // CMT: assuming we use new Game() for each game, holds all the players still on the board.
-    // $scope.turnOrderArray = $scope.game.getCanPlay();
-
     // TODO: need a function to assign dragon
     $scope.dragon;
     var awaitingDragonHolders = [];
-
 
     $scope.start = function () {
         //
@@ -182,7 +175,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         if (tile.rotation === -4) tile.rotation = 0;
     };
 
-    // CMT: assuming we use new Game()
+
     // CMT: use player's and game's prototype function to place tile and then move all players
     $scope.placeTile = function (tile) {
         // TODO: send this state to firebase every time it's called
@@ -200,7 +193,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             tile.paths.push(tile.paths.shift());
         }
 
-        $scope.me.placeTile(tile);
+        $scope.me.prototype.placeTile(tile, $scope.me);
         gameRef.child('moves').$add({
             'type': 'placeTile',
             'tile': tile
