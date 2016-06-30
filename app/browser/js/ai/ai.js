@@ -14,6 +14,7 @@ class AI {
 /*
 * Constructs an action that the ai player could make
 * @param possiblePoint[point]: the point that the ai player would be on
+* action = placing a tile in a specified orientation
 */
 
 class AIAction {
@@ -29,6 +30,8 @@ class AIAction {
 		var next = new State(space);
 		next.placeTile
 	}
+
+
 }
 
 //AI
