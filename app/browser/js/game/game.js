@@ -70,6 +70,8 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 				if (thisIsANewPlayer) $scope.game.players.push(localPlayer);
 				else $scope.game.players[existingPlayerIndex] = localPlayer;
 				console.log($scope.game.players);
+				console.log('me', $scope.me);
+
 			}
 		});
 
@@ -94,12 +96,11 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 	firebase.auth().onAuthStateChanged(function (user) {
 		// var firebasePlayersArr = $firebaseArray(playersRef);
 
-		firebasePlayersArr.$loaded().then(function (data) {
-			var FBplayers = data;
+		firebasePlayersArr.$loaded().then(function (players) {
 
 			if (user) {
-				var userAuthId = user.uid;
-				var me = FBplayers.filter(player => player.uid === userAuthId)[0];
+				var me = players.find(player => player.uid === user.uid);
+				
 				if (me) {
 					$scope.me = me;
 				}
@@ -148,20 +149,27 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
 	//Have player pick their start point
 	$scope.placeMarker = function (board, point) {
-	
+		
+		player.placeMarker(board, point, $scope.me);
+		$scope.me.tiles = $scope.game.deal(3);
+
+
+
+
+
+
 		firebasePlayersArr.$loaded()
 			.then(function (players) {
-				console.log('players', players);
 				var meIdx;
 				players.find(function (e, i) {
 					if (e.uid === $scope.me.uid) meIdx = i;
-					console.log('me and e and i',$scope.me.uid, e.uid, meIdx);
 				});
 
-				player.placeMarker(board, point, firebasePlayersArr[meIdx]);
-				firebasePlayersArr[meIdx].tiles = $scope.game.deal(3);
+				// player.placeMarker(board, point, firebasePlayersArr[meIdx]);
+				
+				// firebasePlayersArr[meIdx].tiles = $scope.game.deal(3);
 
-				$scope.game.players[meIdx] = firebasePlayersArr[meIdx]; //This is main issue... puts Object, not Player into firebase...  
+				firebasePlayersArr[meIdx] = $scope.me; //This is main issue... puts Object, not Player into firebase...  
 
 				firebasePlayersArr.$save(meIdx);
 			});
