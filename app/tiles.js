@@ -1,12 +1,15 @@
 var tiles = [{
+    id: 1,
     imageUrl: "",
     paths: [3, 4, 6, 0, 1, 7, 2, 5],
     rotation: 0
 }, {
+    id: 2,
     imageUrl: "",
     paths: [1, 0, 4, 7, 2, 6, 5, 3],
     rotation: 0
 }, {
+    id: 3,
     imageUrl: "",
     paths: [1, 0, 4, 6, 2, 7, 3, 5],
     rotation: 0
