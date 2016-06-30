@@ -33,9 +33,14 @@ tsuro.controller('gameList', function ($scope, firebaseUrl, $firebaseObject, $st
         var gameNameRef = ref.child('games').child(gameName);
         var playersRef = gameNameRef.child('players');
 
-        $firebaseArray(playersRef).$add({
-            'uid': firebaseUser.uid
-        })
+        var playerArr = $firebaseArray(playersRef);
+        playerArr.$loaded()
+            .then(function (players) {
+                if (!players.filter(player => player.uid === firebaseUser.uid)) {
+                    var newPlayer = new Player(firebaseUser.uid)
+                    $firebaseArray(playersRef).$add(newPlayer)
+                }
+            })
 
         $state.go('game', {
             "gameName": gameName
