@@ -29,21 +29,36 @@ tsuro.controller('gameList', function ($scope, firebaseUrl, $firebaseObject, $st
         })
 
 
+
+
     $scope.join = function (gameName) {
         var gameNameRef = ref.child('games').child(gameName);
         var playersRef = gameNameRef.child('players');
 
-        var playerArr = $firebaseArray(playersRef);
-        playerArr.$loaded()
-            .then(function (players) {
-                if (!players.filter(player => player.uid === firebaseUser.uid)) {
-                    var newPlayer = new Player(firebaseUser.uid)
-                    $firebaseArray(playersRef).$add(newPlayer)
-                }
-            })
 
-        $state.go('game', {
-            "gameName": gameName
+        firebase.auth().onAuthStateChanged(function (user) {
+            var firebasePlayersArr = $firebaseArray(playersRef);
+
+            firebasePlayersArr.$loaded().then(function (data) {
+                    var FBplayers = data;
+
+                    if (user) {
+                        if (!FBplayers.filter(function (player) {
+                                return player.uid === user.uid
+                            }).length) {
+                            var newPlayer = new Player(user.uid)
+                            $firebaseArray(playersRef).$add(newPlayer)
+                        }
+                    } else {
+                        // No user is signed in.
+                        console.log("nothing");
+                    }
+                })
+                .then(function () {
+                    $state.go('game', {
+                        "gameName": gameName
+                    });
+                });
         });
     };
 });

@@ -8,8 +8,9 @@ tsuro.config(function ($stateProvider) {
 
 tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stateParams, $firebaseObject, $firebaseArray) {
     $scope.tile = {
+        id: 2,
         imageUrl: "",
-        paths: [3, 4, 6, 0, 1, 7, 2, 5],
+        paths: [1, 0, 4, 7, 2, 6, 5, 3],
         rotation: 0
     };
 
@@ -17,10 +18,14 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     var obj = $firebaseObject(ref);
 
     var gameRef = ref.child('games').child($stateParams.gameName);
+    var movesRef = gameRef.child('moves');
+    var movesArr = $firebaseArray(movesRef);
     var deckRef = gameRef.child('initialDeck');
     var playersRef = gameRef.child('players');
     var markersRef = gameRef.child('availableMarkers');
     var deckArr = $firebaseArray(deckRef);
+
+    var player = Object.create(Player.prototype);
 
     // intialize game
     $scope.game = new Game($stateParams.gameName, $stateParams.deck);
@@ -49,7 +54,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 var me = FBplayers.filter(player => player.uid === userAuthId)[0];
                 if (me) {
                     $scope.me = me;
-                    $scope.me.prototype = Object.create(Player.prototype);
                 }
                 if ($scope.me.marker === "n") $scope.me.marker = null;
             } else {
@@ -90,8 +94,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     //Have player pick their start point
 
     $scope.placeMarker = function (board, point) {
-        $scope.me.prototype.placeMarker(board, point, $scope.me);
-        $scope.game.players.push($scope.me);
         var firebasePlayersArr = $firebaseArray(playersRef);
 
         firebasePlayersArr.$loaded()
@@ -102,9 +104,29 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                     if (e.$id === $scope.me.$id) meIdx = i;
                 });
 
-                firebasePlayersArr[meIdx] = $scope.me;
+                firebasePlayersArr[meIdx].tiles = [{
+                    id: 1,
+                    imageUrl: "",
+                    paths: [3, 4, 6, 0, 1, 7, 2, 5],
+                    rotation: 0
+                }, {
+                    id: 2,
+                    imageUrl: "",
+                    paths: [1, 0, 4, 7, 2, 6, 5, 3],
+                    rotation: 0
+                }, {
+                    id: 3,
+                    imageUrl: "",
+                    paths: [1, 0, 4, 6, 2, 7, 3, 5],
+                    rotation: 0
+                }]
+
+                player.placeMarker(board, point, firebasePlayersArr[meIdx]);
+
+                $scope.game.players.push(firebasePlayersArr[meIdx]);
+
                 firebasePlayersArr.$save(meIdx);
-                console.log(firebasePlayersArr[meIdx])
+                console.log("place marker firebae me", firebasePlayersArr[meIdx])
             });
 
     };
@@ -183,6 +205,8 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     };
 
 
+
+
     // CMT: use player's and game's prototype function to place tile and then move all players
     $scope.placeTile = function (tile) {
         // TODO: send this state to firebase every time it's called
@@ -206,17 +230,73 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             tile.paths.push(tile.paths.shift());
         }
 
-        $scope.me.prototype.placeTile(tile, $scope.me);
-        console.log($scope.me)
+        var firebasePlayersArr = $firebaseArray(playersRef);
+        firebasePlayersArr.$loaded()
+            .then(function (players) {
+                var meIdx;
+                players.find(function (e, i) {
+                    if (e.$id === $scope.me.$id) meIdx = i;
+                });
+
+                player.placeTile(tile, firebasePlayersArr[meIdx], firebasePlayersArr, meIdx);
+
+                for (var i = 0; i < tile.paths.length; i++) {
+                    if (firebasePlayersArr[meIdx].nextSpace.points[i].neighbors[0] === "n") {
+                        firebasePlayersArr[meIdx].nextSpace.points[i].neighbors.splice(0, 1)
+                    }
+                    firebasePlayersArr[meIdx].nextSpace.points[i].neighbors.push(firebasePlayersArr[meIdx].nextSpace.points[tile.paths[i]]);
+                    firebasePlayersArr.$save(meIdx);
+                }
+
+                firebasePlayersArr[meIdx].point = firebasePlayersArr[meIdx].nextSpace.points[firebasePlayersArr[meIdx].nextSpacePointsIndex];
+                firebasePlayersArr.$save(meIdx);
+            })
+
 
         // CMT: this should send the rotated tile to firebase
-        gameRef.child('moves').$add({
+        movesArr.$add({
             'type': 'placeTile',
-            'tile': tile
+            'tile': tile,
+            'playerUid': $scope.me.uid
         });
-        //
-        // $scope.game.moveAllplayers();
-        //
+
+
+        firebasePlayersArr.$loaded()
+            .then(function (players) {
+                players.forEach(function (p) {
+                    console.log("p", p.point);
+
+                    // let movable = player.moveTo(p.point);
+                    // var pIdx = players.indexOf(p)
+
+                    // while (movable) {
+                    //     // my point is going to be current point's neighbors
+                    //     p.point.travelled = true;
+                    //     p.point = p.neighbors.filter(function (n) {
+                    //         return !n.travelled && neighbor !== "n";
+                    //     })[0]
+                    //     console.log(p.point, "game js p point")
+                    //     var pointIdx;
+                    //     p.nextSpace.points.forEach(function (point, idx) {
+                    //         if (JSON.toString(point) === JSON.toString(p.point)) {
+                    //             pointIdx = idx;
+                    //         }
+                    //     })
+                    //     p.nextSpacePointsIndex = pointIdx;
+                    //
+                    //     let oldSpace = p.nextSpace;
+                    //     let newSpace = player.newSpace($scope.game.board, oldSpace, p);
+                    //     p.nextSpace = newSpace;
+                    //
+                    //     firebasePlayersArr.$save(pIdx)
+                    //         // player.checkDeath(p);
+                    //     movable = player.moveTo(p.point);
+                    //
+                    // }
+                })
+            });
+
+
         // if ($scope.game.checkOver()) {
         //     // TODO: need to tell the player she won
         //     $scope.winner = $scope.game.getCanPlay()[0];

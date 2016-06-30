@@ -22,8 +22,10 @@ function Player(uid) {
     // if a player dies, it will be changed to false
     this.canPlay = true;
 }
-
-// need to use self becuse we need to change $scope.me on gameCtrl and send to firebase
+Player.prototype.hi = function () {
+        console.log("HI")
+    }
+    // need to use self becuse we need to change $scope.me on gameCtrl and send to firebase
 Player.prototype.placeMarker = function (board, point, self) {
     // point looks like [x, y, pointsIndex] in the space
     var x = point[0];
@@ -40,12 +42,12 @@ Player.prototype.placeMarker = function (board, point, self) {
     self.nextSpacePointsIndex = self.nextSpace.points.indexOf(self.point);
 };
 
-Player.prototype.newSpace = function (board, oldSpace) {
-    if (this.nextSpacePointsIndex === 0 || this.nextSpacePointsIndex === 1) {
+Player.prototype.newSpace = function (board, oldSpace, self) {
+    if (self.nextSpacePointsIndex === 0 || self.nextSpacePointsIndex === 1) {
         return board[oldSpace.y - 1][oldSpace.x];
-    } else if (this.nextSpacePointsIndex === 2 || this.nextSpacePointsIndex === 3) {
+    } else if (self.nextSpacePointsIndex === 2 || self.nextSpacePointsIndex === 3) {
         return board[oldSpace.y][oldSpace.x + 1];
-    } else if (this.nextSpacePointsIndex === 4 || this.nextSpacePointsIndex === 5) {
+    } else if (self.nextSpacePointsIndex === 4 || self.nextSpacePointsIndex === 5) {
         return board[oldSpace.y + 1][oldSpace.x];
     } else {
         return board[oldSpace.y][oldSpace.x - 1];
@@ -53,48 +55,45 @@ Player.prototype.newSpace = function (board, oldSpace) {
 };
 
 // need to use self becuse we need to change $scope.me on gameCtrl and send to firebase
-Player.prototype.placeTile = function (tile, self) {
-    var index = self.tiles.indexOf(tile);
-    self.tiles.splice(index, 1);
+Player.prototype.placeTile = function (tile, self, database, meIdx) {
+    self.tiles = self.tiles.filter(function (t) {
+        return t.id !== tile.id
+    });
 
     self.nextSpace.tileUrl = tile.imageUrl;
 
-    for (var i = 0; i < tile.length; i++) {
-        self.nextSpace.points[i].neighbors.push(self.nextSpace.points[tile[i]]);
-    }
 };
 
 Player.prototype.moveTo = function (pointer) {
-
     //always be returning 0 or 1 point in the array
     let nextPoint = pointer.neighbors.filter(function (neighbor) {
-        return !neighbor.travelled;
+        return !neighbor.travelled && neighbor !== "n";
     })[0];
-
+    console.log("nextPoint", nextPoint)
     return nextPoint;
 };
 
 // TODO: not sure how to make this keep moving with players instead of self
-Player.prototype.keepMoving = function (self) {
-    let movable = self.moveTo(self.point);
-    while (movable) {
-        self.point.travelled = true;
-        self.point = self.moveTo(self.point);
-        let oldSpace = self.nextSpace;
-        let newSpace = newSpace(oldSpace);
-        self.nextSpace = newSpace;
+// Player.prototype.keepMoving = function (self) {
+//     let movable = self.moveTo(self.point);
+//     while (movable) {
+//         self.point.travelled = true;
+//         self.point = self.moveTo(self.point);
+//         let oldSpace = self.nextSpace;
+//         let newSpace = newSpace(oldSpace);
+//         self.nextSpace = newSpace;
+//         self.nextSpacePointsIndex = self.nextSpace.points.indexOf(self.point);
+//         self.checkDeath();
+//         movable = self.moveTo(self.point);
+//     }
+// };
 
-        self.checkDeath();
-        movable = self.moveTo(self.point);
-    }
-};
-
-Player.prototype.checkDeath = function () {
-    var allTravelled = this.point.neighbors.filter(function (neighbor) {
+Player.prototype.checkDeath = function (self) {
+    var allTravelled = self.point.neighbors.filter(function (neighbor) {
         return neighbor.travelled;
     });
 
-    if (this.point.edge || allTravelled.length === 2) this.die();
+    if (self.point.edge || allTravelled.length === 2) self.die();
 };
 
 Player.prototype.die = function () {
