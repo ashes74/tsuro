@@ -7,6 +7,12 @@ tsuro.config(function ($stateProvider) {
 });
 
 tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stateParams, $firebaseObject, $firebaseArray) {
+    $scope.tile = {
+        imageUrl: "",
+        paths: [3, 4, 6, 0, 1, 7, 2, 5],
+        rotation: 0
+    };
+
     var ref = firebase.database().ref();
     var obj = $firebaseObject(ref);
 
@@ -98,6 +104,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
                 firebasePlayersArr[meIdx] = $scope.me;
                 firebasePlayersArr.$save(meIdx);
+                console.log(firebasePlayersArr[meIdx])
             });
 
     };
@@ -181,71 +188,83 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         // TODO: send this state to firebase every time it's called
         if (tile.rotation > 0) {
             tile.paths = tile.paths.map(function (connection) {
-                return connection + 2;
+                connection = connection + 2;
+                if (connection === 9) connection = 1;
+                if (connection === 8) connection = 0;
+                return connection;
             });
+            console.log("first", tile.paths);
             tile.paths.unshift(tile.paths.pop());
+            console.log("second", tile.paths);
             tile.paths.unshift(tile.paths.pop());
+            console.log("thrid", tile.paths);
         } else if (tile.rotation < 0) {
             tile.paths = tile.paths.map(function (connection) {
-                return connection - 2;
+                connection = connection - 2;
+                if (connection === -2) connection = 6;
+                if (connection === -1) connection = 7;
+                return connection;
             });
+            console.log("first", tile.paths);
             tile.paths.push(tile.paths.shift());
+            console.log("second", tile.paths);
             tile.paths.push(tile.paths.shift());
+            console.log("thrid", tile.paths);
         }
-
-        $scope.me.prototype.placeTile(tile, $scope.me);
-
-        // CMT: this should send the rotated tile to firebase
-        gameRef.child('moves').$add({
-            'type': 'placeTile',
-            'tile': tile
-        });
-
-        $scope.game.moveAllplayers();
-
-        if ($scope.game.checkOver()) {
-            // TODO: need to tell the player she won
-            $scope.winner = $scope.game.getCanPlay()[0];
-            $scope.gameOver = true;
-        } else {
-            // If deck is empty & no one is dragon, set me as dragon
-            if ($scope.game.deck.length === 0 && !$scope.dragon) {
-                $scope.dragon = $scope.me;
-            } else if ($scope.game.deck.length === 0 && $scope.dragon) {
-                awaitingDragonHolders.push($scope.me);
-            } else {
-                // CMT: draw one tile and push it to the player.tiles array
-                $scope.me.tiles.push($scope.game.deck.deal(1));
-                //if dead players, then push their cards back to the deck & reshuffle
-                if ($scope.game.deadPlayers().length) {
-                    //with new cards & need to reshuffle
-                    $scope.game.deadPlayers().forEach(function (deadPlayerTiles) {
-                        deadPlayerTiles.forEach(function (tile) {
-                            $scope.game.deck.push(tile);
-                        });
-                    });
-                    $scope.game.deck = $scope.game.deck.shuffle();
-                    //send firebase a new move
-                    gameRef.child('moves').push({
-                        'type': 'updateDeck',
-                        'updateDeck': $scope.game.deck
-                    });
-                    if ($scope.dragon) {
-                        $scope.dragon.tiles.push($scope.game.deck.deal(1));
-                        $scope.dragon = null;
-                        //NEED TO DISCUSS: Might need to modify this if we want to use up the cards and give each awaiting players' up to 3 cards
-                        while ($scope.game.deck.length && $scope.awaitingDragonHolders.length) {
-                            $scope.awaitingDragonHolders.shift().tiles.push($scope.game.deck.deal(1));
-                        };
-                        if ($scope.awaitingDragonHolders.length) {
-                            $scope.dragon = $scope.awaitingDragonHolders.shift();
-                        }
-                    };
-                }
-
-            }
-            $scope.game.goToNextPlayer();
-        }
+        //
+        // $scope.me.prototype.placeTile(tile, $scope.me);
+        //
+        // // CMT: this should send the rotated tile to firebase
+        // gameRef.child('moves').$add({
+        //     'type': 'placeTile',
+        //     'tile': tile
+        // });
+        //
+        // $scope.game.moveAllplayers();
+        //
+        // if ($scope.game.checkOver()) {
+        //     // TODO: need to tell the player she won
+        //     $scope.winner = $scope.game.getCanPlay()[0];
+        //     $scope.gameOver = true;
+        // } else {
+        //     // If deck is empty & no one is dragon, set me as dragon
+        //     if ($scope.game.deck.length === 0 && !$scope.dragon) {
+        //         $scope.dragon = $scope.me;
+        //     } else if ($scope.game.deck.length === 0 && $scope.dragon) {
+        //         awaitingDragonHolders.push($scope.me);
+        //     } else {
+        //         // CMT: draw one tile and push it to the player.tiles array
+        //         $scope.me.tiles.push($scope.game.deck.deal(1));
+        //         //if dead players, then push their cards back to the deck & reshuffle
+        //         if ($scope.game.deadPlayers().length) {
+        //             //with new cards & need to reshuffle
+        //             $scope.game.deadPlayers().forEach(function (deadPlayerTiles) {
+        //                 deadPlayerTiles.forEach(function (tile) {
+        //                     $scope.game.deck.push(tile);
+        //                 });
+        //             });
+        //             $scope.game.deck = $scope.game.deck.shuffle();
+        //             //send firebase a new move
+        //             gameRef.child('moves').push({
+        //                 'type': 'updateDeck',
+        //                 'updateDeck': $scope.game.deck
+        //             });
+        //             if ($scope.dragon) {
+        //                 $scope.dragon.tiles.push($scope.game.deck.deal(1));
+        //                 $scope.dragon = null;
+        //                 //NEED TO DISCUSS: Might need to modify this if we want to use up the cards and give each awaiting players' up to 3 cards
+        //                 while ($scope.game.deck.length && $scope.awaitingDragonHolders.length) {
+        //                     $scope.awaitingDragonHolders.shift().tiles.push($scope.game.deck.deal(1));
+        //                 };
+        //                 if ($scope.awaitingDragonHolders.length) {
+        //                     $scope.dragon = $scope.awaitingDragonHolders.shift();
+        //                 }
+        //             };
+        //         }
+        //
+        //     }
+        //     $scope.game.goToNextPlayer();
+        // }
     };
 
     // TODO: firebase game.players slice $scope.player out

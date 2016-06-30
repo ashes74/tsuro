@@ -38,8 +38,6 @@ Player.prototype.placeMarker = function (board, point, self) {
 
     // in each Space.points array, find this specific point and get the position (integer) inside this space.
     self.nextSpacePointsIndex = self.nextSpace.points.indexOf(self.point);
-
-    console.log("player.js", this)
 };
 
 Player.prototype.newSpace = function (board, oldSpace) {
