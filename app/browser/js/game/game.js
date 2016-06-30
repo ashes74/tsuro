@@ -14,6 +14,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     var deckRef = gameRef.child('initialDeck');
     var playersRef = gameRef.child('players');
     var markersRef = gameRef.child('availableMarkers');
+    var deckArr = $firebaseArray(deckRef);
 
     // intialize game
     $scope.game = new Game($stateParams.gameName, $stateParams.deck);
@@ -236,7 +237,47 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     $scope.leaveGame;
 
     // TODO: do we remove this game room's moves from firebase?
-    $scope.reset = $scope.game.reset;
+    $scope.reset = function () {
+        markersArr.$remove(0)
+            .then(function (ref) {
+                console.log("removed all markers", ref.key)
+            });
+
+        deckArr.$remove(0)
+            .then(function (ref) {
+                console.log("removed the deck", ref.key)
+            });
+
+        obj.$loaded().then(function (data) {
+            var tiles = data.tiles
+            var deck = new Deck(tiles).shuffle().tiles;
+            var initialDeckRef = ref.child('games').child($stateParams.gameName).child('initialDeck');
+            $firebaseArray(initialDeckRef).$add(deck);
+        })
+
+
+
+        var initialMarkersRef = ref.child('games').child($stateParams.gameName).child('availableMarkers');
+        $firebaseArray(initialMarkersRef).$add(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]);
+
+
+        var players = $firebaseArray(playersRef);
+        console.log(players)
+        players.$loaded().then(function (data) {
+            console.log(data);
+            for (var i = 0; i < data.length; i++) {
+                data[i].canPlay = true;
+                data[i].marker = 'n';
+                data[i].nextSpace = 'n';
+                data[i].nextSpacePointsIndex = 'n';
+                data[i].point = 'n';
+                data[i].tiles = 'n';
+                players.$save(i);
+            }
+        })
+
+    };
+
 
 
     $scope.starttop = [
