@@ -19,7 +19,7 @@ class AI {
 
 class AIAction {
 	constructor(possibleTile) {
-		// the position that the board that a player would move to
+		// the tile that would be played if this action was taken
 		this.newTile = possibleTile;
 		// the minimax value of the state of the board if the ai player moved to tne new point
 		this.minimaxVal = 0
@@ -28,7 +28,7 @@ class AIAction {
 	//should we add a state class to do all the checking?
 	applyTo(space){
 		var next = new State(space);
-		next.placeTile
+		next.placeTile() //TODO: create a placeTile function on state that returns 
 	}
 
 
