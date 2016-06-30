@@ -21,6 +21,6 @@ tsuro.controller('loginCtrl', function ($scope, $state, $firebaseAuth, $rootScop
             console.error("Authentication failed:", error);
         });
 
-    };
+
 
 });
