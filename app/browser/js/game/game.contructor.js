@@ -19,11 +19,12 @@ class Game {
     getCurrentPlayer() {
         if (this.currPlayer === -1) return;
         return this.turnOrderArray[this.currPlayer];
-    };
+    }
 
     moveAllPlayers() {
         this.players.forEach((player) => player.keepMoving(player))
-    };
+    }
+
     deadPlayers() {
         var deadPlayersTiles = [];
         this.players.forEach(function (player) {
@@ -33,7 +34,7 @@ class Game {
             }
         });
         return deadPlayersTiles;
-    };
+    }
 
     checkOver() {
         return getCanPlay().length <= 1;
@@ -51,7 +52,18 @@ class Game {
             this.currPlayer = -1;
         }
         return this.getCurrentPlayer();
-    };
+    }
+
+    deal(num){
+        var tiles = []
+        for(var i = 0; i < num; i++){
+            this.deck.$remove(0).then(function(data){
+                console.log(data);
+                tiles.push(data);
+            });
+        }
+        return tiles;
+    }
 
     //restart the game
     reset() {
@@ -62,8 +74,8 @@ class Game {
             player.tiles = [];
             //reset all players playability
             player.canPlay = true;
-        })
-    };
+        });
+    }
 
 }
 

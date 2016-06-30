@@ -20,6 +20,6 @@ class Deck {
 
     reload(tiles) {
         this.tiles.push(tiles)
-        return this
+        return this;
     }
 }

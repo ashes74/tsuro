@@ -13,22 +13,71 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 		rotation: 0
 	};
 
-	var ref = firebase.database().ref();
-	var obj = $firebaseObject(ref);
 
+	// var obj = $firebaseObject(ref);
+	var ref = firebase.database().ref();
 	var gameRef = ref.child('games').child($stateParams.gameName);
+
 	var deckRef = gameRef.child('initialDeck');
 	var playersRef = gameRef.child('players');
 	var markersRef = gameRef.child('availableMarkers');
 	var deckArr = $firebaseArray(deckRef);
 	var firebasePlayersArr = $firebaseArray(playersRef);
 
-	// intialize game, get the deck from firebase
-	$scope.game = new Game($stateParams.gameName, $stateParams.deck);
-	$scope.game.deck = $firebaseObject(deckRef);
+	/****************
+	INITIALIZING GAME
+	****************/
 
-	//store the reference to markers array from firebase
-	var markersArr = $firebaseArray(markersRef);
+	//new local game with game name defined by url
+	$scope.game = new Game($stateParams.gameName);
+
+	//when the deck is loaded...
+	deckArr.$loaded().then(function(data){
+		// $scope.game.deck = data[0]; //add the deck to the local game ? Try this as firebase DeckArr????
+		$scope.game.deck = deckArr; //add the deck to the local game ? Try this as firebase DeckArr????
+
+
+		//don't start watching players until there is a deck in the game
+		playersRef.on("value", function (snap) {
+			var snapPlayers = snap.val(); //grab the value of the snapshot (all players in game in Firebase)
+
+			//for each player in this collection...
+			for(var player in snapPlayers){
+				var existingPlayerIndex, thisIsANewPlayer;
+
+				//find this 'snap' player's index in local game. find returns that value. 
+				var localPlayer = $scope.game.players.find(function(plyr, plyrIdx){
+					existingPlayerIndex = plyrIdx;
+					return plyr.uid === snapPlayers[player].uid;
+				});
+
+				//if not found, create new player
+				if(!localPlayer){
+					console.log('i didnt find a local player!');
+					localPlayer = new Player(snapPlayers[player].uid);
+					thisIsANewPlayer = true;
+				}	
+
+				//for each key in the snapPlayer's keys, add that key and value to local player
+				for(var playerproperty in snapPlayers[player]){
+					localPlayer[playerproperty] = snapPlayers[player][playerproperty];
+				}
+
+				localPlayer.tiles = $scope.game.deal(3);
+
+				//push local player to game.players
+				if(thisIsANewPlayer) $scope.game.players.push(localPlayer);
+				else $scope.game.players[existingPlayerIndex] = localPlayer;
+				console.log($scope.game.players);
+			}
+		});
+
+	});
+
+					// console.log('deck?', $scope.game.deck);
+					// localPlayer.tiles = $scope.game.deal(3);
+
+	var markersArr = $firebaseArray(markersRef); 	//store markers array
 
 	//when that markers array is loaded, update the available markers array on scope
 	markersArr.$loaded().then(function (data) {
@@ -54,10 +103,15 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 				if ($scope.me.marker === "n") $scope.me.marker = null;
 			} else {
 				// No user is signed in.
-				console.log("nothing");
+				console.log("no one is signed in");
 			}
 		});
 	});
+
+
+	/****************
+	AVAILABLE PLAYER ACTIONS AT GAME START
+	****************/
 
 	$scope.pickMarker = function (board, marker) {
 		$scope.me.marker = marker;
@@ -106,39 +160,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
 	};
 
-//	take all players on firebase and add them to local players array
-	playersRef.on("value", function (snap) {
-		var snapPlayers = snap.val();
-		for(var plyr in snapPlayers){
-			console.log('Snap Player', snapPlayers[plyr]);
-			console.log('scope.game.players', $scope.game.players);
-			var existingPlayerIndex;
-			var thisIsANewPlayer;
-			//find snap player index in local game
-			var player = $scope.game.players.find(function(player, playerIdx){
-				existingPlayerIndex = playerIdx;
-				return player.uid === snapPlayers[plyr].uid;
-			});
-			console.log('player', player);
-
-			//if not found, create new player
-			if(!player){
-				console.log('didnt find a player!')
-			 player = new Player(snapPlayers[plyr].uid);
-			 thisIsANewPlayer = true;
-			}	
-
-			//for each key in snap player keys, add that key and value to local player
-			for(var playerprop in snapPlayers[plyr]){
-				player[playerprop] = snapPlayers[plyr][playerprop];
-			}
-
-			//push local player to game.players
-			if(thisIsANewPlayer) $scope.game.players.push(player);
-			else $scope.game.players[existingPlayerIndex] = player;
-			console.log($scope.game.players);
-		}
-	});
 
 
 
@@ -220,7 +241,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 		}
 
 		$scope.me.prototype.placeTile(tile, $scope.me);
-		console.log($scope.me)
+		console.log($scope.me);
 
 		// CMT: this should send the rotated tile to firebase
 		gameRef.child('moves').$add({
