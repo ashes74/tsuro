@@ -194,6 +194,8 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         }
 
         $scope.me.prototype.placeTile(tile, $scope.me);
+
+        // CMT: this should send the rotated tile to firebase
         gameRef.child('moves').$add({
             'type': 'placeTile',
             'tile': tile
@@ -249,7 +251,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     // TODO: firebase game.players slice $scope.player out
     $scope.leaveGame;
 
-    // TODO: do we remove this game room's moves from firebase?
+    // TODO: need to remove this game room's moves from firebase?
     $scope.reset = function () {
         markersArr.$remove(0)
             .then(function (ref) {
