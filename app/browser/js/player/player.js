@@ -4,39 +4,40 @@ function Player(uid) {
     // TODO: get uid from firebase auth
     this.uid = uid;
 
-    this.marker = null;
+    this.marker = "n";
 
     // should be a Point object
-    this.point = null;
+    this.point = "n";
 
     // [x, y]
     // depends on the angular Space.x, Space.y
-    this.nextSpace = null;
+    this.nextSpace = "n";
 
     // in each Space.points array, find this specific point and get the position (integer) inside this space.
-    this.nextSpacePointsIndex = null;
+    this.nextSpacePointsIndex = "n";
 
     // maximun 3 tiles
-    this.tiles = [];
+    this.tiles = 'n';
 
     // if a player dies, it will be changed to false
     this.canPlay = true;
 }
 
-Player.prototype.placeMarker = function (board, point) {
+// need to use self becuse we need to change $scope.me on gameCtrl and send to firebase
+Player.prototype.placeMarker = function (board, point, self) {
     // point looks like [x, y, pointsIndex] in the space
     var x = point[0];
     var y = point[1];
     var pointsIndex = point[2];
 
-    this.point = board[y][x].points[pointsIndex];
-    this.point.travelled = true;
+    self.point = board[y][x].points[pointsIndex];
+    self.point.travelled = true;
 
     //[x, y] from the point
-    this.nextSpace = board[y][x];
+    self.nextSpace = board[y][x];
 
     // in each Space.points array, find this specific point and get the position (integer) inside this space.
-    this.nextSpacePointsIndex = this.nextSpace.points.indexOf(this.point);
+    self.nextSpacePointsIndex = self.nextSpace.points.indexOf(self.point);
 };
 
 Player.prototype.newSpace = function (board, oldSpace) {
@@ -51,19 +52,19 @@ Player.prototype.newSpace = function (board, oldSpace) {
     }
 };
 
-Player.prototype.placeTile = function (tile) {
-    var index = this.tiles.indexOf(tile);
-    this.tiles.splice(index, 1);
+// need to use self becuse we need to change $scope.me on gameCtrl and send to firebase
+Player.prototype.placeTile = function (tile, self) {
+    var index = self.tiles.indexOf(tile);
+    self.tiles.splice(index, 1);
 
-    this.nextSpace.tileUrl = tile.imageUrl;
+    self.nextSpace.tileUrl = tile.imageUrl;
 
     for (var i = 0; i < tile.length; i++) {
-        this.nextSpace.points[i].neighbors.push(this.nextSpace.points[tile[i]]);
+        self.nextSpace.points[i].neighbors.push(self.nextSpace.points[tile[i]]);
     }
 };
 
 Player.prototype.moveTo = function (pointer) {
-    // let pointer = pointer;
 
     //always be returning 0 or 1 point in the array
     let nextPoint = pointer.neighbors.filter(function (neighbor) {
@@ -73,17 +74,18 @@ Player.prototype.moveTo = function (pointer) {
     return nextPoint;
 };
 
-Player.prototype.keepMoving = function () {
-    let movable = this.moveTo(this.point);
+// TODO: not sure how to make this keep moving with players instead of self
+Player.prototype.keepMoving = function (self) {
+    let movable = self.moveTo(self.point);
     while (movable) {
-        this.point.travelled = true;
-        this.point = this.moveTo(this.point);
-        let oldSpace = this.nextSpace;
+        self.point.travelled = true;
+        self.point = self.moveTo(self.point);
+        let oldSpace = self.nextSpace;
         let newSpace = newSpace(oldSpace);
-        this.nextSpace = newSpace;
+        self.nextSpace = newSpace;
 
-        this.checkDeath();
-        movable = this.moveTo(this.point);
+        self.checkDeath();
+        movable = self.moveTo(self.point);
     }
 };
 
