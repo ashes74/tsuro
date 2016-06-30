@@ -22,7 +22,7 @@ class Game {
     };
 
     moveAllPlayers() {
-        this.players.forEach((player) => player.keepMoving())
+        this.players.forEach((player) => player.keepMoving(player))
     };
     deadPlayers() {
         var deadPlayersTiles = [];

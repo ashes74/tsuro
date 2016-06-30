@@ -75,17 +75,17 @@ Player.prototype.moveTo = function (pointer) {
 };
 
 // TODO: not sure how to make this keep moving with players instead of self
-Player.prototype.keepMoving = function () {
-    let movable = this.moveTo(this.point);
+Player.prototype.keepMoving = function (self) {
+    let movable = self.moveTo(self.point);
     while (movable) {
-        this.point.travelled = true;
-        this.point = this.moveTo(this.point);
-        let oldSpace = this.nextSpace;
+        self.point.travelled = true;
+        self.point = self.moveTo(self.point);
+        let oldSpace = self.nextSpace;
         let newSpace = newSpace(oldSpace);
-        this.nextSpace = newSpace;
+        self.nextSpace = newSpace;
 
-        this.checkDeath();
-        movable = this.moveTo(this.point);
+        self.checkDeath();
+        movable = self.moveTo(self.point);
     }
 };
 

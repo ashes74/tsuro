@@ -193,11 +193,8 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 if (connection === 8) connection = 0;
                 return connection;
             });
-            console.log("first", tile.paths);
             tile.paths.unshift(tile.paths.pop());
-            console.log("second", tile.paths);
             tile.paths.unshift(tile.paths.pop());
-            console.log("thrid", tile.paths);
         } else if (tile.rotation < 0) {
             tile.paths = tile.paths.map(function (connection) {
                 connection = connection - 2;
@@ -205,20 +202,18 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 if (connection === -1) connection = 7;
                 return connection;
             });
-            console.log("first", tile.paths);
             tile.paths.push(tile.paths.shift());
-            console.log("second", tile.paths);
             tile.paths.push(tile.paths.shift());
-            console.log("thrid", tile.paths);
         }
-        //
-        // $scope.me.prototype.placeTile(tile, $scope.me);
-        //
-        // // CMT: this should send the rotated tile to firebase
-        // gameRef.child('moves').$add({
-        //     'type': 'placeTile',
-        //     'tile': tile
-        // });
+
+        $scope.me.prototype.placeTile(tile, $scope.me);
+        console.log($scope.me)
+
+        // CMT: this should send the rotated tile to firebase
+        gameRef.child('moves').$add({
+            'type': 'placeTile',
+            'tile': tile
+        });
         //
         // $scope.game.moveAllplayers();
         //
