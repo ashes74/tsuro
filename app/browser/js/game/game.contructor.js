@@ -55,12 +55,13 @@ class Game {
     }
 
     deal(num){
-        var tiles = []
-        for(var i = 0; i < num; i++){
-            this.deck.$remove(0).then(function(data){
-                console.log(data);
-                tiles.push(data);
+        var tiles = [];
+        for(var i = 0; i < num; i++){ 
+            var tile = this.deck[0].splice(0,1);
+            this.deck.$save(0).then(function(ref){
+                console.log('dealt a card!');
             });
+            tiles += tile;
         }
         return tiles;
     }

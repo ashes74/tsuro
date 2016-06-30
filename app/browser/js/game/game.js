@@ -18,7 +18,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 	var obj = $firebaseObject(ref);
 	var gameRef = ref.child('games').child($stateParams.gameName);
 
-	var deckRef = gameRef.child('initialDeck');
+	var deckRef = gameRef.child('deck');
 	var playersRef = gameRef.child('players');
 	var markersRef = gameRef.child('availableMarkers');
 	var deckArr = $firebaseArray(deckRef);
@@ -35,7 +35,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
 	//when the deck is loaded...
 	deckArr.$loaded().then(function (data) {
-		// $scope.game.deck = data[0]; //add the deck to the local game ? Try this as firebase DeckArr????
+		// $scope.game.deck = data[0]; 
 		$scope.game.deck = deckArr; //add the deck to the local game ? Try this as firebase DeckArr????
 
 
@@ -50,6 +50,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 				//find this 'snap' player's index in local game. find returns that value. 
 				var localPlayer = $scope.game.players.find(function (plyr, plyrIdx) {
 					existingPlayerIndex = plyrIdx;
+					console.log('epi',existingPlayerIndex);
 					return plyr.uid === snapPlayers[thisPlayer].uid;
 				});
 
@@ -64,8 +65,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 				for (var playerproperty in snapPlayers[thisPlayer]) {
 					localPlayer[playerproperty] = snapPlayers[thisPlayer][playerproperty];
 				}
-
-				localPlayer.tiles = $scope.game.deal(3);
 
 				//push local player to game.players
 				if (thisIsANewPlayer) $scope.game.players.push(localPlayer);
@@ -93,7 +92,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
 	//on login, find me in the firebase players array
 	firebase.auth().onAuthStateChanged(function (user) {
-		var firebasePlayersArr = $firebaseArray(playersRef);
+		// var firebasePlayersArr = $firebaseArray(playersRef);
 
 		firebasePlayersArr.$loaded().then(function (data) {
 			var FBplayers = data;
@@ -143,35 +142,27 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 			});
 	};
 
+
+	//TODO: limit start points
+	//This version has some weird side effects...
+
 	//Have player pick their start point
 	$scope.placeMarker = function (board, point) {
+	
 		firebasePlayersArr.$loaded()
 			.then(function (players) {
+				console.log('players', players);
 				var meIdx;
-
 				players.find(function (e, i) {
-					if (e.$id === $scope.me.$id) meIdx = i;
+					if (e.uid === $scope.me.uid) meIdx = i;
+					console.log('me and e and i',$scope.me.uid, e.uid, meIdx);
 				});
 
-				firebasePlayersArr[meIdx].tiles = [{
-					id: 1,
-					imageUrl: "",
-					paths: [3, 4, 6, 0, 1, 7, 2, 5],
-					rotation: 0
-				}, {
-					id: 2,
-					imageUrl: "",
-					paths: [1, 0, 4, 7, 2, 6, 5, 3],
-					rotation: 0
-				}, {
-					id: 3,
-					imageUrl: "",
-					paths: [1, 0, 4, 6, 2, 7, 3, 5],
-					rotation: 0
-				}];
-
 				player.placeMarker(board, point, firebasePlayersArr[meIdx]);
-				$scope.game.players.push(firebasePlayersArr[meIdx]);
+				firebasePlayersArr[meIdx].tiles = $scope.game.deal(3);
+
+				$scope.game.players[meIdx] = firebasePlayersArr[meIdx]; //This is main issue... puts Object, not Player into firebase...  
+
 				firebasePlayersArr.$save(meIdx);
 			});
 	};
