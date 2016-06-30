@@ -40,5 +40,5 @@ function Space(x, y) {
 function Point(edge){
     this.edge = edge;
     this.neighbors = [];
+		this.travelled = false; //changes when player traverses point
 }
-
