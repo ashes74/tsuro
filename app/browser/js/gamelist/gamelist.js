@@ -21,12 +21,12 @@ tsuro.controller('gameList', function ($scope, firebaseUrl, $firebaseObject, $st
     // gamelist is whatever we are calling it in the angular html.
     synchronizedObj.$bindTo($scope, "gamelist")
         .then(function () {
-            var gamelist = []
+            var gamelist = [];
             for (var i in $scope.gamelist) {
-                gamelist.push([i, $scope.gamelist[i]])
+                gamelist.push([i, $scope.gamelist[i]]);
             }
             $scope.gameNames = gamelist.slice(2);
-        })
+        });
 
 
     $scope.join = function (gameName) {
@@ -36,14 +36,14 @@ tsuro.controller('gameList', function ($scope, firebaseUrl, $firebaseObject, $st
         var playerArr = $firebaseArray(playersRef);
         playerArr.$loaded()
             .then(function (players) {
-                if (!players.filter(player => player.uid === firebaseUser.uid)) {
-                    var newPlayer = new Player(firebaseUser.uid)
-                    $firebaseArray(playersRef).$add(newPlayer)
+                //check if I am already a player in this game
+                //if I am a new player, add me to the players array in firebase
+                if (players.filter(player => player.uid === firebaseUser.uid).length === 0) {
+                    var newPlayer = new Player(firebaseUser.uid);
+                    $firebaseArray(playersRef).$add(newPlayer);
                 }
-            })
+                $state.go('game', { "gameName": gameName });
+            });
 
-        $state.go('game', {
-            "gameName": gameName
-        });
     };
 });

@@ -13,11 +13,11 @@ tsuro.controller('loginCtrl', function ($scope, $state, $firebaseAuth, $rootScop
         auth.$signInWithPopup("google").then(function (authData) {
             console.log("Logged in as:", authData);
             $rootScope.currentUser = authData;
+            $state.go('pickGame');
         }).catch(function (error) {
             console.error("Authentication failed:", error);
         });
 
-        $state.go('pickGame');
     };
 
 });
