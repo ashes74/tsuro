@@ -55,7 +55,7 @@ Player.prototype.newSpace = function (board, oldSpace, self) {
 };
 
 // need to use self becuse we need to change $scope.me on gameCtrl and send to firebase
-Player.prototype.placeTile = function (tile, self, database, meIdx) {
+Player.prototype.placeTile = function (tile, self) {
     self.tiles = self.tiles.filter(function (t) {
         return t.id !== tile.id
     });

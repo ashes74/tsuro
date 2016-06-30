@@ -27,22 +27,24 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
     var player = Object.create(Player.prototype);
 
-    // intialize game
+    // intialize game, get the deck from firebase
     $scope.game = new Game($stateParams.gameName, $stateParams.deck);
     $scope.game.deck = $firebaseObject(deckRef);
 
+    //store the reference to markers array from firebase
     var markersArr = $firebaseArray(markersRef);
+
+    //when that markers array is loaded, update the available markers array on scope
     markersArr.$loaded().then(function (data) {
         $scope.game.availableMarkers = data[0];
-        $scope.game.availableMarkers = $scope.game.availableMarkers.filter(function (elem) {
-            return typeof elem === "string";
-        });
     });
 
+    //if someone else picks a marker, update your view
     markersRef.on('child_changed', function (data) {
         $scope.game.availableMarkers = data.val();
     });
 
+    //on login, find me in the firebase players array
     firebase.auth().onAuthStateChanged(function (user) {
         var firebasePlayersArr = $firebaseArray(playersRef);
 
@@ -70,18 +72,17 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         firebasePlayersArr.$loaded()
             .then(function (players) {
                 var meIdx;
-
+                //find my index in the players array
                 players.find(function (e, i) {
                     if (e.$id === $scope.me.$id) meIdx = i;
                 });
-
+                //give me a marker and save me in firebase
                 firebasePlayersArr[meIdx].marker = marker;
                 firebasePlayersArr.$save(meIdx);
             });
 
         var idx = $scope.game.availableMarkers.indexOf(marker);
 
-        $scope.game.availableMarkers.splice(idx, 1);
         markersArr[0].splice(idx, 1);
 
         markersArr.$save(0)
@@ -91,8 +92,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             });
     };
 
-    //Have player pick their start point
-
+    // Have player pick their start point
     $scope.placeMarker = function (board, point) {
         var firebasePlayersArr = $firebaseArray(playersRef);
 
@@ -126,29 +126,38 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 $scope.game.players.push(firebasePlayersArr[meIdx]);
 
                 firebasePlayersArr.$save(meIdx);
-                console.log("place marker firebae me", firebasePlayersArr[meIdx])
             });
 
     };
 
-    //take all players on firebase and turn them into local player
-    playersRef.on("child_added", function (player) {
-        var newPlayer = new Player(player.uid);
-        newPlayer.marker = player.marker;
+    //	take all players on firebase and add them to local players array
+    playersRef.on("value", function (snap) {
+        var snapPlayers = snap.val();
+        for (var plyr in snapPlayers) {
+            var existingPlayerIndex;
+            var thisIsANewPlayer;
+            //find snap player index in local game
+            var player = $scope.game.players.find(function (player, playerIdx) {
+                existingPlayerIndex = playerIdx;
+                return player.uid === snapPlayers[plyr].uid;
+            });
 
-        var x = player.startingPosition[0];
-        var y = player.startingPosition[1];
-        var pointsIndex = player.startingPosition[2];
+            //if not found, create new player
+            if (!player) {
+                player = new Player(snapPlayers[plyr].uid);
+                thisIsANewPlayer = true;
+            }
 
-        newPlayer.point = board[y][x].points[pointsIndex];
-        newPlayer.nextSpace = board[y][x];
-        newPlayer.nextSpacePointsIndex = player.startingPosition[2];
+            //for each key in snap player keys, add that key and value to local player
+            for (var playerprop in snapPlayers[plyr]) {
+                player[playerprop] = snapPlayers[plyr][playerprop];
+            }
 
-        newPlayer.tiles = $scope.game.deck.dealThree();
-
-        $scope.game.players.push(newPlayer);
+            //push local player to game.players
+            if (thisIsANewPlayer) $scope.game.players.push(player);
+            else $scope.game.players[existingPlayerIndex] = player;
+        }
     });
-
 
 
 
@@ -158,17 +167,17 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     // TODO: we probably need this on firebase so other people can't pick what's been picked
 
     //For synchronizingGame...
-    var syncRef = gameRef.child('moves');
-    syncRef.on('child_added', function (childSnapshot, prevChildKey) {
-        //NEED TO DOUBLE CHECK!! What does childSnap returns?
-        console.log('childSnapshot_SyncGame', childSnapshot);
-        //depending on what childSnapshot gives me...I think it's one child per on call? It doesn't return an array of changes...I believe!
-        if (childSnapshot.type === 'updateDeck') {
-            $scope.game.deck = childSnapshot.updateDeck;
-        } else {
-            $scope.placeTile(childSnapshot.tile);
-        }
-    });
+    // var syncRef = gameRef.child('moves');
+    // syncRef.on('child_added', function (childSnapshot, prevChildKey) {
+    //     //NEED TO DOUBLE CHECK!! What does childSnap returns?
+    //     console.log('childSnapshot_SyncGame', childSnapshot);
+    //     //depending on what childSnapshot gives me...I think it's one child per on call? It doesn't return an array of changes...I believe!
+    //     if (childSnapshot.type === 'updateDeck') {
+    //         $scope.game.deck = childSnapshot.updateDeck;
+    //     } else {
+    //         $scope.placeTile(childSnapshot.tile);
+    //     }
+    // });
 
     // TODO: how to re-do the moves?
     // $scope.game.moves;
@@ -238,7 +247,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                     if (e.$id === $scope.me.$id) meIdx = i;
                 });
 
-                player.placeTile(tile, firebasePlayersArr[meIdx], firebasePlayersArr, meIdx);
+                player.placeTile(tile, firebasePlayersArr[meIdx]);
 
                 for (var i = 0; i < tile.paths.length; i++) {
                     if (firebasePlayersArr[meIdx].nextSpace.points[i].neighbors[0] === "n") {
