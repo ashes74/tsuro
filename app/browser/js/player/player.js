@@ -23,20 +23,22 @@ function Player(uid) {
     this.canPlay = true;
 }
 
-Player.prototype.placeMarker = function (board, point) {
+Player.prototype.placeMarker = function (board, point, self) {
     // point looks like [x, y, pointsIndex] in the space
     var x = point[0];
     var y = point[1];
     var pointsIndex = point[2];
 
-    this.point = board[y][x].points[pointsIndex];
-    this.point.travelled = true;
+    self.point = board[y][x].points[pointsIndex];
+    self.point.travelled = true;
 
     //[x, y] from the point
-    this.nextSpace = board[y][x];
+    self.nextSpace = board[y][x];
 
     // in each Space.points array, find this specific point and get the position (integer) inside this space.
-    this.nextSpacePointsIndex = this.nextSpace.points.indexOf(this.point);
+    self.nextSpacePointsIndex = self.nextSpace.points.indexOf(self.point);
+
+    console.log("player.js", this)
 };
 
 Player.prototype.newSpace = function (board, oldSpace) {
