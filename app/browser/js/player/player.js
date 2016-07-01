@@ -2,9 +2,10 @@
 
 function Player(uid) {
     // TODO: get uid from firebase auth
+    // That's not a TODO here, it's a TODO wherever you initialize a player. ~ ak
     this.uid = uid;
 
-    this.marker = "n";
+    this.marker = "n";  // What's with "n" everywhere? ~ ak
 
     // should be a Point object
     this.point = "n";

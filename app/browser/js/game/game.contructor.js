@@ -6,7 +6,8 @@ class Game {
     constructor(name) {
         this.name = name;
         this.count = 35;
-        this.board = new Board().drawBoard();
+        // Why are you constructing a new Board and just throwing it away? ~ ak
+        this.board = new Board() // .drawBoard();  now called in constructor
         this.players = [];
         this.availableMarkers = ["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]
 
@@ -25,24 +26,21 @@ class Game {
         this.players.forEach((player) => player.keepMoving(player))
     }
 
-    deadPlayers() {
-        var deadPlayersTiles = [];
-        this.players.forEach(function (player) {
-            if (!player.canPlay && player.tiles.length > 0) {
-                deadPlayersTiles.push(player.tiles);
-                isDeadPlayer = true;
-            }
-        });
-        return deadPlayersTiles;
+    deadPlayersTiles() {
+        return _.flatMap(this.players, player => player.canPlay ? [] : player.tiles)
     }
 
     checkOver() {
-        return getCanPlay().length <= 1;
+        return this.alive.length <= 1;
+    }
+
+    get alive() {
+        return this.players.filter(player => player.canPlay);
     }
 
     //to be called at the end of a turn to set the currPlayer to the next eligible player in the turnOrderArray
     goToNextPlayer() {
-        if (getCanPlay(this.turnOrderArray).length > 1) {
+        if (this.alive.length > 1) {
             let newIdx = this.currPlayer + 1;
             while (!this.turnOrderArray[newIdx % 8].canPlay) {
                 newIdx++;
@@ -57,6 +55,7 @@ class Game {
     deal(num) {
         var tiles = [];
         for (var i = 0; i < num; i++) {
+            // Where does deck come from? ~ ak
             var tile = this.deck[0].splice(0, 1);
             this.deck.$save(0).then(function (ref) {
                 console.log('dealt a card!');
@@ -84,6 +83,7 @@ class Game {
 /////END OF GAME CLASS/////
 
 //get Eligible players
+// What is this doing out here? ~ ak
 let getCanPlay = function (players) {
     return players.filter((player) => {
         return player.canPlay

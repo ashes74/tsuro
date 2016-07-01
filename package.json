@@ -1,0 +1,25 @@
+{
+  "name": "tsuro",
+  "version": "1.0.0",
+  "description": "",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "lodash": "^4.13.1"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/ashes74/tsuro.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ashes74/tsuro/issues"
+  },
+  "homepage": "https://github.com/ashes74/tsuro#readme"
+}
