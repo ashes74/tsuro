@@ -6,7 +6,7 @@ tsuro.config(function ($stateProvider) {
     });
 });
 
-tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stateParams, $firebaseObject, $firebaseArray) {
+tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stateParams, $firebaseObject, $firebaseArray, $state) {
     var ref = firebase.database().ref();
     var obj = $firebaseObject(ref);
 
@@ -467,6 +467,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             }
         });
 
+        $state.reload()
         console.log($scope.me);
 
     };
