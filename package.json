@@ -4,7 +4,8 @@
   "description": "A game of paths :) ",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test"
+    "test": "mocha test",
+		"start": "firebase serve"
   },
   "repository": {
     "type": "git",
