@@ -209,6 +209,9 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
         var deckRef = ref.child('games').child(gameName).child('deck');
         $firebaseArray(deckRef).$add(deck);
 
+        // var boardRef = gameNameRef.child('board');
+        // var boardArr = $firebaseArray(boardRef);
+        // boardArr.$add($scope.game.board);
 
 
         var initialMarkersRef = ref.child('games').child(gameName).child('availableMarkers');

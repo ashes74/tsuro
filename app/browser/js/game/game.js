@@ -25,6 +25,9 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     var movesRef = gameRef.child('moves');
     var movesArr = $firebaseArray(movesRef);
 
+    var boardRef = gameRef.child('board');
+    var boardArr = $firebaseArray(boardRef);
+
     var player = Object.create(Player.prototype);
 
     /****************
@@ -34,6 +37,19 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     //new local game with game name defined by url
     $scope.game = new Game($stateParams.gameName);
 
+    boardArr.$add($scope.game.board);
+
+    //when the board is loaded...
+    boardArr.$loaded().then(function(data){
+        $scope.game.board = boardArr;
+    
+        //watching board for changes
+        boardRef.on('child_changed', function(snap){
+            //NEED TO RETURN TO CHECK BOARD
+            console.log(snap);
+            $scope.game.board = snap.val();
+        });
+    });
     //when the deck is loaded...
     deckArr.$loaded().then(function (data) {
 
@@ -109,12 +125,12 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         });
     });
 
-
+    var board = $scope.game.board;
     /****************
     AVAILABLE PLAYER ACTIONS AT GAME START
-    ****************/
-
+    ****************/ 
     $scope.pickMarker = function (board, marker) {
+
         $scope.me.marker = marker;
 
         firebasePlayersArr.$loaded()
@@ -142,6 +158,8 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
 
     //TODO: limit start points
+
+    //adding a board to firebase
 
     //Have player pick their start point
     $scope.placeMarker = function (board, point) {
@@ -244,6 +262,8 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             tile.paths.push(tile.paths.shift());
         }
 
+        console.log(tile);
+
         var firebasePlayersArr = $firebaseArray(playersRef);
         firebasePlayersArr.$loaded()
             .then(function (players) {
@@ -269,16 +289,35 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 firebasePlayersArr[meIdx].point = firebasePlayersArr[meIdx].nextSpace.points[firebasePlayersArr[meIdx].nextSpacePointsIndex];
 
                 firebasePlayersArr.$save(meIdx);
+
+                var playersNextSpaceX = firebasePlayersArr[meIdx].nextSpace.x;
+                var playersNextSpaceY = firebasePlayersArr[meIdx].nextSpace.y;
+                return [playersNextSpaceY, playersNextSpaceX];
+            })
+            .then(function(nextSpace){
+                boardArr.$loaded().then(function(data){
+                    data[nextSpace[0]][nextSpace[1]].tile.$add(tile);
+
+                    var points = data[nextSpace[0]][nextSpace[1]].points;
+                    points.forEach(function(point, idx){
+                        point.neighbors.$add(
+                            points[tile.paths[idx]]);
+                        //save it back to firebase
+                    });
+                });
+                //Need to reassign the tiles points neighbors
+
             });
 
 
         // CMT: this should send the rotated tile to firebase
-        movesArr.$add({
-            'type': 'placeTile',
-            'tile': tile,
-            'playerUid': $scope.me.uid
-        });
+        // movesArr.$add({
+        //     'type': 'placeTile',
+        //     'tile': tile,
+        //     'playerUid': $scope.me.uid
+        // });
 
+        
 
         firebasePlayersArr.$loaded()
             .then(function (players) {
