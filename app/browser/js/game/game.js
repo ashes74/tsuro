@@ -218,8 +218,9 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
     ****************/
     $scope.tryTile = function(tile){
         console.log('trying tile');
-        $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].image = tile.imageUrl;
-        $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].rotation = tile.rotation;
+        console.log($scope.game.board[0]);
+        $scope.game.board[0][$scope.me.nextSpace.y][$scope.me.nextSpace.x].image = tile.imageUrl;
+        $scope.game.board[0][$scope.me.nextSpace.y][$scope.me.nextSpace.x].rotation = tile.rotation;
     };
 
 
@@ -279,8 +280,9 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
     // CMT: use player's and game's prototype function to place tile and then move all players
 
     $scope.placeTile = function (tile) {
-        $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].image = tile.imageUrl;
-        $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].rotation = tile.rotation;
+        console.log($scope.game.board[0]);
+        $scope.game.board[0][$scope.me.nextSpace.y][$scope.me.nextSpace.x].image = tile.imageUrl;
+        $scope.game.board[0][$scope.me.nextSpace.y][$scope.me.nextSpace.x].rotation = tile.rotation;
         // TODO: send this state to firebase every time it's called
         if (tile.rotation > 0) {
             tile.paths = tile.paths.map(function(connection) {

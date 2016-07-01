@@ -57,7 +57,7 @@
     <div ng-repeat="marker in game.availableMarkers" class="circle {{marker}}" ng-disable="me.marker || !me" ng-click="pickMarker(marker)"></div>
 </div>
 <!-- TODO: We should just place the tile on the nextSpace for the player (floating on the board), and they can rotate, then click on the place the tile button to place it down ng-click="placeTile(tile)"-->
-
+<!-- 
 <div ng-repeat="tile in me.tiles">
     <p>
         id:
@@ -71,3 +71,4 @@
 <button ng-click="rotateTileCcw(me.tiles[0])">to the left</button>
 <button ng-click="reset()">reset game</button>
 <button ng-click="leaveGame()">leave the game</button>
+ -->
