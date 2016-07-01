@@ -320,6 +320,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             $scope.winner = $scope.game.getCanPlay()[0];
             $scope.gameOver = true;
             console.log("game over")
+                // TODO: disable everything, let the players decide wether reset the game or not
         } else {
             if ($scope.game.deadPlayers().length) {
                 //with new cards & need to reshuffle
