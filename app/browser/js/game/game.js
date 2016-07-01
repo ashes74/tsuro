@@ -6,12 +6,17 @@ tsuro.config(function($stateProvider) {
     });
 });
 
-tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $stateParams, $firebaseObject, $firebaseArray) {
+
+tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $stateParams, $firebaseObject, $firebaseArray, $state) {
+
     var ref = firebase.database().ref();
     var obj = $firebaseObject(ref);
 
     var gameRef = ref.child('games').child($stateParams.gameName);
     var gameArr = gameRef.child($stateParams.gameName);
+
+    var initialDeckRef = ref.child('games').child($stateParams.gameName).child('initialDeck');
+    var initialDeckArr = $firebaseArray(initialDeckRef);
 
     var deckRef = gameRef.child('deck');
     var deckArr = $firebaseArray(deckRef);
@@ -280,8 +285,6 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
             tile.paths.push(tile.paths.shift());
         }
 
-        console.log(tile);
-
         var firebasePlayersArr = $firebaseArray(playersRef);
         firebasePlayersArr.$loaded()
             .then(function(players) {
@@ -314,30 +317,35 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
             })
             .then(function(nextSpace) {
                 boardArr.$loaded()
-                .then(function(){
-                    var key = boardArr.$keyAt(0)
-                    var spaceRef = boardRef.child(key).child(nextSpace[0]).child(nextSpace[1])
-                    var spaceArr = $firebaseArray(spaceRef);
-                    console.log("out", spaceArr)
-                    spaceArr.$loaded()
-                        .then(function() {
-                            console.log("here", spaceArr)
-                            // var key = boardArr.$keyAt(0)
-                            console.log("tile", tile)
-                            spaceArr[1] = tile;
+                    .then(function() {
+                        var key = boardArr.$keyAt(0)
+                        var spaceRef = boardRef.child(key).child(nextSpace[0]).child(nextSpace[1]);
+                        var spaceArr = $firebaseArray(spaceRef);
+                        spaceArr[1] = tile;
+                        console.log(spaceArr);
+                        spaceArr.$save(1);
+                        console.log("out", spaceArr);
 
-                            // boardArr[0][nextSpace[0]][nextSpace[1]].tile = tile;
-                            spaceArr.$save(1);
 
-                            // var points = data[nextSpace[0]][nextSpace[1]].points;
-                            // points.forEach(function(point, idx) {
-                            //     point.neighbors.$add(
-                            //         points[tile.paths[idx]]);
-                                //save it back to firebase
-                            // });
-                    });
-                    
-                })
+                        // spaceArr.$loaded()
+                        //     .then(function() {
+                        //         console.log("here", spaceArr)
+                        //         // var key = boardArr.$keyAt(0)
+                        //         console.log("tile", tile)
+                        //         spaceArr[1] = tile;
+
+                        //         // boardArr[0][nextSpace[0]][nextSpace[1]].tile = tile;
+                        //         spaceArr.$save(tile);
+
+                        //         // var points = data[nextSpace[0]][nextSpace[1]].points;
+                        //         // points.forEach(function(point, idx) {
+                        //         //     point.neighbors.$add(
+                        //         //         points[tile.paths[idx]]);
+                        //             //save it back to firebase
+                        //         // });
+                        // });
+
+                    })
 
                 //Need to reassign the tiles points neighbors
 
@@ -481,6 +489,8 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
                 // remove the player from firebase
                 firebasePlayersArr.$remove(firebasePlayersArr[meIdx]);
             });
+
+        $state.go('pickGame');
     };
 
     // TODO: need to remove this game room's moves from firebase?
@@ -495,12 +505,25 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
                 console.log("removed the deck", ref.key);
             });
 
-        movesArr.$remove()
+        initialDeckArr.$remove(0)
+            .then(function(ref) {
+                console.log("reomved the initialDeck", ref.key)
+            })
+
+        movesArr.$loaded()
+            .then(function(moves) {
+                for (var i = 0; i < moves.length; i++) {
+                    movesArr.$remove(i);
+                }
+            })
+            .then(function() {
+                console.log("removed all moves")
+            })
+
         obj.$loaded().then(function(data) {
             var tiles = data.tiles;
             var deck = new Deck(tiles).shuffle().tiles;
-            var initialDeckRef = ref.child('games').child($stateParams.gameName).child('initialDeck');
-            $firebaseArray(initialDeckRef).$add(deck);
+            initialDeckArr.$add(deck);
         });
 
 
@@ -522,10 +545,10 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
             }
         });
 
+        $state.reload()
         console.log($scope.me);
 
     };
-
 
     $scope.starttop = [
         [0, 0, 0],
