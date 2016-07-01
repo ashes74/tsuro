@@ -147,14 +147,15 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
 
     //TODO: limit start points
-
-    //Have player pick their start point
+    $scope.clicked = false
+        //Have player pick their start point
     $scope.placeMarker = function (board, point) {
         // place my marker
         player.placeMarker(board, point, $scope.me);
         // deal me three cards
         $scope.me.tiles = $scope.game.deal(3);
 
+        $scope.clicked = true;
         // when the firebase players are loaded....
         firebasePlayersArr.$loaded()
             .then(function (players) {
@@ -168,6 +169,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
                 firebasePlayersArr.$save(meIdx); //save it.
             });
+        return false;
     };
 
 
