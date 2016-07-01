@@ -413,6 +413,8 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 // remove the player from firebase
                 firebasePlayersArr.$remove(firebasePlayersArr[meIdx]);
             });
+
+        $state.go('pickGame');
     };
 
     // TODO: need to remove this game room's moves from firebase?
