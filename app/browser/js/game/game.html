@@ -1,9 +1,9 @@
 <section id="game" class="wrapper">
     <aside class="tileDrawer">
         <h2>YOUR TILES</h2>
-        <div class="tile" ng-repeat="tile in me.tiles"><img ng-src="{{tile.imageUrl}}" /></div>
-<!--         <div class="tile"></div>
-        <div class="tile"></div> -->
+        <tile ng-repeat="tile in me.tiles" this-tile="tile" try-tile="tryTile(tile)" rotateccw="rotateTileCcw(tile)" rotatecw="rotateTileCw(tile)"></tile>
+<!--         <div class="tile" ng-repeat="tile in me.tiles" ng-click="tryTile(tile)"><img ng-src="{{tile.imageUrl}}" /></div>
+ -->
     </aside>
     <main id="board">
         <!-- top row -->
@@ -21,7 +21,7 @@
             </div>
         </div>
         <div class="space-container">
-            <div ng-repeat="space in spaces" class="space" ng-class="{mynext: me.nextSpace.x === space.x && me.nextSpace.y === space.y}">{{space.x}},{{space.y}}</div>
+            <div ng-repeat="space in spaces" class="space" ng-class="{mynext: me.nextSpace.x === space.x && me.nextSpace.y === space.y}"><img ng-hide="space.image==='n'" ng-src="{{space.image}}" ng-class="{east: space.rotation === 1 || space.rotation === -3, south: space.rotation === 2 || space.rotation === -2, west: space.rotation === 3 || space.rotation === -1}" /></div>
         </div>
         <div class="frame vertical">
             <div ng-repeat="start in startright" class="startpoints" ng-disable="!me" ng-click="placeMarker(game.board,start)">

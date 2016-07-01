@@ -171,8 +171,17 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     };
 
 
-
-
+    /****************
+    GAMEPLAY ACTIONS
+    ****************/
+    $scope.tryTile = function(tile){
+        console.log('me', $scope.me);
+        console.log('hi me!', tile);
+        $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].image = tile.imageUrl;
+        $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].rotation = tile.rotation;
+        console.log($scope.game.board);
+        //set board[y][x] image to tile.image?
+    };
 
 
 
@@ -216,14 +225,15 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
     //these are tied to angular ng-click buttons
     $scope.rotateTileCw = function (tile) {
-        console.log("rotate to right");
         tile.rotation++;
         if (tile.rotation === 4) tile.rotation = 0;
+        console.log("rotate cw", tile);
     };
 
     $scope.rotateTileCcw = function (tile) {
         tile.rotation--;
         if (tile.rotation === -4) tile.rotation = 0;
+        console.log('rotate ccw', tile);
     };
 
     // CMT: use player's and game's prototype function to place tile and then move all players
@@ -533,4 +543,22 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         [5, 5, 2],
         [5, 5, 3]
     ];
+});
+
+tsuro.directive('tile', function(){
+    return {
+        template: '<img ng-src="{{thisTile.imageUrl}}" ng-click="tryTile(thisTile)" ng-class="{east: thisTile.rotation === 1 || thisTile.rotation === -3, south: thisTile.rotation === 2 || thisTile.rotation === -2, west: thisTile.rotation === 3 || thisTile.rotation === -1}" /><button ng-click="rotateccw(thisTile)">CCW</button><button ng-click="rotatecw(thisTile)">CW</button>',
+        scope: {
+            thisTile: '=',
+            'tryTile': '&tryTile',
+            'rotateccw': '&rotateccw',
+            'rotatecw': '&rotatecw'
+        },
+        link: function(s,e,a){
+            // e.on('click', function(event){
+            //     s.tryTile(s.thisTile);
+            //     // console.log('clicked me!', s.thisTile);
+            // });
+        }
+    };
 });
