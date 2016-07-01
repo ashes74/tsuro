@@ -2,7 +2,7 @@ function Board() {
     this.board = [];
 }
 
-Board.prototype.drawBoard = function () {
+Board.prototype.drawBoard = function () { //can be organized - ashi has amazing solution -th/ei
     for (var y = 0; y < 6; y++) {
         if (!this.board[y]) this.board[y] = [];
         for (var x = 0; x < 6; x++) {

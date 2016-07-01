@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A game of paths :) ",
   "main": "index.js",
-  "scripts": {
+  "scripts": {/*start script?*/
     "test": "mocha test"
   },
   "repository": {

@@ -27,7 +27,7 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
                 console.log("no one logged in")
             }
         })
-
+//can have a json file? -th/ei
         var tiles = [{
             id: 1,
             imageUrl: "",
@@ -206,12 +206,12 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
         }];
 
         var deck = new Deck(tiles).shuffle().tiles;
-        var deckRef = ref.child('games').child(gameName).child('deck');
+        var deckRef = ref.child('games').child(gameName).child('deck');//use gameNameRef? -th
         $firebaseArray(deckRef).$add(deck);
 
 
 
-        var initialMarkersRef = ref.child('games').child(gameName).child('availableMarkers');
+        var initialMarkersRef = ref.child('games').child(gameName).child('availableMarkers');//gameNameRef
         $firebaseArray(initialMarkersRef).$add(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]);
 
 

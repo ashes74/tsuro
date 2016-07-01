@@ -6,7 +6,7 @@ tsuro.config(function ($stateProvider) {
     });
 });
 
-tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stateParams, $firebaseObject, $firebaseArray) {
+tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stateParams, $firebaseObject, $firebaseArray) {//eventually can break chunks up? any way to use factories? -th/ei
     $scope.tile = {
         imageUrl: "",
         paths: [3, 4, 6, 0, 1, 7, 2, 5],
@@ -41,11 +41,11 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
 
         //don't start watching players until there is a deck in the game
-        playersRef.on("value", function (snap) {
+        playersRef.on("value", function (snap) {//make a more descriptive value/param name/variable names -th/ei
             var snapPlayers = snap.val(); //grab the value of the snapshot (all players in game in Firebase)
 
             //for each player in this collection...
-            for (var thisPlayer in snapPlayers) {
+            for (var thisPlayerId in snapPlayers) {//is this an obj? -th/ei
                 var existingPlayerIndex, thisIsANewPlayer;
 
                 //find this 'snap' player's index in local game. find returns that value.
@@ -62,7 +62,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 }
 
                 //for each key in the snapPlayer's keys, add that key and value to local player
-                for (var playerproperty in snapPlayers[thisPlayer]) {
+                for (var playerproperty in snapPlayers[thisPlayer]) {//need to change to match thisPlayerId -th
                     localPlayer[playerproperty] = snapPlayers[thisPlayer][playerproperty];
                 }
 
@@ -114,7 +114,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     $scope.pickMarker = function (board, marker) {
         $scope.me.marker = marker;
 
-        firebasePlayersArr.$loaded()
+        firebasePlayersArr.$loaded()//factory - th/ei
             .then(function (players) {
                 var meIdx;
                 //find my index in the players array
@@ -167,7 +167,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
 
 
-
+//LOVE TODOs -th/ei
     // TODO: we probably need this on firebase so other people can't pick what's been picked
 
     //For synchronizingGame...
@@ -391,7 +391,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     };
 
 
-    $scope.starttop = [
+    $scope.starttop = [//JSON  -th/ei
         [0, 0, 0],
         [0, 0, 1],
         [1, 0, 0],
