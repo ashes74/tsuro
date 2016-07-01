@@ -300,6 +300,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         firebasePlayersArr.$loaded()
             .then(function (players) {
                 players.forEach(function (p) {
+                    p.point.travelled = true;
                     let movable = player.moveTo(p.point);
                     var pIdx = players.indexOf(p)
 
@@ -313,19 +314,15 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                         }
 
                         // Check the space that's not my current nextSpace
-                        // var newNextSpaceInfo;
-                        // if (p.point.spaces.length > 1) {
                         var newNextSpaceInfo = p.point.spaces.filter(function (space) {
-                                return space.x !== p.nextSpace.x || space.y !== p.nextSpace.y
-                            })[0]
-                            // } else {
-                            //     newNextSpaceInfo = p.point.spaces[0]
-                            // }
+                            return space.x !== p.nextSpace.x || space.y !== p.nextSpace.y
+                        })[0]
+
 
                         let oldSpace = p.nextSpace;
                         let newSpace = $scope.game.board[newNextSpaceInfo.y][newNextSpaceInfo.x];
                         p.nextSpace = newSpace;
-
+                        p.nextSpacePointsIndex = newNextSpaceInfo.i;
                         firebasePlayersArr.$save(pIdx);
                         // TODO: need more players to check if it works
                         player.checkDeath(p);
@@ -467,7 +464,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         var tiles = [{
             id: 1,
             imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_01.png?alt=media&token=dc2e553b-f4da-442e-97e8-d0d808c2d5c0",
-            paths: [3, 4, 6, 0, 1, 7, 2, 5],
+            paths: [5, 6, 4, 7, 2, 0, 1, 3],
             rotation: 0
         }, {
             id: 2,
@@ -502,8 +499,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         }, {
             id: 8,
             imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_08.png?alt=media&token=8ad6340e-f8a5-4ff2-bdaf-0a85e2bbc630",
-            paths: [3, 7, 4, 0, 2, 6, 5, 1],
-            // paths: [2, 5, 0, 6, 7, 1, 3, 4],
+            paths: [4, 7, 5, 6, 0, 2, 3, 1],
             rotation: 0
         }, {
             id: 9,
@@ -563,7 +559,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         }, {
             id: 20,
             imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_20.png?alt=media&token=5b9b4455-2c09-41e4-a2f2-f60bedc470ad",
-            paths: [2, 6, 0, 4, 3, 7, 1, 5],
+            paths: [3, 7, 4, 2, 0, 6, 5, 1],
             rotation: 0
         }, {
             id: 21,
@@ -583,7 +579,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         }, {
             id: 24,
             imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_24.png?alt=media&token=a80b7f5b-c572-4430-ab8a-3d3656e4c643",
-            paths: [3, 4, 7, 0, 1, 6, 5, 2],
+            paths: [5, 6, 7, 4, 3, 0, 1, 2],
             rotation: 0
         }, {
             id: 25,
@@ -603,7 +599,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         }, {
             id: 28,
             imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_28.png?alt=media&token=ee42cc11-19d2-4476-887b-7a29817430fc",
-            paths: [4, 2, 1, 7, 0, 6, 5, 3],
+            paths: [3, 2, 1, 0, 7, 6, 5, 4],
             rotation: 0
         }, {
             id: 29,
@@ -640,7 +636,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_35.png?alt=media&token=aa9dda97-edee-472a-8b24-8bb0b69dfa9a",
             paths: [1, 0, 7, 5, 6, 3, 4, 2],
             rotation: 0
-        }];
+        }]
 
         var deck = new Deck(tiles).shuffle().tiles;
         initialDeckArr.$add(deck);
