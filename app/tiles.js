@@ -36,7 +36,8 @@ var tiles = [{
 }, {
     id: 8,
     imageUrl: "",
-    paths: [2, 5, 0, 6, 7, 1, 3, 4],
+    paths: [3, 7, 4, 0, 2, 6, 5, 1],
+    // paths: [2, 5, 0, 6, 7, 1, 3, 4],
     rotation: 0
 }, {
     id: 9,
