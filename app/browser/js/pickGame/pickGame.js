@@ -9,11 +9,15 @@ tsuro.config(function ($stateProvider) {
 tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $firebaseObject) {
     var ref = firebase.database().ref();
     var obj = $firebaseObject(ref);
+    var gameNameRef = ref.child('games').child(gameName);
+    var playersRef = gameNameRef.child('players');
+    var initialMarkersRef = gameNameRef.child('availableMarkers');
+    var initialMarkersArr = $firebaseArray(initialMarkersRef);
+    var deckRef = gameNameRef.child('deck');
+    var deckArr = $firebaseArray(deckRef);
 
 
     $scope.createGame = function (gameName) {
-        var gameNameRef = ref.child('games').child(gameName);
-        var playersRef = gameNameRef.child('players');
 
         $firebaseArray(gameNameRef).$add({
             "gameName": gameName
@@ -207,13 +211,9 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
 
         var deck = new Deck(tiles).shuffle().tiles;
         var deckRef = ref.child('games').child(gameName).child('deck');
-        $firebaseArray(deckRef).$add(deck);
+        deckArr.$add(deck);
 
-
-
-        var initialMarkersRef = ref.child('games').child(gameName).child('availableMarkers');
-        $firebaseArray(initialMarkersRef).$add(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]);
-
+        initialMarkersArr.$add(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]);
 
         $state.go('game', {
             "gameName": gameName
