@@ -2,15 +2,13 @@
     <aside class="tileDrawer">
         <h2>YOUR TILES</h2>
         <tile ng-repeat="tile in me.tiles" this-tile="tile" try-tile="tryTile(tile)" rotateccw="rotateTileCcw(tile)" rotatecw="rotateTileCw(tile)"></tile>
-<!--         <div class="tile" ng-repeat="tile in me.tiles" ng-click="tryTile(tile)"><img ng-src="{{tile.imageUrl}}" /></div>
- -->
     </aside>
     <main id="board">
         <!-- top row -->
         <div class="corner"></div>
         <div class="frame horizontal">
             <div ng-repeat="start in starttop" class="startpoints" ng-disable="!me" ng-click="placeMarker(game.board,start)">
-            <p>▼</p>
+                <p>▼</p>
             </div>
         </div>
         <div class="corner"></div>
@@ -25,7 +23,7 @@
         </div>
         <div class="frame vertical">
             <div ng-repeat="start in startright" class="startpoints" ng-disable="!me" ng-click="placeMarker(game.board,start)">
-            <p>◀</p>
+                <p>◀</p>
             </div>
         </div>
 
@@ -47,7 +45,6 @@
     </aside>
 </section>
 
-
 <div class="markermodal" ng-show="!me.marker">
     <p>Choose your dragon wisely...</p>
     <div ng-repeat="marker in game.availableMarkers" class="circle {{marker}}" ng-disable="me.marker || !me" ng-click="pickMarker(game.board, marker)"></div>
@@ -61,8 +58,8 @@
         {{tile.rotation}}, paths:
         {{tile.paths}}
     </p>
-</div> -->
-<!-- <button ng-click="rotateTileCw(me.tiles[0])">to the right</button>
+</div>
+<button ng-click="rotateTileCw(me.tiles[0])">to the right</button>
 <button ng-click="placeTile(me.tiles[0])">place the tile</button>
 <button ng-click="rotateTileCcw(me.tiles[0])">to the left</button>
 <button ng-click="reset()">reset game</button>

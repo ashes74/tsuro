@@ -456,11 +456,188 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 console.log("removed all moves")
             })
 
-        obj.$loaded().then(function (data) {
-            var tiles = data.tiles;
-            var deck = new Deck(tiles).shuffle().tiles;
-            initialDeckArr.$add(deck);
-        });
+
+        var tiles = [{
+            id: 1,
+            imageUrl: "",
+            paths: [3, 4, 6, 0, 1, 7, 2, 5],
+            rotation: 0
+        }, {
+            id: 2,
+            imageUrl: "",
+            paths: [1, 0, 4, 7, 2, 6, 5, 3],
+            rotation: 0
+        }, {
+            id: 3,
+            imageUrl: "",
+            paths: [1, 0, 4, 6, 2, 7, 3, 5],
+            rotation: 0
+        }, {
+            id: 4,
+            imageUrl: "",
+            paths: [2, 5, 0, 7, 6, 1, 4, 3],
+            rotation: 0
+        }, {
+            id: 5,
+            imageUrl: "",
+            paths: [4, 2, 1, 6, 0, 7, 3, 5],
+            rotation: 0
+        }, {
+            id: 6,
+            imageUrl: "",
+            paths: [1, 0, 5, 7, 6, 2, 4, 3],
+            rotation: 0
+        }, {
+            id: 7,
+            imageUrl: "",
+            paths: [2, 4, 0, 6, 1, 7, 3, 5],
+            rotation: 0
+        }, {
+            id: 8,
+            imageUrl: "",
+            paths: [2, 5, 0, 6, 7, 1, 3, 4],
+            rotation: 0
+        }, {
+            id: 9,
+            imageUrl: "",
+            paths: [1, 0, 7, 6, 5, 4, 3, 2],
+            rotation: 0
+        }, {
+            id: 10,
+            imageUrl: "",
+            paths: [4, 5, 6, 7, 0, 1, 2, 3],
+            rotation: 0
+        }, {
+            id: 11,
+            imageUrl: "",
+            paths: [7, 2, 1, 4, 3, 6, 5, 0],
+            rotation: 0
+        }, {
+            id: 12,
+            imageUrl: "",
+            paths: [2, 7, 0, 5, 6, 3, 4, 1],
+            rotation: 0
+        }, {
+            id: 13,
+            imageUrl: "",
+            paths: [5, 4, 7, 6, 1, 0, 3, 2],
+            rotation: 0
+        }, {
+            id: 14,
+            imageUrl: "",
+            paths: [3, 2, 1, 0, 7, 6, 5, 4],
+            rotation: 0
+        }, {
+            id: 15,
+            imageUrl: "",
+            paths: [1, 0, 7, 4, 3, 6, 5, 2],
+            rotation: 0
+        }, {
+            id: 16,
+            imageUrl: "",
+            paths: [1, 0, 5, 6, 7, 2, 3, 4],
+            rotation: 0
+        }, {
+            id: 17,
+            imageUrl: "",
+            paths: [3, 5, 6, 0, 7, 1, 2, 4],
+            rotation: 0
+        }, {
+            id: 18,
+            imageUrl: "",
+            paths: [2, 7, 0, 4, 3, 6, 5, 1],
+            rotation: 0
+        }, {
+            id: 19,
+            imageUrl: "",
+            paths: [4, 3, 6, 1, 0, 7, 2, 5],
+            rotation: 0
+        }, {
+            id: 20,
+            imageUrl: "",
+            paths: [2, 6, 0, 4, 3, 7, 1, 5],
+            rotation: 0
+        }, {
+            id: 21,
+            imageUrl: "",
+            paths: [2, 3, 0, 1, 7, 6, 5, 4],
+            rotation: 0
+        }, {
+            id: 22,
+            imageUrl: "",
+            paths: [2, 6, 0, 5, 7, 3, 1, 4],
+            rotation: 0
+        }, {
+            id: 23,
+            imageUrl: "",
+            paths: [1, 0, 6, 4, 3, 7, 2, 5],
+            rotation: 0
+        }, {
+            id: 24,
+            imageUrl: "",
+            paths: [3, 4, 7, 0, 1, 6, 5, 2],
+            rotation: 0
+        }, {
+            id: 25,
+            imageUrl: "",
+            paths: [1, 0, 3, 2, 7, 6, 5, 4],
+            rotation: 0
+        }, {
+            id: 26,
+            imageUrl: "",
+            paths: [1, 0, 6, 7, 5, 4, 2, 3],
+            rotation: 0
+        }, {
+            id: 27,
+            imageUrl: "",
+            paths: [2, 4, 0, 7, 1, 6, 5, 3],
+            rotation: 0
+        }, {
+            id: 28,
+            imageUrl: "",
+            paths: [4, 2, 1, 7, 0, 6, 5, 3],
+            rotation: 0
+        }, {
+            id: 29,
+            imageUrl: "",
+            paths: [1, 0, 3, 2, 5, 4, 7, 6],
+            rotation: 0
+        }, {
+            id: 30,
+            imageUrl: "",
+            paths: [2, 3, 0, 1, 6, 7, 4, 5],
+            rotation: 0
+        }, {
+            id: 31,
+            imageUrl: "",
+            paths: [3, 6, 5, 0, 7, 2, 1, 4],
+            rotation: 0
+        }, {
+            id: 32,
+            imageUrl: "",
+            paths: [1, 0, 6, 5, 7, 3, 2, 4],
+            rotation: 0
+        }, {
+            id: 33,
+            imageUrl: "",
+            paths: [1, 0, 3, 2, 6, 7, 4, 5],
+            rotation: 0
+        }, {
+            id: 34,
+            imageUrl: "",
+            paths: [4, 5, 7, 6, 0, 1, 3, 2],
+            rotation: 0
+        }, {
+            id: 35,
+            imageUrl: "",
+            paths: [1, 0, 7, 5, 6, 3, 4, 2],
+            rotation: 0
+        }];
+
+        var deck = new Deck(tiles).shuffle().tiles;
+        initialDeckArr.$add(deck);
+        deckArr.$add(deck);
+
 
 
 
@@ -516,18 +693,18 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         [0, 5, 6]
     ];
     $scope.startbottom = [
-        [0, 5, 0],
-        [0, 5, 1],
-        [1, 5, 0],
-        [1, 5, 1],
-        [2, 5, 0],
-        [2, 5, 1],
-        [3, 5, 0],
-        [3, 5, 1],
-        [4, 5, 0],
-        [4, 5, 1],
-        [5, 5, 0],
-        [5, 5, 1]
+        [0, 5, 5],
+        [0, 5, 4],
+        [1, 5, 5],
+        [1, 5, 4],
+        [2, 5, 5],
+        [2, 5, 4],
+        [3, 5, 5],
+        [3, 5, 4],
+        [4, 5, 5],
+        [4, 5, 4],
+        [5, 5, 5],
+        [5, 5, 4]
     ];
     $scope.startright = [
         [5, 0, 2],
