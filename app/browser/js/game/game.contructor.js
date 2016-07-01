@@ -61,7 +61,7 @@ class Game {
             this.deck.$save(0).then(function(ref){
                 console.log('dealt a card!');
             });
-            tiles += tile;
+            tiles = tiles.concat(tile);
         }
         return tiles;
     }

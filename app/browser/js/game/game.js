@@ -35,7 +35,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
 	//when the deck is loaded...
 	deckArr.$loaded().then(function (data) {
-		// $scope.game.deck = data[0]; 
 		$scope.game.deck = deckArr; //add the deck to the local game ? Try this as firebase DeckArr????
 
 
@@ -91,45 +90,43 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 		firebasePlayersArr.$loaded().then(function (players) {
 
 			if (user) {
-				var me = players.find(player => player.uid === user.uid);
-				
-				if (me) {
-					$scope.me = me;
-				}
-				if ($scope.me.marker === "n") $scope.me.marker = null;
+				var me = players.find(player => player.uid === user.uid);	//find me
+				if (me) $scope.me = me; //put me on scope
+				if ($scope.me.marker === "n") $scope.me.marker = null; //if i don't have a marker yet, set it to null
 			} else {
 				// No user is signed in.
 				console.log("no one is logged in");
 			}
-			console.log('im here!!!!!!!!')
+			console.log('im still logged in!', $scope.me);
 		});
 	});
 
 
 	/****************
-	AVAILABLE PLAYER ACTIONS AT GAME START
+	GAME START PLAYER ACTIONS
 	****************/
 
 	$scope.pickMarker = function (board, marker) {
-		$scope.me.marker = marker;
+		$scope.me.marker = marker; //my marker is this marker
 
 		firebasePlayersArr.$loaded()
 			.then(function (players) {
-				var meIdx;
 				//find my index in the players array
+				var meIdx;
 				players.find(function (e, i) {
 					if (e.$id === $scope.me.$id) meIdx = i;
 				});
+
 				//give me a marker and save me in firebase
 				firebasePlayersArr[meIdx].marker = marker;
 				firebasePlayersArr.$save(meIdx);
 			});
 
-		var idx = $scope.game.availableMarkers.indexOf(marker);
 
-		markersArr[0].splice(idx, 1);
+		var idx = $scope.game.availableMarkers.indexOf(marker); //find the available marker in firebase
+		markersArr[0].splice(idx, 1); //take it out
 
-		markersArr.$save(0)
+		markersArr.$save(0) //save it
 			.then(function (ref) {
 				console.log("removed the picked marker");
 				console.log(ref.key);
@@ -144,6 +141,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 		//place my marker
 		player.placeMarker(board, point, $scope.me);
 		$scope.me.tiles = $scope.game.deal(3); //deal me three cards
+		console.log($scope.me);
 
 		//when the firebase players are loaded....
 		firebasePlayersArr.$loaded()
@@ -155,7 +153,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 				});
 
 				firebasePlayersArr[meIdx] = $scope.me; //set firebase me to local me
-
 				firebasePlayersArr.$save(meIdx); //save it.
 			});
 	};
@@ -166,8 +163,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
 
 
-
-	// TODO: we probably need this on firebase so other people can't pick what's been picked
 
 	//For synchronizingGame...
 	// var syncRef = gameRef.child('moves');
