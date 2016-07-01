@@ -6,12 +6,15 @@ tsuro.config(function ($stateProvider) {
     });
 });
 
-tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stateParams, $firebaseObject, $firebaseArray) {
+tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stateParams, $firebaseObject, $firebaseArray, $state) {
     var ref = firebase.database().ref();
     var obj = $firebaseObject(ref);
 
     var gameRef = ref.child('games').child($stateParams.gameName);
     var gameArr = gameRef.child($stateParams.gameName);
+
+    var initialDeckRef = ref.child('games').child($stateParams.gameName).child('initialDeck');
+    var initialDeckArr = $firebaseArray(initialDeckRef);
 
     var deckRef = gameRef.child('deck');
     var deckArr = $firebaseArray(deckRef);
@@ -410,6 +413,8 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 // remove the player from firebase
                 firebasePlayersArr.$remove(firebasePlayersArr[meIdx]);
             });
+
+        $state.go('pickGame');
     };
 
     // TODO: need to remove this game room's moves from firebase?
@@ -424,12 +429,25 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 console.log("removed the deck", ref.key);
             });
 
-        movesArr.$remove()
+        initialDeckArr.$remove(0)
+            .then(function (ref) {
+                console.log("reomved the initialDeck", ref.key)
+            })
+
+        movesArr.$loaded()
+            .then(function (moves) {
+                for (var i = 0; i < moves.length; i++) {
+                    movesArr.$remove(i);
+                }
+            })
+            .then(function () {
+                console.log("removed all moves")
+            })
+
         obj.$loaded().then(function (data) {
             var tiles = data.tiles;
             var deck = new Deck(tiles).shuffle().tiles;
-            var initialDeckRef = ref.child('games').child($stateParams.gameName).child('initialDeck');
-            $firebaseArray(initialDeckRef).$add(deck);
+            initialDeckArr.$add(deck);
         });
 
 
@@ -451,6 +469,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             }
         });
 
+        $state.reload()
         console.log($scope.me);
 
     };
