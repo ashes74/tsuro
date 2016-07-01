@@ -101,7 +101,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 				$scope.me = players[meIdx];
 				$scope.game.currPlayer = meIdx;
 
-				//REVIEW: What does this do?
+				//REVIEW: What does this do? Why does it do it?
 				if ($scope.me.marker === "n") $scope.me.marker = null;
 
 			} else {
