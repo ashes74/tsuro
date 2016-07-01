@@ -1,4 +1,4 @@
-tsuro.config(function ($stateProvider) {
+tsuro.config(function($stateProvider) {
     $stateProvider.state('game', {
         url: '/game/:gameName',
         templateUrl: '/browser/js/game/game.html',
@@ -6,7 +6,7 @@ tsuro.config(function ($stateProvider) {
     });
 });
 
-tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stateParams, $firebaseObject, $firebaseArray) {
+tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $stateParams, $firebaseObject, $firebaseArray) {
     var ref = firebase.database().ref();
     var obj = $firebaseObject(ref);
 
@@ -37,15 +37,15 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     //new local game with game name defined by url
     $scope.game = new Game($stateParams.gameName);
 
-
-    boardArr.$add($scope.game.board);
-
     //when the board is loaded...
-    boardArr.$loaded().then(function(data){
+    boardArr.$loaded().then(function(data) {
+        if (!data.length) {
+            boardArr.$add($scope.game.board);
+        }
         $scope.game.board = boardArr;
-    
+
         //watching board for changes
-        boardRef.on('child_changed', function(snap){
+        boardRef.on('child_changed', function(snap) {
             //NEED TO RETURN TO CHECK BOARD
             console.log(snap);
             $scope.game.board = snap.val();
@@ -56,12 +56,12 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
 
     //when the deck is loaded...
-    deckArr.$loaded().then(function (data) {
+    deckArr.$loaded().then(function(data) {
 
         $scope.game.deck = deckArr; //add the deck to the local game ? Try this as firebase DeckArr????
 
         //don't start watching players until there is a deck in the game
-        playersRef.on("value", function (snap) {
+        playersRef.on("value", function(snap) {
             var snapPlayers = snap.val(); //grab the value of the snapshot (all players in game in Firebase)
 
             //for each player in this collection...
@@ -69,7 +69,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 var existingPlayerIndex, thisIsANewPlayer;
 
                 //find this 'snap' player's index in local game. find returns that value.
-                var localPlayer = $scope.game.players.find(function (plyr, plyrIdx) {
+                var localPlayer = $scope.game.players.find(function(plyr, plyrIdx) {
                     existingPlayerIndex = plyrIdx;
                     return plyr.uid === snapPlayers[thisPlayer].uid;
                 });
@@ -97,22 +97,22 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
 
     //when that markers array is loaded, update the available markers array on scope
-    markersArr.$loaded().then(function (data) {
+    markersArr.$loaded().then(function(data) {
         $scope.game.availableMarkers = data[0];
     });
 
     //if someone else picks a marker, update your view
-    markersRef.on('child_changed', function (data) {
+    markersRef.on('child_changed', function(data) {
         $scope.game.availableMarkers = data.val();
     });
 
     //on login, find me in the firebase players array
-    firebase.auth().onAuthStateChanged(function (user) {
-        firebasePlayersArr.$loaded().then(function (players) {
+    firebase.auth().onAuthStateChanged(function(user) {
+        firebasePlayersArr.$loaded().then(function(players) {
 
             if (user) {
                 var meIdx;
-                players.find(function (e, i) {
+                players.find(function(e, i) {
                     if (e.uid === user.uid) meIdx = i;
                 });
 
@@ -130,19 +130,26 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         });
     });
 
-    var board = $scope.game.board;
+
     /****************
     AVAILABLE PLAYER ACTIONS AT GAME START
-    ****************/ 
-    $scope.pickMarker = function (board, marker) {
+    ****************/
+
+    $scope.pickMarker = function(marker) {
+        boardArr.$loaded().then(function(data) {
+            pickMarkerFn(data, marker);
+        });
+    };
+
+    var pickMarkerFn = function(board, marker) {
 
         $scope.me.marker = marker;
 
         firebasePlayersArr.$loaded()
-            .then(function (players) {
+            .then(function(players) {
                 var meIdx;
                 //find my index in the players array
-                players.find(function (e, i) {
+                players.find(function(e, i) {
                     if (e.$id === $scope.me.$id) meIdx = i;
                 });
                 //give me a marker and save me in firebase
@@ -155,7 +162,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         markersArr[0].splice(idx, 1);
 
         markersArr.$save(0)
-            .then(function (ref) {
+            .then(function(ref) {
                 console.log("removed the picked marker");
                 console.log(ref.key);
             });
@@ -164,10 +171,16 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
     //TODO: limit start points
 
-    //adding a board to firebase
+    $scope.placeMarker = function(point) {
+        boardArr.$loaded().then(function(data) {
+            placeMarkerFn(data, point);
+        });
+    };
 
+    //adding a board to firebase
     //Have player pick their start point
-    $scope.placeMarker = function (board, point) {
+    var placeMarkerFn = function(board, point) {
+        console.log(board);
         // place my marker
         player.placeMarker(board, point, $scope.me);
         // deal me three cards
@@ -175,10 +188,10 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
         // when the firebase players are loaded....
         firebasePlayersArr.$loaded()
-            .then(function (players) {
+            .then(function(players) {
                 //find me in the firebase players array
                 var meIdx;
-                players.find(function (e, i) {
+                players.find(function(e, i) {
                     if (e.uid === $scope.me.uid) meIdx = i;
                 });
 
@@ -200,14 +213,14 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     //For synchronizingGame...
     // var syncRef = gameRef.child('moves');
     // syncRef.on('child_added', function (childSnapshot, prevChildKey) {
-    // 	//NEED TO DOUBLE CHECK!! What does childSnap returns?
-    // 	console.log('childSnapshot_SyncGame', childSnapshot);
-    // 	//depending on what childSnapshot gives me...I think it's one child per on call? It doesn't return an array of changes...I believe!
-    // 	if (childSnapshot.type === 'updateDeck') {
-    // 		$scope.game.deck = childSnapshot.updateDeck;
-    // 	} else {
-    // 		$scope.placeTile(childSnapshot.tile);
-    // 	}
+    //  //NEED TO DOUBLE CHECK!! What does childSnap returns?
+    //  console.log('childSnapshot_SyncGame', childSnapshot);
+    //  //depending on what childSnapshot gives me...I think it's one child per on call? It doesn't return an array of changes...I believe!
+    //  if (childSnapshot.type === 'updateDeck') {
+    //      $scope.game.deck = childSnapshot.updateDeck;
+    //  } else {
+    //      $scope.placeTile(childSnapshot.tile);
+    //  }
     // });
 
     // TODO: how to re-do the moves?
@@ -224,31 +237,31 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     $scope.dragon;
     var awaitingDragonHolders = [];
 
-    $scope.start = function () {
+    $scope.start = function() {
         //
     };
 
-    $scope.myTurn = function () {
+    $scope.myTurn = function() {
         $scope.me === $scope.currentPlayer;
     };
 
     //these are tied to angular ng-click buttons
-    $scope.rotateTileCw = function (tile) {
+    $scope.rotateTileCw = function(tile) {
         console.log("rotate to right");
         tile.rotation++;
         if (tile.rotation === 4) tile.rotation = 0;
     };
 
-    $scope.rotateTileCcw = function (tile) {
+    $scope.rotateTileCcw = function(tile) {
         tile.rotation--;
         if (tile.rotation === -4) tile.rotation = 0;
     };
 
     // CMT: use player's and game's prototype function to place tile and then move all players
-    $scope.placeTile = function (tile) {
+    $scope.placeTile = function(tile) {
         // TODO: send this state to firebase every time it's called
         if (tile.rotation > 0) {
-            tile.paths = tile.paths.map(function (connection) {
+            tile.paths = tile.paths.map(function(connection) {
                 connection = connection + 2;
                 if (connection === 9) connection = 1;
                 if (connection === 8) connection = 0;
@@ -257,7 +270,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             tile.paths.unshift(tile.paths.pop());
             tile.paths.unshift(tile.paths.pop());
         } else if (tile.rotation < 0) {
-            tile.paths = tile.paths.map(function (connection) {
+            tile.paths = tile.paths.map(function(connection) {
                 connection = connection - 2;
                 if (connection === -2) connection = 6;
                 if (connection === -1) connection = 7;
@@ -271,13 +284,13 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
         var firebasePlayersArr = $firebaseArray(playersRef);
         firebasePlayersArr.$loaded()
-            .then(function (players) {
+            .then(function(players) {
                 var meIdx;
-                players.find(function (e, i) {
+                players.find(function(e, i) {
                     if (e.$id === $scope.me.$id) meIdx = i;
                 });
 
-                firebasePlayersArr[meIdx].tiles = firebasePlayersArr[meIdx].tiles.filter(function (t) {
+                firebasePlayersArr[meIdx].tiles = firebasePlayersArr[meIdx].tiles.filter(function(t) {
                     return t.id !== tile.id
                 });
 
@@ -299,17 +312,33 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 var playersNextSpaceY = firebasePlayersArr[meIdx].nextSpace.y;
                 return [playersNextSpaceY, playersNextSpaceX];
             })
-            .then(function(nextSpace){
-                boardArr.$loaded().then(function(data){
-                    data[nextSpace[0]][nextSpace[1]].tile.$add(tile);
+            .then(function(nextSpace) {
+                boardArr.$loaded()
+                .then(function(){
+                    var key = boardArr.$keyAt(0)
+                    var spaceRef = boardRef.child(key).child(nextSpace[0]).child(nextSpace[1])
+                    var spaceArr = $firebaseArray(spaceRef);
+                    console.log("out", spaceArr)
+                    spaceArr.$loaded()
+                        .then(function() {
+                            console.log("here", spaceArr)
+                            // var key = boardArr.$keyAt(0)
+                            console.log("tile", tile)
+                            spaceArr[1] = tile;
 
-                    var points = data[nextSpace[0]][nextSpace[1]].points;
-                    points.forEach(function(point, idx){
-                        point.neighbors.$add(
-                            points[tile.paths[idx]]);
-                        //save it back to firebase
+                            // boardArr[0][nextSpace[0]][nextSpace[1]].tile = tile;
+                            spaceArr.$save(1);
+
+                            // var points = data[nextSpace[0]][nextSpace[1]].points;
+                            // points.forEach(function(point, idx) {
+                            //     point.neighbors.$add(
+                            //         points[tile.paths[idx]]);
+                                //save it back to firebase
+                            // });
                     });
-                });
+                    
+                })
+
                 //Need to reassign the tiles points neighbors
 
             });
@@ -321,40 +350,38 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         //     'tile': tile,
         //     'playerUid': $scope.me.uid
         // });
-
-        
-
         firebasePlayersArr.$loaded()
-            .then(function (players) {
-                players.forEach(function (p) {
-                    let movable = player.moveTo(p.point);
-                    var pIdx = players.indexOf(p)
+            .then(function(players) {
+                boardArr.$loaded().then(function(board) {
+                    players.forEach(function(p) {
+                        let movable = player.moveTo(p.point);
+                        var pIdx = players.indexOf(p)
 
-                    while (movable) {
-                        p.point.travelled = true;
-                        p.point = movable;
+                        while (movable) {
+                            p.point.travelled = true;
+                            p.point = movable;
 
-                        if (p.point.travelled === true) {
-                            p.canPlay = false;
-                            break;
+                            if (p.point.travelled === true) {
+                                p.canPlay = false;
+                                break;
+                            }
+
+                            // Check the space that's not my current nextSpace
+                            var newNextSpaceInfo = p.point.spaces.filter(function(space) {
+                                return space.x !== p.nextSpace.x || space.y !== p.nextSpace.y
+                            })[0]
+
+                            let oldSpace = p.nextSpace;
+                            let newSpace = board[0][newNextSpaceInfo.y][newNextSpaceInfo.x];
+                            p.nextSpace = newSpace;
+
+                            firebasePlayersArr.$save(pIdx);
+                            // TODO: need more players to check if it works
+                            player.checkDeath(p);
+                            movable = player.moveTo(p.point);
                         }
-
-                        // Check the space that's not my current nextSpace
-                        var newNextSpaceInfo = p.point.spaces.filter(function (space) {
-                            return space.x !== p.nextSpace.x || space.y !== p.nextSpace.y
-                        })[0]
-
-                        let oldSpace = p.nextSpace;
-                        let newSpace = $scope.game.board[newNextSpaceInfo.y][newNextSpaceInfo.x];
-                        p.nextSpace = newSpace;
-
-                        firebasePlayersArr.$save(pIdx);
-                        // TODO: need more players to check if it works
-                        player.checkDeath(p);
-                        movable = player.moveTo(p.point);
-                    }
-
-                    console.log("end moving")
+                        console.log("end moving")
+                    });
                 });
             });
 
@@ -370,7 +397,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 //with new cards & need to reshuffle
 
                 // because the deadPlayers() returns a 2D array, use reduce to flatten it
-                var deadPlayerTiles = $scope.game.deadPlayers().reduce(function (a, b) {
+                var deadPlayerTiles = $scope.game.deadPlayers().reduce(function(a, b) {
                     return a = a.concat(b)
                 })
 
@@ -394,10 +421,10 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             } else {
                 console.log("give me a tile")
                 firebasePlayersArr.$loaded()
-                    .then(function (players) {
+                    .then(function(players) {
                         //find me in the firebase players array
                         var meIdx;
-                        players.find(function (e, i) {
+                        players.find(function(e, i) {
                             if (e.uid === $scope.me.uid) meIdx = i;
                         });
 
@@ -414,10 +441,10 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 while ($scope.dragon && $scope.game.deck.length) {
                     $scope.dragon.tiles.push($scope.game.deal(1));
                     firebasePlayersArr.$loaded()
-                        .then(function (players) {
+                        .then(function(players) {
                             //find me in the firebase players array
                             var meIdx;
-                            players.find(function (e, i) {
+                            players.find(function(e, i) {
                                 if (e.uid === $scope.dragon.uid) meIdx = i;
                             });
 
@@ -439,15 +466,15 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     };
 
 
-    $scope.leaveGame = function () {
+    $scope.leaveGame = function() {
         console.log("i'm out");
 
         firebasePlayersArr.$loaded()
-            .then(function (players) {
+            .then(function(players) {
                 //find me in the firebase players array
                 var meIdx;
 
-                players.find(function (e, i) {
+                players.find(function(e, i) {
                     if (e.uid === $scope.me.uid) meIdx = i;
                 });
 
@@ -457,19 +484,19 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     };
 
     // TODO: need to remove this game room's moves from firebase?
-    $scope.reset = function () {
+    $scope.reset = function() {
         markersArr.$remove(0)
-            .then(function (ref) {
+            .then(function(ref) {
                 console.log("removed all markers", ref.key);
             });
 
         deckArr.$remove(0)
-            .then(function (ref) {
+            .then(function(ref) {
                 console.log("removed the deck", ref.key);
             });
 
         movesArr.$remove()
-        obj.$loaded().then(function (data) {
+        obj.$loaded().then(function(data) {
             var tiles = data.tiles;
             var deck = new Deck(tiles).shuffle().tiles;
             var initialDeckRef = ref.child('games').child($stateParams.gameName).child('initialDeck');
@@ -483,7 +510,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
 
         var players = $firebaseArray(playersRef);
-        players.$loaded().then(function (data) {
+        players.$loaded().then(function(data) {
             for (var i = 0; i < data.length; i++) {
                 data[i].canPlay = true;
                 data[i].marker = 'n';
@@ -529,18 +556,18 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         [0, 5, 6]
     ];
     $scope.startbottom = [
-        [0, 5, 0],
-        [0, 5, 1],
-        [1, 5, 0],
-        [1, 5, 1],
-        [2, 5, 0],
-        [2, 5, 1],
-        [3, 5, 0],
-        [3, 5, 1],
-        [4, 5, 0],
-        [4, 5, 1],
-        [5, 5, 0],
-        [5, 5, 1]
+        [0, 5, 5],
+        [0, 5, 4],
+        [1, 5, 5],
+        [1, 5, 4],
+        [2, 5, 5],
+        [2, 5, 4],
+        [3, 5, 5],
+        [3, 5, 4],
+        [4, 5, 5],
+        [4, 5, 4],
+        [5, 5, 5],
+        [5, 5, 4]
     ];
     $scope.startright = [
         [5, 0, 2],

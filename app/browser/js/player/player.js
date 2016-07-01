@@ -31,12 +31,11 @@ Player.prototype.placeMarker = function (board, point, self) {
     var x = point[0];
     var y = point[1];
     var pointsIndex = point[2];
-
-    self.point = board[y][x].points[pointsIndex];
+    self.point = board[0][y][x].points[pointsIndex];
     self.point.travelled = true;
 
     //[x, y] from the point
-    self.nextSpace = board[y][x];
+    self.nextSpace = board[0][y][x];
 
     // in each Space.points array, find this specific point and get the position (integer) inside this space.
     self.nextSpacePointsIndex = self.nextSpace.points.indexOf(self.point);
