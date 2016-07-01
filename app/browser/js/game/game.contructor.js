@@ -54,14 +54,15 @@ class Game {
         return this.getCurrentPlayer();
     }
 
-    deal(num){
+    deal(num) {
         var tiles = [];
-        for(var i = 0; i < num; i++){ 
-            var tile = this.deck[0].splice(0,1);
-            this.deck.$save(0).then(function(ref){
+        for (var i = 0; i < num; i++) {
+            var tile = this.deck[0].splice(0, 1);
+            this.deck.$save(0).then(function (ref) {
                 console.log('dealt a card!');
             });
-            tiles += tile;
+            tiles = tiles.concat(tile);
+            console.log(tiles)
         }
         return tiles;
     }
