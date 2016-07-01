@@ -1,48 +1,69 @@
 <section id="game" class="wrapper">
+    <aside class="tileDrawer">
+        <h2>YOUR TILES</h2>
+        <div class="tile" ng-repeat="tile in me.tiles"><img ng-src="{{tile.imageUrl}}" /></div>
+<!--         <div class="tile"></div>
+        <div class="tile"></div> -->
+    </aside>
     <main id="board">
         <!-- top row -->
         <div class="corner"></div>
         <div class="frame horizontal">
-            <div ng-repeat="start in starttop" class="startpoints" ng-disable="!me" ng-click="placeMarker(game.board, start)">{{start[0]}}.{{start[1]}}.{{start[2]}}</div>
+            <div ng-repeat="start in starttop" class="startpoints" ng-disable="!me" ng-click="placeMarker(game.board,start)">
+            <p>▼</p>
+            </div>
         </div>
         <div class="corner"></div>
-
         <!-- middle row -->
         <div class="frame vertical">
-            <div ng-repeat="start in startleft" class="startpoints" ng-disable="!me" ng-click="placeMarker(game.board,start)">{{start[0]}}.{{start[1]}}.{{start[2]}}</div>
+            <div ng-repeat="start in startleft" class="startpoints" ng-disable="!me.nextSpace.x === " ng-click="placeMarker(game.board,start)">
+                <p>▶</p>
+            </div>
         </div>
         <div class="space-container">
-            <div ng-repeat="space in spaces" class="space"></div>
+            <div ng-repeat="space in spaces" class="space" ng-class="{mynext: me.nextSpace.x === space.x && me.nextSpace.y === space.y}">{{space.x}},{{space.y}}</div>
         </div>
         <div class="frame vertical">
-            <div ng-repeat="start in startright" class="startpoints" ng-disable="!me" ng-click="placeMarker(game.board,start)">{{start[0]}}.{{start[1]}}.{{start[2]}}</div>
+            <div ng-repeat="start in startright" class="startpoints" ng-disable="!me" ng-click="placeMarker(game.board,start)">
+            <p>◀</p>
+            </div>
         </div>
 
         <!-- bottom row -->
         <div class="corner"></div>
         <div class="frame horizontal">
-            <div ng-repeat="start in startbottom" class="startpoints" ng-disable="!me" ng-click="placeMarker(game.board,start)">{{start[0]}}.{{start[1]}}.{{start[2]}}</div>
+            <div ng-repeat="start in startbottom" class="startpoints" ng-disable="!me" ng-click="placeMarker(game.board,start)">
+                <p>▲</p>
+            </div>
         </div>
         <div class="corner"></div>
     </main>
+    <aside class="playerDrawer">
+        <h2>PLAYERS</h2>
+        <div class="player" ng-repeat="player in game.players">
+            <p>{{player.uid}}</p>
+            <div class="color-field {{player.marker}}"></div>
+        </div>
+    </aside>
 </section>
+
 
 <div class="markermodal" ng-show="!me.marker">
     <p>Choose your dragon wisely...</p>
     <div ng-repeat="marker in game.availableMarkers" class="circle {{marker}}" ng-disable="me.marker || !me" ng-click="pickMarker(game.board, marker)"></div>
 </div>
-
 <!-- TODO: We should just place the tile on the nextSpace for the player (floating on the board), and they can rotate, then click on the place the tile button to place it down ng-click="placeTile(tile)"-->
-<div ng-repeat="tile in me.tiles">
+
+<!-- <div ng-repeat="tile in me.tiles">
     <p>
         id:
         {{tile.id}}, rotation:
         {{tile.rotation}}, paths:
         {{tile.paths}}
     </p>
-</div>
-<button ng-click="rotateTileCw(me.tiles[0])">to the right</button>
+</div> -->
+<!-- <button ng-click="rotateTileCw(me.tiles[0])">to the right</button>
 <button ng-click="placeTile(me.tiles[0])">place the tile</button>
 <button ng-click="rotateTileCcw(me.tiles[0])">to the left</button>
 <button ng-click="reset()">reset game</button>
-<button ng-click="leaveGame()">leave the game</button>
+<button ng-click="leaveGame()">leave the game</button> -->
