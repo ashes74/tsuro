@@ -71,8 +71,3 @@ Player.prototype.checkDeath = function (self) {
 
     if (self.point.edge || allTravelled.length === 2) self.canPlay = false;
 };
-
-// Player.prototype.die = function () {
-//     this.canPlay = false;
-//     // TODO: need to send an alert or message to the player who just died.
-// };
