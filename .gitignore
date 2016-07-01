@@ -3,3 +3,4 @@ node_modules
 .gitignore
 main.js
 app/public/
+app/public/main.js
