@@ -69,7 +69,6 @@ Player.prototype.moveTo = function (pointer) {
     let nextPoint = pointer.neighbors.filter(function (neighbor) {
         return !neighbor.travelled && neighbor !== "n";
     })[0];
-    console.log("nextPoint", nextPoint)
     return nextPoint;
 };
 
