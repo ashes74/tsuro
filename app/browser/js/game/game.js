@@ -37,6 +37,8 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     //new local game with game name defined by url
     $scope.game = new Game($stateParams.gameName);
 
+    $scope.spaces = _.flatten($scope.game.board);
+
     //when the deck is loaded...
     deckArr.$loaded().then(function (data) {
 
