@@ -174,3 +174,5 @@ var tiles = [{
     paths: [1, 0, 7, 5, 6, 3, 4, 2],
     rotation: 0
 }];
+
+module.exports = tiles;
