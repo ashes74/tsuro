@@ -175,12 +175,9 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     GAMEPLAY ACTIONS
     ****************/
     $scope.tryTile = function(tile){
-        console.log('me', $scope.me);
-        console.log('hi me!', tile);
+        console.log('trying tile');
         $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].image = tile.imageUrl;
         $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].rotation = tile.rotation;
-        console.log($scope.game.board);
-        //set board[y][x] image to tile.image?
     };
 
 
@@ -238,6 +235,9 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
     // CMT: use player's and game's prototype function to place tile and then move all players
     $scope.placeTile = function (tile) {
+        console.log('placing tile...');
+        $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].image = tile.imageUrl;
+        $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].rotation = tile.rotation;
         // TODO: send this state to firebase every time it's called
         if (tile.rotation > 0) {
             tile.paths = tile.paths.map(function (connection) {
@@ -724,12 +724,13 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
 tsuro.directive('tile', function(){
     return {
-        template: '<img ng-src="{{thisTile.imageUrl}}" ng-click="tryTile(thisTile)" ng-class="{east: thisTile.rotation === 1 || thisTile.rotation === -3, south: thisTile.rotation === 2 || thisTile.rotation === -2, west: thisTile.rotation === 3 || thisTile.rotation === -1}" /><button ng-click="rotateccw(thisTile)">CCW</button><button ng-click="rotatecw(thisTile)">CW</button>',
+        templateUrl: 'browser/js/game/tile.directive.html',
         scope: {
             thisTile: '=',
             'tryTile': '&tryTile',
             'rotateccw': '&rotateccw',
-            'rotatecw': '&rotatecw'
+            'rotatecw': '&rotatecw',
+            'place': '&place'
         },
         link: function(s,e,a){
             // e.on('click', function(event){

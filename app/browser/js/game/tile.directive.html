@@ -1,0 +1,10 @@
+<img 	ng-src="{{thisTile.imageUrl}}" 
+			ng-click="tryTile(thisTile)" 
+			ng-class="{
+			east: thisTile.rotation === 1 || thisTile.rotation === -3, 
+			south: thisTile.rotation === 2 || thisTile.rotation === -2, 
+			west: thisTile.rotation === 3 || thisTile.rotation === -1
+			}" />
+<button ng-click="rotateccw(thisTile)">CCW</button>
+<button ng-click="place(thisTile)">PLACE</button>
+<button ng-click="rotatecw(thisTile)">CW</button>
