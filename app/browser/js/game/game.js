@@ -176,6 +176,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
     //TODO: limit start points
 
+
     $scope.placeMarker = function(point) {
         boardArr.$loaded().then(function(data) {
             placeMarkerFn(data, point);
@@ -186,11 +187,15 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
     //Have player pick their start point
     var placeMarkerFn = function(board, point) {
         console.log(board);
+
+    // $scope.clicked = false
+
         // place my marker
         player.placeMarker(board, point, $scope.me);
         // deal me three cards
         $scope.me.tiles = $scope.game.deal(3);
 
+        $scope.clicked = true;
         // when the firebase players are loaded....
         firebasePlayersArr.$loaded()
             .then(function(players) {
@@ -204,11 +209,18 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
                 firebasePlayersArr.$save(meIdx); //save it.
             });
+        return false;
     };
 
 
-
-
+    /****************
+    GAMEPLAY ACTIONS
+    ****************/
+    $scope.tryTile = function(tile){
+        console.log('trying tile');
+        $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].image = tile.imageUrl;
+        $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].rotation = tile.rotation;
+    };
 
 
 
@@ -251,19 +263,24 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
     };
 
     //these are tied to angular ng-click buttons
-    $scope.rotateTileCw = function(tile) {
-        console.log("rotate to right");
+
+    $scope.rotateTileCw = function (tile) {
         tile.rotation++;
         if (tile.rotation === 4) tile.rotation = 0;
+        console.log("rotate cw", tile);
     };
 
     $scope.rotateTileCcw = function(tile) {
         tile.rotation--;
         if (tile.rotation === -4) tile.rotation = 0;
+        console.log('rotate ccw', tile);
     };
 
     // CMT: use player's and game's prototype function to place tile and then move all players
-    $scope.placeTile = function(tile) {
+
+    $scope.placeTile = function (tile) {
+        $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].image = tile.imageUrl;
+        $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].rotation = tile.rotation;
         // TODO: send this state to firebase every time it's called
         if (tile.rotation > 0) {
             tile.paths = tile.paths.map(function(connection) {
@@ -781,4 +798,25 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
         [5, 5, 2],
         [5, 5, 3]
     ];
+
 });
+
+tsuro.directive('tile', function(){
+    return {
+        templateUrl: 'browser/js/game/tile.directive.html',
+        scope: {
+            thisTile: '=',
+            'tryTile': '&tryTile',
+            'rotateccw': '&rotateccw',
+            'rotatecw': '&rotatecw',
+            'place': '&place'
+        },
+        link: function(s,e,a){
+            // e.on('click', function(event){
+            //     s.tryTile(s.thisTile);
+            //     // console.log('clicked me!', s.thisTile);
+            // });
+        }
+    };
+});
+
