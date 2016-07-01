@@ -7,13 +7,6 @@ tsuro.config(function ($stateProvider) {
 });
 
 tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stateParams, $firebaseObject, $firebaseArray) {
-    $scope.tile = {
-        imageUrl: "",
-        paths: [3, 4, 6, 0, 1, 7, 2, 5],
-        rotation: 0
-    };
-
-
     var ref = firebase.database().ref();
     var obj = $firebaseObject(ref);
     var gameRef = ref.child('games').child($stateParams.gameName);
@@ -248,7 +241,11 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                     if (e.$id === $scope.me.$id) meIdx = i;
                 });
 
-                player.placeTile(tile, firebasePlayersArr[meIdx]);
+                firebasePlayersArr[meIdx].tiles = firebasePlayersArr[meIdx].tiles.filter(function (t) {
+                    return t.id !== tile.id
+                });
+
+                firebasePlayersArr[meIdx].nextSpace.tileUrl = tile.imageUrl;
 
                 for (var i = 0; i < tile.paths.length; i++) {
                     if (firebasePlayersArr[meIdx].nextSpace.points[i].neighbors[0] === "n") {
@@ -259,6 +256,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 }
 
                 firebasePlayersArr[meIdx].point = firebasePlayersArr[meIdx].nextSpace.points[firebasePlayersArr[meIdx].nextSpacePointsIndex];
+
                 firebasePlayersArr.$save(meIdx);
             });
 
@@ -281,8 +279,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                         p.point.travelled = true;
                         p.point = movable;
 
-                        console.log("p nextSpace", p.nextSpace)
-                        console.log("p.point.spaces", p.point.spaces)
+                        // Check the space that's not my current nextSpace
                         var newNextSpaceInfo = p.point.spaces.filter(function (space) {
                             return space.x !== p.nextSpace.x || space.y !== p.nextSpace.y
                         })[0]
@@ -292,9 +289,9 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                         p.nextSpace = newSpace;
 
                         firebasePlayersArr.$save(pIdx);
-                        //         // player.checkDeath(p);
+                        // TODO: need more players to check if it works
+                        player.checkDeath(p);
                         movable = player.moveTo(p.point);
-
                     }
                 });
             });

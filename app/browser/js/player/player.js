@@ -54,15 +54,6 @@ Player.prototype.newSpace = function (board, oldSpace, self) {
     }
 };
 
-// need to use self becuse we need to change $scope.me on gameCtrl and send to firebase
-Player.prototype.placeTile = function (tile, self) {
-    self.tiles = self.tiles.filter(function (t) {
-        return t.id !== tile.id
-    });
-
-    self.nextSpace.tileUrl = tile.imageUrl;
-
-};
 
 Player.prototype.moveTo = function (pointer) {
     //always be returning 0 or 1 point in the array
@@ -72,30 +63,16 @@ Player.prototype.moveTo = function (pointer) {
     return nextPoint;
 };
 
-// TODO: not sure how to make this keep moving with players instead of self
-// Player.prototype.keepMoving = function (self) {
-//     let movable = self.moveTo(self.point);
-//     while (movable) {
-//         self.point.travelled = true;
-//         self.point = self.moveTo(self.point);
-//         let oldSpace = self.nextSpace;
-//         let newSpace = newSpace(oldSpace);
-//         self.nextSpace = newSpace;
-//         self.nextSpacePointsIndex = self.nextSpace.points.indexOf(self.point);
-//         self.checkDeath();
-//         movable = self.moveTo(self.point);
-//     }
-// };
 
 Player.prototype.checkDeath = function (self) {
     var allTravelled = self.point.neighbors.filter(function (neighbor) {
         return neighbor.travelled;
     });
 
-    if (self.point.edge || allTravelled.length === 2) self.die();
+    if (self.point.edge || allTravelled.length === 2) self.canPlay = false;
 };
 
-Player.prototype.die = function () {
-    this.canPlay = false;
-    // TODO: need to send an alert or message to the player who just died.
-};
+// Player.prototype.die = function () {
+//     this.canPlay = false;
+//     // TODO: need to send an alert or message to the player who just died.
+// };
