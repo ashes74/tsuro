@@ -15,7 +15,7 @@ Board.prototype.drawBoard = function () {
 function Space(x, y, board) {
     this.x = x;
     this.y = y;
-    this.tile = "n";
+    // this.tile = "n";
     this.points = [null, null, null, null, null, null, null, null];
 
     for (var i = 0; i < 8; i++) {

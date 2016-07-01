@@ -1,14 +1,15 @@
 <section id="game" class="wrapper">
     <aside class="tileDrawer">
         <h2>YOUR TILES</h2>
-        <div class="tile" ng-repeat="tile in me.tiles"><img ng-src="{{tile.imageUrl}}" /></div>
-<!--         <div class="tile"></div>
+        <div class="tile" ng-repeat="tile in me.tiles"><img ng-src="{{tile.imageUrl}}"/></div>
+        <!--         <div class="tile"></div>
         <div class="tile"></div> -->
     </aside>
     <main id="board">
         <!-- top row -->
         <div class="corner"></div>
         <div class="frame horizontal">
+
             <div ng-repeat="start in starttop" class="startpoints" ng-disable="!me" ng-click="placeMarker(start)">
             <p>▼</p>
             </div>
@@ -24,8 +25,10 @@
             <div ng-repeat="space in spaces" class="space" ng-class="{mynext: me.nextSpace.x === space.x && me.nextSpace.y === space.y}">{{space.x}},{{space.y}}</div>
         </div>
         <div class="frame vertical">
+
             <div ng-repeat="start in startright" class="startpoints" ng-disable="!me" ng-click="placeMarker(start)">
             <p>◀</p>
+
             </div>
         </div>
 
@@ -46,7 +49,6 @@
         </div>
     </aside>
 </section>
-
 
 <div class="markermodal" ng-show="!me.marker">
     <p>Choose your dragon wisely...</p>

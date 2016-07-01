@@ -318,40 +318,30 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
             .then(function(nextSpace) {
                 boardArr.$loaded()
                     .then(function() {
-                        var key = boardArr.$keyAt(0)
+                        var key = boardArr.$keyAt(0);
                         var spaceRef = boardRef.child(key).child(nextSpace[0]).child(nextSpace[1]);
                         var spaceArr = $firebaseArray(spaceRef);
-                        spaceArr[1] = tile;
-                        console.log(spaceArr);
-                        spaceArr.$save(1);
-                        console.log("out", spaceArr);
-
-
-                        // spaceArr.$loaded()
-                        //     .then(function() {
-                        //         console.log("here", spaceArr)
-                        //         // var key = boardArr.$keyAt(0)
-                        //         console.log("tile", tile)
-                        //         spaceArr[1] = tile;
-
-                        //         // boardArr[0][nextSpace[0]][nextSpace[1]].tile = tile;
-                        //         spaceArr.$save(tile);
-
-                        //         // var points = data[nextSpace[0]][nextSpace[1]].points;
-                        //         // points.forEach(function(point, idx) {
-                        //         //     point.neighbors.$add(
-                        //         //         points[tile.paths[idx]]);
-                        //             //save it back to firebase
-                        //         // });
-                        // });
-
+                        spaceArr.$add(tile);
+                        return key;
                     })
+                    .then(function(key) {
+                        var spaceRef = boardRef.child(key).child(nextSpace[0]).child(nextSpace[1]);
+                        var spaceArr = $firebaseArray(spaceRef);
+                        spaceArr.$loaded().then(function() {
+                            console.log(spaceArr[1]);
+                            spaceArr[1].forEach(function(point, idx) {
+                                var pointRef = boardRef.child(key).child(nextSpace[0]).child(nextSpace[1]).child('points');
+                                var pointArr = $firebaseArray(pointRef);
+                                pointArr.$loaded().then(function() {
+                                    var neighborRef = boardRef.child(key).child(nextSpace[0]).child(nextSpace[1]).child('points').child(idx).child('neighbors');
+                                    var neighborArr = $firebaseArray(neighborRef);
+                                    neighborArr.$add(pointArr[tile.paths[idx]]);
+                                });
+                            });
 
-                //Need to reassign the tiles points neighbors
-
+                        });
+                    })
             });
-
-
         // CMT: this should send the rotated tile to firebase
         // movesArr.$add({
         //     'type': 'placeTile',
@@ -375,9 +365,16 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
                             }
 
                             // Check the space that's not my current nextSpace
-                            var newNextSpaceInfo = p.point.spaces.filter(function(space) {
-                                return space.x !== p.nextSpace.x || space.y !== p.nextSpace.y
-                            })[0]
+                            var newNextSpaceInfo;
+
+                            if (p.point.spaces.length > 1) {
+                                newNextSpaceInfo = p.point.spaces.filter(function(space) {
+                                    return space.x !== p.nextSpace.x || space.y !== p.nextSpace.y
+                                })[0]
+
+                            } else {
+                                newNextSpaceInfo = p.point.spaces[0]
+                            }
 
                             let oldSpace = p.nextSpace;
                             let newSpace = board[0][newNextSpaceInfo.y][newNextSpaceInfo.x];
@@ -520,11 +517,189 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
                 console.log("removed all moves")
             })
 
-        obj.$loaded().then(function(data) {
-            var tiles = data.tiles;
-            var deck = new Deck(tiles).shuffle().tiles;
-            initialDeckArr.$add(deck);
-        });
+
+        var tiles = [{
+            id: 1,
+            imageUrl: "",
+            paths: [3, 4, 6, 0, 1, 7, 2, 5],
+            rotation: 0
+        }, {
+            id: 2,
+            imageUrl: "",
+            paths: [1, 0, 4, 7, 2, 6, 5, 3],
+            rotation: 0
+        }, {
+            id: 3,
+            imageUrl: "",
+            paths: [1, 0, 4, 6, 2, 7, 3, 5],
+            rotation: 0
+        }, {
+            id: 4,
+            imageUrl: "",
+            paths: [2, 5, 0, 7, 6, 1, 4, 3],
+            rotation: 0
+        }, {
+            id: 5,
+            imageUrl: "",
+            paths: [4, 2, 1, 6, 0, 7, 3, 5],
+            rotation: 0
+        }, {
+            id: 6,
+            imageUrl: "",
+            paths: [1, 0, 5, 7, 6, 2, 4, 3],
+            rotation: 0
+        }, {
+            id: 7,
+            imageUrl: "",
+            paths: [2, 4, 0, 6, 1, 7, 3, 5],
+            rotation: 0
+        }, {
+            id: 8,
+            imageUrl: "",
+            paths: [2, 5, 0, 6, 7, 1, 3, 4],
+            rotation: 0
+        }, {
+            id: 9,
+            imageUrl: "",
+            paths: [1, 0, 7, 6, 5, 4, 3, 2],
+            rotation: 0
+        }, {
+            id: 10,
+            imageUrl: "",
+            paths: [4, 5, 6, 7, 0, 1, 2, 3],
+            rotation: 0
+        }, {
+            id: 11,
+            imageUrl: "",
+            paths: [7, 2, 1, 4, 3, 6, 5, 0],
+            rotation: 0
+        }, {
+            id: 12,
+            imageUrl: "",
+            paths: [2, 7, 0, 5, 6, 3, 4, 1],
+            rotation: 0
+        }, {
+            id: 13,
+            imageUrl: "",
+            paths: [5, 4, 7, 6, 1, 0, 3, 2],
+            rotation: 0
+        }, {
+            id: 14,
+            imageUrl: "",
+            paths: [3, 2, 1, 0, 7, 6, 5, 4],
+            rotation: 0
+        }, {
+            id: 15,
+            imageUrl: "",
+            paths: [1, 0, 7, 4, 3, 6, 5, 2],
+            rotation: 0
+        }, {
+            id: 16,
+            imageUrl: "",
+            paths: [1, 0, 5, 6, 7, 2, 3, 4],
+            rotation: 0
+        }, {
+            id: 17,
+            imageUrl: "",
+            paths: [3, 5, 6, 0, 7, 1, 2, 4],
+            rotation: 0
+        }, {
+            id: 18,
+            imageUrl: "",
+            paths: [2, 7, 0, 4, 3, 6, 5, 1],
+            rotation: 0
+        }, {
+            id: 19,
+            imageUrl: "",
+            paths: [4, 3, 6, 1, 0, 7, 2, 5],
+            rotation: 0
+        }, {
+            id: 20,
+            imageUrl: "",
+            paths: [2, 6, 0, 4, 3, 7, 1, 5],
+            rotation: 0
+        }, {
+            id: 21,
+            imageUrl: "",
+            paths: [2, 3, 0, 1, 7, 6, 5, 4],
+            rotation: 0
+        }, {
+            id: 22,
+            imageUrl: "",
+            paths: [2, 6, 0, 5, 7, 3, 1, 4],
+            rotation: 0
+        }, {
+            id: 23,
+            imageUrl: "",
+            paths: [1, 0, 6, 4, 3, 7, 2, 5],
+            rotation: 0
+        }, {
+            id: 24,
+            imageUrl: "",
+            paths: [3, 4, 7, 0, 1, 6, 5, 2],
+            rotation: 0
+        }, {
+            id: 25,
+            imageUrl: "",
+            paths: [1, 0, 3, 2, 7, 6, 5, 4],
+            rotation: 0
+        }, {
+            id: 26,
+            imageUrl: "",
+            paths: [1, 0, 6, 7, 5, 4, 2, 3],
+            rotation: 0
+        }, {
+            id: 27,
+            imageUrl: "",
+            paths: [2, 4, 0, 7, 1, 6, 5, 3],
+            rotation: 0
+        }, {
+            id: 28,
+            imageUrl: "",
+            paths: [4, 2, 1, 7, 0, 6, 5, 3],
+            rotation: 0
+        }, {
+            id: 29,
+            imageUrl: "",
+            paths: [1, 0, 3, 2, 5, 4, 7, 6],
+            rotation: 0
+        }, {
+            id: 30,
+            imageUrl: "",
+            paths: [2, 3, 0, 1, 6, 7, 4, 5],
+            rotation: 0
+        }, {
+            id: 31,
+            imageUrl: "",
+            paths: [3, 6, 5, 0, 7, 2, 1, 4],
+            rotation: 0
+        }, {
+            id: 32,
+            imageUrl: "",
+            paths: [1, 0, 6, 5, 7, 3, 2, 4],
+            rotation: 0
+        }, {
+            id: 33,
+            imageUrl: "",
+            paths: [1, 0, 3, 2, 6, 7, 4, 5],
+            rotation: 0
+        }, {
+            id: 34,
+            imageUrl: "",
+            paths: [4, 5, 7, 6, 0, 1, 3, 2],
+            rotation: 0
+        }, {
+            id: 35,
+            imageUrl: "",
+            paths: [1, 0, 7, 5, 6, 3, 4, 2],
+            rotation: 0
+        }];
+
+        var deck = new Deck(tiles).shuffle().tiles;
+        initialDeckArr.$add(deck);
+        deckArr.$add(deck);
+
+
 
 
 
