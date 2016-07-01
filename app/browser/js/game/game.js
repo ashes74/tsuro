@@ -136,6 +136,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 			firebasePlayersArr.$save(meIdx);
 		});
 
+
 		var idx = $scope.game.availableMarkers.indexOf(marker);
 
 		markersArr[0].splice(idx, 1);
@@ -530,7 +531,35 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 		[5, 5, 2],
 		[5, 5, 3]
 	];
+	/****************
+	GAMEPLAY ACTIONS
+	****************/
+	$scope.tryTile = function(tile){
+		console.log('trying tile');
+		$scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].image = tile.imageUrl;
+		$scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].rotation = tile.rotation;
+	};
 });
+
+
+		tsuro.directive('tile', function(){
+		    return {
+		        templateUrl: 'browser/js/game/tile.directive.html',
+		        scope: {
+		            thisTile: '=',
+		            'tryTile': '&tryTile',
+		            'rotateccw': '&rotateccw',
+		            'rotatecw': '&rotatecw',
+		            'place': '&place'
+		        },
+		        link: function(s,e,a){
+		            // e.on('click', function(event){
+		            //     s.tryTile(s.thisTile);
+		            //     // console.log('clicked me!', s.thisTile);
+		            // });
+		        }
+		    };
+		});
 
 
 ///////HELPER FUNCTIONS
