@@ -37,9 +37,12 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 	//new local game with game name defined by url
 	$scope.game = new Game($stateParams.gameName);
 
-	//when the deck is loaded...
-	deckArr.$loaded()
-	.then(function (data) {
+
+    $scope.spaces = _.flatten($scope.game.board);
+
+    //when the deck is loaded...
+    deckArr.$loaded().then(function (data) {
+
 
 		$scope.game.deck = deckArr; //add the deck to the local game ? Try this as firebase DeckArr????
 
@@ -97,7 +100,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 		.then(function (players) {
 
 			if (user) {
-				var meIdx = getPlayerIndex(players, user, uid );
+				var meIdx = getPlayerIndex(players, user, "uid" );
 				$scope.me = players[meIdx];
 				$scope.game.currPlayer = meIdx;
 
@@ -127,7 +130,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 			// players.find(function (e, i) {
 			// 	if (e.$id === $scope.me.$id) meIdx = i;
 			// });
-			var meIdx = getPlayerIndex(players, $scope.me, $id);
+			var meIdx = getPlayerIndex(players, $scope.me," $id");
 			//give me a marker and save me in firebase
 			firebasePlayersArr[meIdx].marker = marker;
 			firebasePlayersArr.$save(meIdx);
@@ -158,7 +161,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 		firebasePlayersArr.$loaded()
 		.then(function (players) {
 			//find me in the firebase players array
-			var meIdx = getPlayerIndex(players, $scope.me, uid);
+			var meIdx = getPlayerIndex(players, $scope.me, "uid");
 			// players.find(function (e, i) {
 			// 	if (e.uid === $scope.me.uid) meIdx = i;
 			// });
@@ -251,7 +254,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 		var firebasePlayersArr = $firebaseArray(playersRef);
 		firebasePlayersArr.$loaded()
 		.then(function (players) {
-			var meIdx = getPlayerIndex(players, $scope.me, $id);
+			var meIdx = getPlayerIndex(players, $scope.me, "$id");
 			// players.find(function (e, i) {
 			// 	if (e.$id === $scope.me.$id) meIdx = i;
 			// });
@@ -356,7 +359,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 				firebasePlayersArr.$loaded()
 				.then(function (players) {
 					//find me in the firebase players array
-					var meIdx = getPlayerIndex(players, $scope.me, uid);
+					var meIdx = getPlayerIndex(players, $scope.me, "uid");
 					// players.find(function (e, i) {
 					// 	if (e.uid === $scope.me.uid) meIdx = i;
 					// });
@@ -376,7 +379,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 					firebasePlayersArr.$loaded()
 					.then(function (players) {
 						//find me in the firebase players array
-						var meIdx = getPlayerIndex(players, $scope.dragon, uid);
+						var meIdx = getPlayerIndex(players, $scope.dragon, "uid");
 						// players.find(function (e, i) {
 						// 	if (e.uid === $scope.dragon.uid) meIdx = i;
 						// });
@@ -405,7 +408,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 		firebasePlayersArr.$loaded()
 		.then(function (players) {
 			//find me in the firebase players array
-			var meIdx =getPlayerIndex(players, $scope.me, uid);
+			var meIdx =getPlayerIndex(players, $scope.me, "uid");
 
 			// players.find(function (e, i) {
 			// 	if (e.uid === $scope.me.uid) meIdx = i;
