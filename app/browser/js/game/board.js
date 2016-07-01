@@ -1,19 +1,17 @@
-function Board(width, height) {
-    this.width = width || 7
-    this.height = height || 7
-    this.board = [];  
-}
-
-// Why isn't this called from the constructor? ~ ak
-Board.prototype.setupBoard = function () {
-    this.setupBoard()    
-    for (var y = 0; y < this.height; y++) {
-        if (!this.board[y]) this.board[y] = [];
-        for (var x = 0; x < this.width; x++) {
-            this.board[y].push(new Space(x, y, this.board));
+// makeBoard(width: Int? ?? 6, height: Int? ?? 6) -> Space[height][width]
+//
+// Returns a 2D array of Spaces.
+function makeBoard(width, height) {
+    width = width || 6
+    height = height || 6
+    board = new Array(height)
+    for (var y = 0; y < height; y++) {
+        if (!board[y]) board[y] = new Array(width)
+        for (var x = 0; x < width; x++) {
+            board[y][x] = new Space(x, y, board)
         }
     }
-    return this;
+    return board
 }
 
 function Space(x, y, board) {
@@ -30,7 +28,7 @@ function Space(x, y, board) {
     // We'll wire our points up with our top and left neighbors points.
     // If we don't have a top or left neighbor, we must be an edge, so we
     // create a new edge point there.
-    const topNeighbor = board[y - 1][x], leftNeighbor = board[y][x - 1]
+    const topNeighbor = board.spaces[y - 1][x], leftNeighbor = board.spaces[y][x - 1]
     this.top = {
         left: topNeighbor? topNeighbor.bottom.left : new Point(true, this, coords.top.left)
         right: topNeighbor? topNeighbor.bottom.right : new Point(true, this, coords.top.right)
@@ -41,8 +39,8 @@ function Space(x, y, board) {
     }
 
     // Now create our bottom and right points, checking to see if we're on the edge
-    const iAmTheRightEdge = x === board.width - 1,
-          iAmTheBottomEdge = y === board.height - 1
+    const iAmTheRightEdge = x === board[0].length - 1,
+          iAmTheBottomEdge = y === board.length - 1
     this.right = {
         top: new Point(iAmTheRightEdge, this, coords.right.top),
         bottom: new Point(iAmTheRightEdge, this, coords.right.bottom),
@@ -58,6 +56,9 @@ function Space(x, y, board) {
         this.bottom.right, this.bottom.left,
         this.left.bottom, this.left.top
     ]
+
+    // Attach ourself to each point we're connected to.
+    this.points.forEach(point => point.spaces.push(this))
 }
 
 // It seems like using the coordinates of the space can't possibly be right
@@ -90,10 +91,11 @@ Space.prototype.pointCoordinates = function() {
     return coords
 }
 
-// new Point(edge: Boolean, space: Space, coordinates: {x: Number, y: Number})
-function Point(edge, space, coordinates) {
+// new Point(edge: Boolean, coordinates: {x: Number, y: Number})
+function Point(edge, coordinates) {
     this.edge = edge;
     this.neighbors = ["n"];
     this.travelled = false;
-    this.spaces = space;
+    this.spaces = []
+    this.coordinates = coordinates
 }

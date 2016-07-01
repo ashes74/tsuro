@@ -6,8 +6,7 @@ class Game {
     constructor(name) {
         this.name = name;
         this.count = 35;
-        // Why are you constructing a new Board and just throwing it away? ~ ak
-        this.board = new Board() // .drawBoard();  now called in constructor
+        this.board = makeBoard() // .drawBoard();  now called in constructor
         this.players = [];
         this.availableMarkers = ["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]
 
