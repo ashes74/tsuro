@@ -34,10 +34,7 @@ section.wrapper {
     display: flex;
     flex-wrap: wrap;
 
-    .corner {
-      width: 5%;
-      height: 5%;
-    }
+    .corner { width: 5%; height: 5%;}
     .frame {
       &.horizontal {
         height: 5%;
@@ -49,7 +46,7 @@ section.wrapper {
           display: inline-block;
           position: relative;
 
-          span {
+          a {
             position: absolute;
             left: 50%;
             top: 50%;
@@ -98,15 +95,9 @@ section.wrapper {
 
         img {
           width:100%;
-          &.east {
-            transform: rotate(90deg);
-          }
-          &.south {
-            transform: rotate(180deg);
-          }
-          &.west { 
-            transform: rotate(270deg);
-          }
+          &.east { transform: rotate(90deg); }
+          &.south { transform: rotate(180deg); }
+          &.west { transform: rotate(270deg); }
         }
 
         .player {
@@ -118,220 +109,194 @@ section.wrapper {
 
           &.zero { top: 0; left: 30%; }
           &.one { top: 0; left: 70%; }
-          &.two { top: 30%; right: 0; }
-          &.three { top: 70%; right: 0; }
-          &.four { bottom: 0; right: 30%; }
-          &.five { bottom: 0; right: 70%; }
-          &.six { left: 0; bottom: 30%; }
-          &.seven { left: 0; bottom: 70%; }
+          &.two { top: 30%; left: 100%; }
+          &.three { top: 70%; left: 100%; }
+          &.four { top: 100%; left: 70%; }
+          &.five { top: 100%; left: 30%; }
+          &.six { left: 0; top: 70%; }
+          &.seven { left: 0; top: 30%; }
         }
 
         &.mynext {
           background-color: #FFD700;
           box-shadow: 0 0 10px #FFD700;
         }
+      }
     }
-    .tileDrawer {
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 94vh;
-        padding: 3vh;
-        background-color: $mountain;
-        display: flex;
-        flex-direction: column;
-        tile {
-            width: calc(88vh/3);
-            height: calc(88vh/3);
-            margin-bottom: 3vh;
-            position: relative;
-            // border-radius: 15px;
-            // background-color: $paper;
-            button {
-                opacity: 0.75;
-                border: 0;
-                border-radius: 25px;
-                width: 20%;
-                height: 20%;
-                position: absolute;
-                &.ccw {
-                    transform: translateY(-50%);
-                    left: 5px;
-                    top: 50%;
-                }
-                &.cw {
-                    transform: translateY(-50%);
-                    right: 5px;
-                    top: 50%;
-                }
-                &.place {
-                    transform: translateX(-50%);
-                    top: 20px;
-                    width: 50%;
-                }
-                &.try {
-                    transform: translateX(-50%);
-                    bottom: 20px;
-                    width: 50%;
-                }
-            }
-            img {
-                width: 100%;
-                transition: all 1s;
-                &:last-child {
-                    margin-bottom: 0;
-                }
-                &.east {
-                    transform: rotate(90deg);
-                }
-                &.south {
-                    transform: rotate(180deg);
-                }
-                &.west {
-                    transform: rotate(270deg);
-                }
-            }
+  }
+
+  /////TILE DRAWER/////
+  .tileDrawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 94vh;
+    padding: 3vh;
+    background-color: $mountain;
+    display: flex;
+    flex-direction: column;
+    
+    tile {
+      width: calc(88vh/3);
+      height: calc(88vh/3);
+      margin-bottom: 3vh;
+      position: relative;
+
+      button {
+        opacity: 0.75;
+        border: 0;
+        border-radius: 25px;
+        width: 20%;
+        height: 20%;
+        position: absolute;
+          
+        &.ccw {
+          transform: translateY(-50%);
+          left: 5px; top: 50%;
         }
-        h2 {
-            transform: rotate(90deg);
-            transform-origin: bottom left;
-            white-space: nowrap;
-            position: absolute;
-            top: 0;
-            left: 100%;
-            margin: 0;
-            padding: 5px 10px 0;
-            background-color: $mountain;
-            border-radius: 5px 5px 0 0;
-            font-size: 0.75em;
-            font-weight: 300;
-            color: white;
-            letter-spacing: 3px;
+        &.cw {
+          transform: translateY(-50%);
+          right: 5px; top: 50%;
         }
+        &.place {
+          transform: translateX(-50%);
+          top: 20px; width: 50%;
+        }
+        &.try {
+          transform: translateX(-50%);
+          bottom: 20px;width: 50%;
+        }
+      }
+      img {
+        width: 100%;
+        transition: all 1s;
+        &:last-child { margin-bottom: 0; }
+        &.east { transform: rotate(90deg); }
+        &.south { transform: rotate(180deg); }
+        &.west { transform: rotate(270deg); }
+      }
     }
-    .playerDrawer {
-        position: fixed;
-        top: 0;
+    h2 {
+      transform: rotate(90deg);
+      transform-origin: bottom left;
+      white-space: nowrap;
+      position: absolute;
+      top: 0;
+      left: 100%;
+      margin: 0;
+      padding: 5px 10px 0;
+      background-color: $mountain;
+      border-radius: 5px 5px 0 0;
+      font-size: 0.75em;
+      font-weight: 300;
+      color: white;
+      letter-spacing: 3px;
+    }
+  }
+  /////PLAYER DRAWER/////
+  .playerDrawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 97vh;
+    padding: 3vh 0 3vh 3vh;
+    background-color: $mountain;
+    display: flex;
+    flex-direction: column;
+
+    .player {
+      width: calc(97vh/3);
+      height: calc(73vh/8);
+      margin-bottom: 3vh;
+      position: relative;
+      color: #fff;
+      p { vertical-align: middle; }
+      &.active .color-field { width: 100%; }
+      .color-field {
+        width: 10%;
+        height: 100%;
+        position: absolute;
         right: 0;
-        height: 97vh;
-        padding: 3vh 0 3vh 3vh;
-        background-color: $mountain;
-        display: flex;
-        flex-direction: column;
-        .player {
-            width: calc(97vh/3);
-            height: calc(73vh/8);
-            margin-bottom: 3vh;
-            position: relative;
-            color: #fff;
-            p {
-                vertical-align: middle;
-            }
-            &.active .color-field {
-                width: 100%;
-            }
-            .color-field {
-                width: 10%;
-                height: 100%;
-                position: absolute;
-                right: 0;
-                top: 0;
-                z-index: -2;
-            }
-            &:last-child {
-                margin-bottom: 0;
-            }
-        }
-        h2 {
-            transform: rotate(90deg);
-            transform-origin: top left;
-            white-space: nowrap;
-            position: absolute;
-            top: 0;
-            left: 0;
-            margin: 3vh 0 0;
-            padding: 0 10px 5px;
-            background-color: $mountain;
-            border-radius: 0 0 5px 5px;
-            font-size: 0.75em;
-            font-weight: 300;
-            color: white;
-            letter-spacing: 3px;
-        }
+        top: 0;
+        z-index: -2;
+      }
+      &:last-child { margin-bottom: 0; }
     }
+    h2 {
+      transform: rotate(90deg);
+      transform-origin: top left;
+      white-space: nowrap;
+      position: absolute;
+      top: 0;
+      left: 0;
+      margin: 3vh 0 0;
+      padding: 0 10px 5px;
+      background-color: $mountain;
+      border-radius: 0 0 5px 5px;
+      font-size: 0.75em;
+      font-weight: 300;
+      color: white;
+      letter-spacing: 3px;
+    }
+  }
 }
+
 /////MARKER MODAL/////
 .markermodal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 50vw;
-    padding: 50px;
-    background-color: #fff;
-    border-radius: 25px;
-    box-shadow: 0 0 10px #808080;
-    p {
-        font-size: 2em;
-        margin: 0 0 40px;
-        width: 100%;
-    }
-    .circle {
-        display: inline-block;
-        width: 100px;
-        height: 100px;
-        border-radius: 50%;
-        margin: 10px;
-    }
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50vw;
+  padding: 50px;
+  background-color: #fff;
+  border-radius: 25px;
+  box-shadow: 0 0 10px #808080;
+  
+  p {
+    font-size: 2em;
+    margin: 0 0 40px;
+    width: 100%;
+  }
+  .circle {
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin: 10px;
+  }
 }
 /////TYPOGRAPHY/////
 h1 {
-    font-size: 4em;
-    letter-spacing: 8px;
+  font-size: 4em;
+  letter-spacing: 8px;
+  font-weight: 300;
+  span {
+    font-size: 0.5em;
     font-weight: 300;
-    span {
-        font-size: 0.5em;
-        font-weight: 300;
-        letter-spacing: 10px;
-    }
+    letter-spacing: 10px;
+  }
 }
-a {
-    text-decoration: none;
-}
+a { text-decoration: none; }
+
 /////FORMS/////
 input {
-    width: 100%;
-    margin: 10px 0;
-    padding: 5px;
+  width: 100%;
+  margin: 10px 0;
+  padding: 5px;
 }
 .button {
-    display: inline-block;
-    padding: 5px;
-    margin: 10px;
-    border: 1px solid #ccc;
+  display: inline-block;
+  padding: 5px;
+  margin: 10px;
+  border: 1px solid #ccc;
 }
 /////COLORS/////
-.red {
-    background-color: $red;
-}
-.orange {
-    background-color: $orange;
-}
-.yellow {
-    background-color: $yellow;
-}
-.green {
-    background-color: $green;
-}
-.aqua {
-    background-color: $aqua;
-}
-.blue {
-    background-color: $blue;
-}
-.navy {
-    background-color: $navy;
-}
-.purple {
-    background-color: $purple;
-}
+.red { background-color: $red; }
+.orange { background-color: $orange; }
+.yellow { background-color: $yellow; }
+.green { background-color: $green; }
+.aqua { background-color: $aqua; }
+.blue { background-color: $blue; }
+.navy { background-color: $navy; }
+.purple { background-color: $purple; }

@@ -1,82 +1,54 @@
 <section id="game" class="wrapper">
-    <aside class="tileDrawer">
-        <h2>YOUR TILES</h2>
-        <tile ng-repeat="tile in me.tiles" this-tile="tile" try-tile="tryTile(tile)" rotateccw="rotateTileCcw(tile)" rotatecw="rotateTileCw(tile)" place="placeTile(tile)" ng-show="me.tiles !== 'n'"></tile>
-    </aside>
+  <aside class="tileDrawer">
+    <h2>YOUR TILES</h2>
+    <tile ng-repeat="tile in me.tiles" this-tile="tile" try-tile="tryTile(tile)" rotateccw="rotateTileCcw(tile)" rotatecw="rotateTileCw(tile)" place="placeTile(tile)" ng-show="me.tiles !== 'n'"></tile>
+  </aside>
+  <main id="board">
+    <!-- top row -->
+    <div class="corner"></div>
+    <div class="frame horizontal">
+      <div ng-repeat="start in starttop" class="startpoints" ng-hide="!me || me.nextSpacePointsIndex !== 'n'" ng-click="placeMarker(start)">
+        <a>◌</a>
+      </div>
+    </div>
+    <div class="corner"></div>
+    <!-- middle row -->
+    <div class="frame vertical">
+      <div ng-repeat="start in startleft" class="startpoints" ng-hide="!me || me.nextSpacePointsIndex !== 'n'" ng-click="placeMarker(start)">
+        <span>◌</span>
+      </div>
+    </div>
+    <div class="space-container">
 
-
-    <main id="board">
-        <!-- top row -->
-        <div class="corner"></div>
-        <div class="frame horizontal">
-            <div 	ng-repeat="start in starttop" 
-                  class="startpoints" 
-                  ng-hide="!me || me.marker !== 'n'"
-            			ng-click="placeMarker(game.board,start)">
-                <span>◌</span>
-
-            </div>
-        </div>
-        <div class="corner"></div>
-
-        <!-- middle row -->
-        <div class="frame vertical">
-            <div 	ng-repeat="start in startleft" 
-            			class="startpoints" 
-            			ng-hide="!me || me.marker !== 'n'"
-            			ng-click="placeMarker(game.board,start)">
-                <span>◌</span>
-            </div>
-        </div>
-        <div class="space-container">
-            <div 	ng-repeat="space in spaces" 
-            			class="space" 
-            			ng-class="{mynext: me.nextSpace.x === space.x && me.nextSpace.y === space.y}"
-            			>
-
-            			<div 	class="player {{playerIndex(playerOnThisSpace(space))}} {{markerColor(playerOnThisSpace(space))}}" 
-            						ng-show="playerOnThisSpace(space)">
-            			</div>
-
-            	<img 	ng-hide="space.image==='n'" 
-            				ng-src="{{space.image}}" 
-            				ng-class="{east: space.rotation === 1 || space.rotation === -3, south: space.rotation === 2 || space.rotation === -2, west: space.rotation === 3 || space.rotation === -1}" />
-            </div>
-        </div>
-        <div class="frame vertical">
-            <div 	ng-repeat="start in startright" 
-            			class="startpoints" 
-            			ng-hide="!me || me.marker !== 'n'"
-            			ng-click="placeMarker(game.board,start)">
-                <span>◌</span>
-            </div>
-        </div>
-
-        <!-- bottom row -->
-        <div class="corner"></div>
-        <div class="frame horizontal">
-            <div 	ng-repeat="start in startbottom" 
-            			class="startpoints" 
-            			ng-hide="!me || me.marker !== 'n'"
-            			ng-click="placeMarker(game.board,start)">
-                <span>◌</span>
-            </div>
-        </div>
-        <div class="corner"></div>
-        <button ng-click="reset()">reset game</button>
-    </main>
-
-
-    <aside class="playerDrawer">
-        <h2>PLAYERS</h2>
-        <div class="player" ng-repeat="player in game.players">
-            <p>{{player.uid}}</p>
-            <div class="color-field {{player.marker}}"></div>
-        </div>
-    </aside>
+      <div ng-repeat="space in spaces" class="space" ng-class="{mynext: me.nextSpace.x === space.x && me.nextSpace.y === space.y}">
+        <div class="player {{playerIndex(playerOnThisSpace(space))}} {{markerColor(playerOnThisSpace(space))}}" ng-show="playerOnThisSpace(space)"></div>
+        <img ng-hide="space.image==='n'" ng-src="{{space.image}}" ng-class="{east: space.rotation === 1 || space.rotation === -3, south: space.rotation === 2 || space.rotation === -2, west: space.rotation === 3 || space.rotation === -1}" />
+      </div>
+    </div>
+    <div class="frame vertical">
+      <div ng-repeat="start in startright" class="startpoints" ng-hide="!me || me.nextSpacePointsIndex !== 'n'" ng-click="placeMarker(start)">
+        <span>◌</span>
+      </div>
+    </div>
+    <!-- bottom row -->
+    <div class="corner"></div>
+    <div class="frame horizontal">
+      <div ng-repeat="start in startbottom" class="startpoints" ng-hide="!me || me.nextSpacePointsIndex !== 'n'" ng-click="placeMarker(start)">
+        <span>◌</span>
+      </div>
+    </div>
+    <div class="corner"></div>
+    <button ng-click="reset()">reset game</button>
+  </main>
+  <aside class="playerDrawer">
+    <h2>PLAYERS</h2>
+    <div class="player" ng-repeat="player in game.players">
+      <p>{{player.uid}}</p>
+      <div class="color-field {{player.marker}}"></div>
+    </div>
+  </aside>
 </section>
-
 <div class="markermodal" ng-show="!me.marker">
-    <p>Choose your dragon wisely...</p>
-    <div ng-repeat="marker in game.availableMarkers" class="circle {{marker}}" ng-disable="me.marker || !me" ng-click="pickMarker(marker)"></div>
+  <p>Choose your dragon wisely...</p>
+  <div ng-repeat="marker in game.availableMarkers" class="circle {{marker}}" ng-disable="me.marker || !me" ng-click="pickMarker(marker)"></div>
 </div>
