@@ -96,7 +96,11 @@ var tiles = [{
 }, {
     id: 20,
     imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_20.png?alt=media&token=5b9b4455-2c09-41e4-a2f2-f60bedc470ad",
+<<<<<<< HEAD
     paths: [3, 7, 4, 2, 0, 6, 5, 1],
+=======
+    paths: [3, 7, 4, 0, 2, 6, 5, 1],
+>>>>>>> master
     rotation: 0
 }, {
     id: 21,
@@ -136,7 +140,7 @@ var tiles = [{
 }, {
     id: 28,
     imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_28.png?alt=media&token=ee42cc11-19d2-4476-887b-7a29817430fc",
-    paths: [3, 2, 1, 0, 7, 6, 5, 4],
+    paths: [4, 2, 1, 7, 0, 6, 5, 3],
     rotation: 0
 }, {
     id: 29,
@@ -174,3 +178,4 @@ var tiles = [{
     paths: [1, 0, 7, 5, 6, 3, 4, 2],
     rotation: 0
 }]
+
