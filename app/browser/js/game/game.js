@@ -6,7 +6,7 @@ tsuro.config(function ($stateProvider) {
     });
 });
 
-tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stateParams, $firebaseObject, $firebaseArray, $state) {
+tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stateParams, $firebaseObject, $firebaseArray, $state, gameFactory) {
     var ref = firebase.database().ref();
     var obj = $firebaseObject(ref);
 
@@ -285,29 +285,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         $scope.spaces = _.flatten($scope.game.board);
 
         // TODO: send this state to firebase every time it's called
-        if (tile.rotation > 0) {
-            tile.paths = tile.paths.map(function (connection) {
-                connection = connection + 2;
-                if (connection === 9) connection = 1;
-                if (connection === 8) connection = 0;
-                return connection;
-            });
-            tile.paths.unshift(tile.paths.pop());
-            // TODO: rotation more than twice is wrong
-            tile.paths.unshift(tile.paths.pop());
-            console.log("to the right", tile)
-        } else if (tile.rotation < 0) {
-            tile.paths = tile.paths.map(function (connection) {
-                connection = connection - 2;
-                if (connection === -2) connection = 6;
-                if (connection === -1) connection = 7;
-                return connection;
-            });
-            tile.paths.push(tile.paths.shift());
-            // TODO: rotation more than twice is wrong
-            tile.paths.push(tile.paths.shift());
-            console.log("to the left", tile)
-        }
+        tile = gameFactory.rotateTile(tile);
 
         var firebasePlayersArr = $firebaseArray(playersRef);
         firebasePlayersArr.$loaded()
