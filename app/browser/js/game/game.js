@@ -354,11 +354,14 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 				console.log("add me to the dragon list");
 				awaitingDragonHolders.push($scope.me);
 			}
-			//assign the dragon
-			$scope.dragon = $scope.dragon || awaitingDragonHolders.shift()
-			console.log(`${$scope.dragon} is the dragon`);
-			var meIdx = getPlayerIndex(players, $scope.me, "uid");
 
+			while (awaitingDragonHolders.length>0 && $scope.game.deck.length > 0 ) {
+				//assign the dragon
+				$scope.dragon = $scope.dragon || awaitingDragonHolders.shift()
+				console.log(`${$scope.dragon} is the dragon`);
+				var meIdx = getPlayerIndex(players, $scope.me, "uid");
+
+			}
 			// // If deck is empty & no one is dragon, set me as dragon
 			// if ($scope.game.deck.length === 0 && !$scope.dragon) {
 			// 	$scope.dragon = $scope.me;
