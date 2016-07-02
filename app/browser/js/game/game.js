@@ -1,3 +1,5 @@
+'use strict';
+
 tsuro.config(function ($stateProvider) {
 	$stateProvider.state('game', {
 		url: '/game/:gameName',
@@ -348,20 +350,22 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 				});
 			}
 
-			// if there is no cards in the deck
-			if ($scope.game.deck.length ===0) {
-				//add me to the queue
-				console.log("add me to the dragon list");
-				awaitingDragonHolders.push($scope.me);
-			}
+			GameFactory.dealCard(player)
 
-			while (awaitingDragonHolders.length>0 && $scope.game.deck.length > 0 ) {
-				//assign the dragon
-				$scope.dragon = $scope.dragon || awaitingDragonHolders.shift()
-				console.log(`${$scope.dragon} is the dragon`);
-				var meIdx = getPlayerIndex(players, $scope.me, "uid");
-
-			}
+			// // if there is no cards in the deck
+			// if ($scope.game.deck.length ===0) {
+			// 	add me to the queue
+			// 	console.log("add me to the dragon list");
+			// 	awaitingDragonHolders.push($scope.me);
+			// }
+			//
+			// 	$scope.dragon = awaitingDragonHolders.shift()
+			// while (awaitingDragonHolders.length>0 && $scope.game.deck.length > 0 ) {
+			// 	//assign the dragon
+			// 	console.log(`${$scope.dragon} is the dragon`);
+			// 	var meIdx = getPlayerIndex(players, $scope.me, "uid");
+			//
+			// }
 			// // If deck is empty & no one is dragon, set me as dragon
 			// if ($scope.game.deck.length === 0 && !$scope.dragon) {
 			// 	$scope.dragon = $scope.me;
