@@ -4,3 +4,4 @@ node_modules
 main.js
 app/public/
 app/public/main.js
+firebase-debug.log

@@ -35,7 +35,7 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
         var tiles = [{
             id: 1,
             imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_01.png?alt=media&token=dc2e553b-f4da-442e-97e8-d0d808c2d5c0",
-            paths: [3, 4, 6, 0, 1, 7, 2, 5],
+            paths: [5, 6, 4, 7, 2, 0, 1, 3],
             rotation: 0
         }, {
             id: 2,
@@ -70,7 +70,7 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
         }, {
             id: 8,
             imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_08.png?alt=media&token=8ad6340e-f8a5-4ff2-bdaf-0a85e2bbc630",
-            paths: [2, 5, 0, 6, 7, 1, 3, 4],
+            paths: [4, 7, 5, 6, 0, 2, 3, 1],
             rotation: 0
         }, {
             id: 9,
@@ -130,7 +130,7 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
         }, {
             id: 20,
             imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_20.png?alt=media&token=5b9b4455-2c09-41e4-a2f2-f60bedc470ad",
-            paths: [2, 6, 0, 4, 3, 7, 1, 5],
+            paths: [3, 7, 4, 0, 2, 6, 5, 1],
             rotation: 0
         }, {
             id: 21,
@@ -150,7 +150,7 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
         }, {
             id: 24,
             imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_24.png?alt=media&token=a80b7f5b-c572-4430-ab8a-3d3656e4c643",
-            paths: [3, 4, 7, 0, 1, 6, 5, 2],
+            paths: [5, 6, 7, 4, 3, 0, 1, 2],
             rotation: 0
         }, {
             id: 25,
@@ -170,7 +170,7 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
         }, {
             id: 28,
             imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_28.png?alt=media&token=ee42cc11-19d2-4476-887b-7a29817430fc",
-            paths: [4, 2, 1, 7, 0, 6, 5, 3],
+            paths: [3, 2, 1, 0, 7, 6, 5, 4],
             rotation: 0
         }, {
             id: 29,
