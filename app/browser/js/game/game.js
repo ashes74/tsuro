@@ -19,14 +19,15 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     var deckRef = gameRef.child('deck');
     var deckArr = $firebaseArray(deckRef);
 
+    var currPlayerRef = gameRef.child('currPlyaer');
+    // Should be an array with only one number
+    var currPlayerArr = $firebaseArray(currPlayerRef);
+
     var playersRef = gameRef.child('players');
     var firebasePlayersArr = $firebaseArray(playersRef);
 
     var markersRef = gameRef.child('availableMarkers');
     var markersArr = $firebaseArray(markersRef);
-
-    var movesRef = gameRef.child('moves');
-    var movesArr = $firebaseArray(movesRef);
 
     var boardRef = gameRef.child('board');
     var boardArr = $firebaseArray(boardRef);
@@ -119,9 +120,12 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 });
 
                 $scope.me = players[meIdx];
-                $scope.game.currPlayer = meIdx;
+                // $scope.game.currPlayer = meIdx;
 
-
+                $scope.game.players = players;
+                $scope.game.currentPlayer = $scope.game.players[0];
+                $scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid;
+                console.log("IS IT MY TURN?", $scope.myTurn)
                 if ($scope.me.marker === "n") $scope.me.marker = null;
 
             } else {
@@ -132,6 +136,20 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         });
     });
 
+    // Start with first player in the array, index 0
+    currPlayerArr.$loaded()
+        .then(function (currPlayer) {
+            $scope.game.currPlayer = currPlayer[0][0];
+            console.log("when loaded, currPlayer", $scope.game.currPlayer)
+        })
+
+    // update your view for current player index
+    currPlayerRef.on('child_changed', function (data) {
+        $scope.game.currPlayer = data.val()[0];
+        $scope.game.currentPlayer = firebasePlayersArr[data.val()[0]];
+        $scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid;
+        console.log("IS IT MY TURN?", $scope.myTurn)
+    });
 
     /****************
     AVAILABLE PLAYER ACTIONS AT GAME START
@@ -245,19 +263,13 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
     // TODO: how to show the rotated tile?
 
-    // CMT: assuming we use new Game() for each game
-    $scope.currentPlayer = $scope.game.getCurrentPlayer();
 
     // TODO: need a function to assign dragon
     $scope.dragon;
     var awaitingDragonHolders = [];
 
     $scope.start = function () {
-        //
-    };
 
-    $scope.myTurn = function () {
-        $scope.me === $scope.currentPlayer;
     };
 
     //these are tied to angular ng-click buttons
@@ -317,15 +329,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 $scope.me = FBme;
             })
 
-
-        // // CMT: this should send the rotated tile to firebase
-        movesArr.$add({
-            'type': 'placeTile',
-            'tile': tile,
-            'playerUid': $scope.me.uid
-        });
-
-        console.log("now change all players")
+        console.log("now moving all players")
         firebasePlayersArr.$loaded()
             .then(function (players) {
                 players.forEach(function (p) {
@@ -364,6 +368,8 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
                     console.log("end moving")
                 });
+                $scope.game.players = players;
+                console.log("updated players", $scope.game.players)
             });
 
         // if ($scope.game.checkOver()) {
@@ -384,11 +390,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             $scope.game.deck = $scope.game.deck.concat(deadPlayerTiles);
             $scope.game.deck = $scope.game.deck.shuffle();
 
-            //send firebase a new move
-            movesArr.$add({
-                'type': 'updateDeck',
-                'updateDeck': $scope.game.deck
-            });
         }
 
         // If deck is empty & no one is dragon, set me as dragon
@@ -439,10 +440,9 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             }
         }
 
-        // TODO: still need to work on this
-        // $scope.currentPlayer = $scope.game.goToNextPlayer();
-        // console.log("new curr player", $scope.currentPlayer)
-        // }
+        currPlayerArr[0][0] = $scope.game.nextCanPlay();
+        currPlayerArr.$save(0);
+        $scope.game.currentPlayer = $scope.game.players[currPlayerArr[0][0]];
     };
 
 
@@ -482,16 +482,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 console.log("reomved the initialDeck", ref.key)
             })
 
-        movesArr.$loaded()
-            .then(function (moves) {
-                for (var i = 0; i < moves.length; i++) {
-                    movesArr.$remove(i);
-                }
-            })
-            .then(function () {
-                console.log("removed all moves")
-            })
-
         var tiles = gameFactory.tiles;
 
         var deck = new Deck(tiles).shuffle().tiles;
@@ -499,7 +489,10 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         deckArr.$add(deck);
 
 
-
+        currPlayerArr.$remove(0)
+            .then(function () {
+                currPlayerArr.$add([0])
+            })
 
         var initialMarkersRef = ref.child('games').child($stateParams.gameName).child('availableMarkers');
         $firebaseArray(initialMarkersRef).$add(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]);
@@ -586,17 +579,12 @@ tsuro.directive('tile', function () {
     return {
         templateUrl: 'browser/js/game/tile.directive.html',
         scope: {
-            thisTile: '=',
+            'thisTile': '=',
             'tryTile': '&tryTile',
             'rotateccw': '&rotateccw',
             'rotatecw': '&rotatecw',
-            'place': '&place'
-        },
-        link: function (s, e, a) {
-            // e.on('click', function(event){
-            //     s.tryTile(s.thisTile);
-            //     // console.log('clicked me!', s.thisTile);
-            // });
+            'place': '&place',
+            'myTurn': '='
         }
     };
 });

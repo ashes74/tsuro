@@ -18,10 +18,14 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
         var initialMarkersArr = $firebaseArray(initialMarkersRef);
         var deckRef = gameNameRef.child('deck');
         var deckArr = $firebaseArray(deckRef);
+        var currPlayerRef = gameNameRef.child('currPlyaer');
+        // Should be an array with only one number
+        var currPlayerArr = $firebaseArray(currPlayerRef);
 
         $firebaseArray(gameNameRef).$add({
             "gameName": gameName
         });
+
 
         firebase.auth().onAuthStateChanged(function (user) {
             if (user) {
@@ -39,6 +43,7 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
         deckArr.$add(deck);
 
         initialMarkersArr.$add(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]);
+        currPlayerArr.$add([0]);
 
         $state.go('game', {
             "gameName": gameName
