@@ -130,7 +130,7 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
         }, {
             id: 20,
             imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_20.png?alt=media&token=5b9b4455-2c09-41e4-a2f2-f60bedc470ad",
-            paths: [3, 7, 4, 2, 0, 6, 5, 1],
+            paths: [3, 7, 4, 0, 2, 6, 5, 1],
             rotation: 0
         }, {
             id: 21,
