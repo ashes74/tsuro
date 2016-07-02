@@ -35,6 +35,8 @@ tsuro.factory('gameFactory', function () {
                 }
                 console.log("to the left, final paths", tile.paths);
                 return tile;
+            } else {
+                return tile;
             }
         }
     }
