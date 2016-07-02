@@ -7,7 +7,7 @@ function Player(uid) {
     this.marker = "n";
 
     // should be a Point object
-    this.point = "n";
+    this.point = null;
 
     // [x, y]
     // depends on the angular Space.x, Space.y

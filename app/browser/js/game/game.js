@@ -237,7 +237,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
     // CMT: use player's and game's prototype function to place tile and then move all players
     $scope.placeTile = function (tile) {
-        console.log('placing tile...');
+        console.log('placing tile...', tile.paths);
         $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].image = tile.imageUrl;
         $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].rotation = tile.rotation;
         // TODO: send this state to firebase every time it's called
