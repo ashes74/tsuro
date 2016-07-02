@@ -183,6 +183,47 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     };
 
 
+    $scope.playerOnThisSpace = function(space){
+        var players = $scope.game.players;
+        var player = null;
+
+        for(var i = 0; i < players.length; i++){
+            if(players[i].nextSpace.x === space.x && players[i].nextSpace.y === space.y) player = players[i];
+        }
+        if(!player) return null;
+        return player;
+    };
+
+    $scope.playerIndex = function(player){
+        if(player){
+            switch (player.nextSpacePointsIndex){
+                case 0: 
+                    return "zero";
+                case 1:
+                    return "one";
+                case 2:
+                    return "two";
+                case 3:
+                    return "three";
+                case 4:
+                    return "four";
+                case 5:
+                    return "five";
+                case 6:
+                    return "six";
+                case 7:
+                    return "seven";
+                default: 
+                    break;
+            }
+        }
+    };
+
+    $scope.markerColor = function(player){
+        if(player) return player.marker;
+    };
+
+
 
 
     // TODO: we probably need this on firebase so other people can't pick what's been picked

@@ -54,8 +54,11 @@ section.wrapper {
           display: inline-block;
           position: relative;
 
-          p {
-            vertical-align: middle;
+          span {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%,-50%);
             color: $mountain;
             margin: 0;
           }
@@ -71,8 +74,11 @@ section.wrapper {
           display: inline-block;
           position: relative;
 
-          p {
-            vertical-align: middle;
+          span {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%,-50%);
             color: $mountain;
             margin: 0;
           }
@@ -93,6 +99,8 @@ section.wrapper {
         width: calc(100%/6);
         height: calc(100%/6);
         border: 1px dashed #ddd;
+        position: relative;
+
         img {
           width:100%;
           &.east {
@@ -105,6 +113,24 @@ section.wrapper {
             transform: rotate(270deg);
           }
         }
+
+        .player {
+          position: absolute;
+          height: 20px;
+          width: 20px;
+          border-radius: 50%;
+          transform: translate(-50%,-50%);
+
+          &.zero { top: 0; left: 30%; }
+          &.one { top: 0; left: 70%; }
+          &.two { top: 30%; right: 0; }
+          &.three { top: 70%; right: 0; }
+          &.four { bottom: 0; right: 30%; }
+          &.five { bottom: 0; right: 70%; }
+          &.six { left: 0; bottom: 30%; }
+          &.seven { left: 0; bottom: 70%; }
+        }
+
         &.mynext {
           background-color: #FFD700;
           box-shadow: 0 0 10px #FFD700;
