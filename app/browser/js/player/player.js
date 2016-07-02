@@ -1,8 +1,9 @@
 'use strict'
 
-function Player(uid) {
+function Player(uid,name) {
     // TODO: get uid from firebase auth
     this.uid = uid;
+    this.name = name;
 
     this.marker = "n";
 
