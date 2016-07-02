@@ -32,6 +32,7 @@ Player.prototype.placeMarker = function (board, point, self) {
     var y = point[1];
     var pointsIndex = point[2];
 
+    console.log("board in playr place marker", board, "point", point)
     self.point = board[y][x].points[pointsIndex];
     self.point.travelled = true;
 
