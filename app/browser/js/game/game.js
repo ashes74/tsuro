@@ -286,7 +286,6 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
             })
             .then(function(players) {
                 var key = boardArr.$keyAt(0);
-                console.log(key);
                 var meIdx;
                 players.find(function(e, i) {
                     if (e.$id === $scope.me.$id) meIdx = i;
@@ -299,138 +298,88 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
                 var playerY = firebasePlayersArr[meIdx].nextSpace.y;
                 var playerX = firebasePlayersArr[meIdx].nextSpace.x;
 
-                console.log(firebasePlayersArr[meIdx].nextSpace.y);
-                console.log(firebasePlayersArr[meIdx].nextSpace.x);
-
                 //Storing the tile on a space on the board
                 var spaceRef = boardRef.child(key).child(playerY).child(playerX);
                 var spaceArr = $firebaseArray(spaceRef);
-                spaceArr.$loaded().then(function(data) {
-                        if (data.length === 3) {
-                            spaceArr.$add(tile);
-                        };
-                    })
-                    .then(function() {
-                        //Storing the points on board based on tile placed
-                        var pointsRef = spaceRef.child("points");
-                        var pointsArr = $firebaseArray(pointsRef);
+                spaceArr.$add(tile);
 
-                        return pointsArr.$loaded().then(function(data) {
-                            for (var i=0; i<data.length; i++){
-                                data[i].neighbors.push(pointsArr[tile.paths[i]])
-                                pointsArr.$save(i);
-                            }
-                            // pointsArr.forEach(function(point, idx) {
-                            //     var neighborRef = pointsRef.child(idx).child('neighbors');
-                            //     var neighborArr = $firebaseArray(neighborRef);
+                //Storing the points on board based on tile placed
+                var pointsRef = spaceRef.child("points");
+                var pointsArr = $firebaseArray(pointsRef);
 
-                            //     neighborArr.$loaded()
-                            //         .then(function(data) {
-                            //             console.log(data);
-                            //             if (data.length < 3) {
-                            //                 neighborArr.$add(pointsArr[tile.paths[idx]]);
-                            //             }
-                            //         })
-                            // })
-                        }).then(function(board) {
-                            console.log(board);
-                            boardArr.$loaded()
-                                .then(function(board) {
-                                    console.log(board);
-                                    firebasePlayersArr.$loaded().then(function(players) {
-                                        firebasePlayersArr[meIdx].tiles = firebasePlayersArr[meIdx].tiles.filter(function(t) {
-                                            return t.id !== tile.id
-                                        });
+                var promiseForEachPointNeighborsUpdate = function(idx) {
+                    var neighborRef = pointsRef.child(idx).child('neighbors');
+                    var neighborArr = $firebaseArray(neighborRef);
+                    neighborArr.$add(pointsArr[tile.paths[idx]]);
+                };
+                var allPromises = pointsArr.map(function(point, idx) {
+                    promiseForEachPointNeighborsUpdate(idx);
+                });
 
-                                        firebasePlayersArr[meIdx].point = board[0][firebasePlayersArr[meIdx].nextSpace.y][firebasePlayersArr[meIdx].nextSpace.x].points[firebasePlayersArr[meIdx].nextSpacePointsIndex];
+                Promise.all(allPromises).then(function(data) {
 
+                    firebasePlayersArr.$loaded().then(function() {
+                        var player = firebasePlayersArr[meIdx];
+                        player.point = boardArr[0][player.nextSpace.y][player.nextSpace.x].points[player.nextSpacePointsIndex];
+                        firebasePlayersArr.$save(meIdx);
+                        return firebasePlayersArr[meIdx];
+                    }).then(function(FBme) {
+                        $scope.me = FBme;
+                    }).then(function() {
+                        console.log("my next space", $scope.me.nextSpace);
+                        console.log("scope game board", $scope.game.board);
+                        $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].image = tile.imageUrl;
+                        $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].rotation = tile.rotation;
 
-                                        firebasePlayersArr.$save(meIdx);
-                                        return firebasePlayersArr[meIdx];
+                        $scope.spaces = _.flatten($scope.game.board);
+                        tile = gameFactory.rotateTile(tile);
+                    }).then(function() {
+                        // console.log("now change all players")
+                        // firebasePlayersArr.forEach(function(p) {
+                        //     console.log("point before change", p.point)
+                        //     p.point.travelled = true;
+                        //     console.log(p.point);
+                        //     let movable = player.moveTo(p.point);
 
-                                    }).then(function(FBme) {
-                                        $scope.me = FBme;
-                                    }).then(function() {
-                                        //         console.log("now change all players")
-                                        //         firebasePlayersArr.$loaded()
-                                        //             .then(function(players) {
-                                        //                 players.forEach(function(p) {
-                                        //                     console.log("point before change", p.point)
-                                        //                     p.point.travelled = true;
-                                        //                     console.log(p.point);
-                                        //                     let movable = player.moveTo(p.point);
-                                        //                     console.log(movable);
+                        //     console.log(movable);
 
-                                        //                     console.log("1st movable", movable)
-                                        //                     var pIdx = players.indexOf(p)
+                        //     console.log("1st movable", movable)
+                        //     var pIdx = players.indexOf(p)
 
-                                        //                     while (movable) {
-                                        //                         console.log("movable", movable)
-                                        //                         p.point.travelled = true;
-                                        //                         p.point = movable;
+                        //     while (movable) {
+                        //         console.log("movable", movable)
+                        //         p.point.travelled = true;
+                        //         p.point = movable;
 
-                                        //                         // if (p.point.travelled === true) {
-                                        //                         //     p.canPlay = false;
-                                        //                         //     break;
-                                        //                         // }
+                        //         if (p.point.travelled === true) {
+                        //             p.canPlay = false;
+                        //             break;
+                        //         }
 
-                                        //                         // Check the space that's not my current nextSpace
-                                        //                         var newNextSpaceInfo = p.point.spaces.filter(function(space) {
-                                        //                             return space.x !== p.nextSpace.x || space.y !== p.nextSpace.y
-                                        //                         })[0]
+                        //         // Check the space that's not my current nextSpace
+                        //         var newNextSpaceInfo = p.point.spaces.filter(function(space) {
+                        //             return space.x !== p.nextSpace.x || space.y !== p.nextSpace.y
+                        //         })[0]
 
-                                        //                         console.log("newNextSpaceInfo", newNextSpaceInfo);
+                        //         console.log("newNextSpaceInfo", newNextSpaceInfo);
 
-                                        //                         let oldSpace = p.nextSpace;
-                                        //                         let newSpace = $scope.game.board[newNextSpaceInfo.y][newNextSpaceInfo.x];
-                                        //                         p.nextSpace = newSpace;
-                                        //                         console.log(p.nextSpacePointsIndex);
-                                        //                         p.nextSpacePointsIndex = newNextSpaceInfo.i;
-                                        //                         firebasePlayersArr.$save(pIdx);
-                                        //                         //                 // TODO: need more players to check if it works
-                                        //                         //                 player.checkDeath(p);
+                        //         let oldSpace = p.nextSpace;
+                        //         let newSpace = $scope.game.board[newNextSpaceInfo.y][newNextSpaceInfo.x];
+                        //         p.nextSpace = newSpace;
+                        //         console.log(p.nextSpacePointsIndex);
+                        //         p.nextSpacePointsIndex = newNextSpaceInfo.i;
+                        //         firebasePlayersArr.$save(pIdx);
+                        //         // TODO: need more players to check if it works
+                        //         //player.checkDeath(p);
 
-                                        //                         movable = player.moveTo(p.point);
-                                        //                         console.log("movable at the end", movable)
-                                        //                     }
-
-                                        //                     console.log("end moving")
-                                        //                 });
-                                        //             });
-
-
-
-                                    })
-
-                                })
-
-                        })
-                    })
-
+                        //         movable = player.moveTo(p.point);
+                        //         console.log("movable at the end", movable)
+                        //     }
+                        //     console.log("end moving")
+                        // });
+                    });
+                });
             });
-
-        console.log("placing tile...here's the paths", tile.paths, "rotation", tile.rotation);
-
-        console.log("my next space", $scope.me.nextSpace);
-        console.log("scope game board", $scope.game.board);
-        $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].image = tile.imageUrl;
-        $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].rotation = tile.rotation;
-
-        // CMT: need this line here in order to update the $scope.spaces for the html
-        $scope.spaces = _.flatten($scope.game.board);
-
-        // TODO: send this state to firebase every time it's called
-        tile = gameFactory.rotateTile(tile);
-
-
-        // // CMT: this should send the rotated tile to firebase
-        movesArr.$add({
-            'type': 'placeTile',
-            'tile': tile,
-            'playerUid': $scope.me.uid
-        });
-
-
 
         // if ($scope.game.checkOver()) {
         //     // TODO: need to tell the player she won

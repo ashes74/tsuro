@@ -100,7 +100,7 @@ function Point(space) {
         if (space[0].i === 2 || space[0].i === 3) this.edge = true;
         else this.edge = false;
     }
-    this.neighbors = ["n"];
+    this.neighbors = [{"n": 0}];
     this.travelled = false;
     this.spaces = space;
 }
