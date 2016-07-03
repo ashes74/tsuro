@@ -8,7 +8,7 @@ class Game {
         this.count = 35;
         this.board = new Board().drawBoard();
         this.players = [];
-        this.availableMarkers = ["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]
+        this.availableMarkers = ["red", "pink", "yellow", "green", "jade", "sky", "ocean", "purple"];
 
         //index of the currentPlayer in the players
         this.currPlayer;

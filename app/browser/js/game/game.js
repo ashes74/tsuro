@@ -209,12 +209,9 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     GAMEPLAY ACTIONS
     ****************/
     $scope.tryTile = function (tile) {
-        console.log('trying tile');
-        console.log("board in try tile", $scope.me.nextSpace.y, $scope.me.nextSpace.x)
-
         $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].image = tile.imageUrl;
         $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].rotation = tile.rotation;
-        console.log("paths", tile.paths);
+        $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].testing = true;
 
         // CMT: need this line here in order to update the $scope.spaces for the html
         $scope.spaces = _.flatten($scope.game.board);
@@ -321,6 +318,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         console.log("my next space", $scope.me.nextSpace)
         $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].image = tile.imageUrl;
         $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].rotation = tile.rotation;
+        $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].testing = false;
 
         // CMT: need this line here in order to update the $scope.spaces for the html
         $scope.spaces = _.flatten($scope.game.board);

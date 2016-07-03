@@ -1,19 +1,32 @@
 $geosans: 'Raleway', sans-serif;
+
 $red: #cc553d;
-$orange: #E86C25;
-$yellow: #eddf96;
-$green: #84a495;
-$aqua: #5EADA3;
-$blue: #5285C2;
-$navy: #0d3954;
-$purple: #923F7C;
-$mountain: #5c6663;
-$paper: #eae4c5;
+$purple: #a58087;
+$pink: #e8afa3;
+$yellow: #f2c85d;
+$jade: #336667;
+$green: #539279;
+$sky: #9ac4ce;
+$ocean: #275e93;
+
+$mountain: #122039;
+$gray: #5c6764;
+$paper: #f4f1df;
+
+@mixin testing-tile($animationname){
+  animation-name: $animationname;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  box-shadow: 0 0 10px $gray; 
+}
+
 /////STRUCTURE/////
 body {
     font-family: $geosans;
     text-align: center;
-    background-color: $paper;
+    background-image: url('https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-bg.jpg?alt=media&token=d0078f3a-7445-47ba-8641-3a794a1499ab');
+    background-size: cover;
 }
 section.wrapper {
     height: 100vh;
@@ -22,82 +35,101 @@ section.wrapper {
     justify-content: center;
     align-items: center;
 }
-/////HOME PAGE/////
-#home {
-    background-size: cover;
-}
+
 /////GAME PAGE/////
 #game {
+  display: flex;
+
   #board {
-    width: 95vh;
-    height: 95vh;
+    width: 94vh;
+    height: 94vh;
+    margin: 3vh;
     display: flex;
     flex-wrap: wrap;
 
-    .corner { width: 5%; height: 5%;}
+    .corner { width: 1%; height: 1%;}
     .frame {
       &.horizontal {
-        height: 5%;
-        width: 90%;
+        height: 1%;
+        width: 98%;
 
         .startpoints {
           height: 100%;
           width: calc(100%/12);
           display: inline-block;
           position: relative;
-
-          a {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%,-50%);
-            color: $mountain;
-            margin: 0;
-          }
         }
       }
       &.vertical {
-        height: 90%;
-        width: 5%;
+        height: 98%;
+        width: 1%;
 
         .startpoints {
-          height: calc(100%/12);
           width: 100%;
+          height: calc(100%/12);
           display: inline-block;
           position: relative;
-
-          span {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%,-50%);
-            color: $mountain;
-            margin: 0;
-          }
         }
+      }
+      .startpoints span {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%,-50%);
+        color: $mountain;
+        margin: 0;
+        cursor: pointer;
       }
     }
     .space-container {
-      height: 90%;
-      width: 90%;
+      height: 98%;
+      width: 98%;
       display: flex;
       flex-wrap: wrap;
       border: 1px solid $mountain;
       box-sizing: border-box;
 
       .space {
-        background-size: contain;
-        box-sizing: border-box;
         width: calc(100%/6);
         height: calc(100%/6);
-        border: 1px dashed #ddd;
+        border: 1px dotted #ccc;
+        box-sizing: border-box;
         position: relative;
 
         img {
           width:100%;
-          &.east { transform: rotate(90deg); }
-          &.south { transform: rotate(180deg); }
-          &.west { transform: rotate(270deg); }
+          position: relative;
+          z-index: 5;
+          &.testing {@include testing-tile(testing)}
+          
+          &.east { 
+            transform: rotate(90deg); 
+            &.testing {@include testing-tile(testing-east)}
+          }
+          &.south { 
+            transform: rotate(180deg); 
+            &.testing {@include testing-tile(testing-south)}
+          }
+          &.west { 
+            transform: rotate(270deg); 
+            &.testing {@include testing-tile(testing-west)}
+          }
+        }
+        @keyframes testing {
+          from { transform: scale(1)  }
+          to { transform: scale(1.15) }
+        }
+        @keyframes testing-east {
+          from { transform: scale(1) rotate(90deg); }
+          to { transform: scale(1.15) rotate(90deg);}
+        }
+        @keyframes testing-south {
+          from { transform: scale(1) rotate(180deg);}
+          to { transform: scale(1.15) rotate(180deg);}
+        }
+        @keyframes testing-west {
+          from { transform: scale(1) rotate(270deg);}
+          to { transform: scale(1.15) rotate(270deg);}
         }
 
         .player {
@@ -119,8 +151,7 @@ section.wrapper {
         }
 
         &.mynext {
-          background-color: #FFD700;
-          box-shadow: 0 0 10px #FFD700;
+          background-color: white;
         }
       }
     }
@@ -131,67 +162,40 @@ section.wrapper {
     position: fixed;
     top: 0;
     left: 0;
-    height: 94vh;
-    padding: 3vh;
-    background-color: $mountain;
+    height: 92vh;
+    padding: 4vh;
     display: flex;
     flex-direction: column;
     
     tile {
-      width: calc(88vh/3);
-      height: calc(88vh/3);
+      width: calc(86vh/3);
+      height: calc(86vh/3);
       margin-bottom: 3vh;
       position: relative;
-
-      button {
-        opacity: 0.75;
-        border: 0;
-        border-radius: 25px;
-        width: 20%;
-        height: 20%;
-        position: absolute;
-          
-        &.ccw {
+      cursor: pointer;
+      
+        .ccw {
+          width: 20%; height: 20%;
+          position: absolute;
           transform: translateY(-50%);
-          left: 5px; top: 50%;
+          left: 0; top: 50%;
         }
-        &.cw {
+        .cw {
+          width: 20%; height: 20%;
+          position: absolute;
           transform: translateY(-50%);
-          right: 5px; top: 50%;
+          right: 0; top: 50%;
         }
-        &.place {
-          transform: translateX(-50%);
-          top: 20px; width: 50%;
-        }
-        &.try {
-          transform: translateX(-50%);
-          bottom: 20px;width: 50%;
-        }
-      }
+      
       img {
         width: 100%;
         transition: all 1s;
+
         &:last-child { margin-bottom: 0; }
         &.east { transform: rotate(90deg); }
         &.south { transform: rotate(180deg); }
         &.west { transform: rotate(270deg); }
       }
-    }
-    h2 {
-      transform: rotate(90deg);
-      transform-origin: bottom left;
-      white-space: nowrap;
-      position: absolute;
-      top: 0;
-      left: 100%;
-      margin: 0;
-      padding: 5px 10px 0;
-      background-color: $mountain;
-      border-radius: 5px 5px 0 0;
-      font-size: 0.75em;
-      font-weight: 300;
-      color: white;
-      letter-spacing: 3px;
     }
   }
   /////PLAYER DRAWER/////
@@ -199,45 +203,33 @@ section.wrapper {
     position: fixed;
     top: 0;
     right: 0;
-    height: 97vh;
-    padding: 3vh 0 3vh 3vh;
-    background-color: $mountain;
+    height: 92vh;
+    padding: 4vh 0 4vh 4vh;
     display: flex;
     flex-direction: column;
 
     .player {
-      width: calc(97vh/3);
-      height: calc(73vh/8);
+      width: calc(90vh/3);
       margin-bottom: 3vh;
-      position: relative;
+      padding: 5px 0;
       color: #fff;
-      p { vertical-align: middle; }
-      &.active .color-field { width: 100%; }
-      .color-field {
-        width: 10%;
-        height: 100%;
-        position: absolute;
-        right: 0;
-        top: 0;
-        z-index: -2;
-      }
+
+      p { margin: 0; }
+
       &:last-child { margin-bottom: 0; }
+      
     }
-    h2 {
-      transform: rotate(90deg);
-      transform-origin: top left;
-      white-space: nowrap;
+    .game-buttons {
       position: absolute;
-      top: 0;
-      left: 0;
-      margin: 3vh 0 0;
-      padding: 0 10px 5px;
-      background-color: $mountain;
-      border-radius: 0 0 5px 5px;
-      font-size: 0.75em;
-      font-weight: 300;
-      color: white;
-      letter-spacing: 3px;
+      bottom: 0;
+      
+      .leave, .reset {
+        width: calc(97vh/3);
+        margin-bottom: 4vh;
+        padding: 5px 0;
+        color: #fff;
+        background-color: $gray;
+      }     
     }
   }
 }
@@ -267,6 +259,18 @@ section.wrapper {
     margin: 10px;
   }
 }
+
+.loader {
+  width: 100%; height: 100%;
+  position: fixed;
+  top: 0; left: 0;
+  background-color: rgba(0,0,0,.7);
+  img {
+    position: relative;
+    top:50%;
+    transform: translateY(-50%);
+  }
+}
 /////TYPOGRAPHY/////
 h1 {
   font-size: 4em;
@@ -294,10 +298,10 @@ input {
 }
 /////COLORS/////
 .red { background-color: $red; }
-.orange { background-color: $orange; }
+.purple { background-color: $purple; }
+.pink { background-color: $pink; }
 .yellow { background-color: $yellow; }
 .green { background-color: $green; }
-.aqua { background-color: $aqua; }
-.blue { background-color: $blue; }
-.navy { background-color: $navy; }
-.purple { background-color: $purple; }
+.jade { background-color: $jade; }
+.sky { background-color: $sky; }
+.ocean { background-color: $ocean; }

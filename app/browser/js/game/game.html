@@ -1,6 +1,5 @@
 <section id="game" class="wrapper">
   <aside class="tileDrawer">
-    <h2>YOUR TILES</h2>
     <tile ng-repeat="tile in me.tiles" this-tile="tile" try-tile="tryTile(tile)" rotateccw="rotateTileCcw(tile)" rotatecw="rotateTileCw(tile)" place="placeTile(tile)" ng-show="me.tiles !== 'n'"></tile>
   </aside>
   <main id="board">
@@ -8,7 +7,7 @@
     <div class="corner"></div>
     <div class="frame horizontal">
       <div ng-repeat="start in starttop" class="startpoints" ng-hide="!me || me.nextSpacePointsIndex !== 'n'" ng-click="placeMarker(start)">
-        <a>◌</a>
+        <span>◌</span>
       </div>
     </div>
     <div class="corner"></div>
@@ -22,7 +21,7 @@
 
       <div ng-repeat="space in spaces" class="space" ng-class="{mynext: me.nextSpace.x === space.x && me.nextSpace.y === space.y}">
         <div class="player {{playerIndex(playerOnThisSpace(space))}} {{markerColor(playerOnThisSpace(space))}}" ng-show="playerOnThisSpace(space)"></div>
-        <img ng-hide="space.image==='n'" ng-src="{{space.image}}" ng-class="{east: space.rotation === 1 || space.rotation === -3, south: space.rotation === 2 || space.rotation === -2, west: space.rotation === 3 || space.rotation === -1}" />
+        <img ng-hide="space.image==='n'" ng-src="{{space.image}}" ng-class="{east: space.rotation === 1 || space.rotation === -3, south: space.rotation === 2 || space.rotation === -2, west: space.rotation === 3 || space.rotation === -1, testing: space.testing}" />
       </div>
     </div>
     <div class="frame vertical">
@@ -38,17 +37,24 @@
       </div>
     </div>
     <div class="corner"></div>
-    <button ng-click="reset()">reset game</button>
   </main>
   <aside class="playerDrawer">
-    <h2>PLAYERS</h2>
-    <div class="player" ng-repeat="player in game.players">
+    <div class="player {{player.marker}}" ng-repeat="player in game.players">
       <p>{{player.name}}</p>
-      <div class="color-field {{player.marker}}"></div>
+	</div>
+ 		<div class="game-buttons">
+	    <div ng-click="reset()" class="reset">reset game</div>
+	    <div ng-click="leaveGame()" class="leave">leave game</div>
     </div>
+
+
   </aside>
 </section>
 <div class="markermodal" ng-show="!me.marker">
   <p>Choose your dragon wisely...</p>
   <div ng-repeat="marker in game.availableMarkers" class="circle {{marker}}" ng-disable="me.marker || !me" ng-click="pickMarker(marker)"></div>
+</div>
+
+<div class="loader" ng-if="!me && !game.board">
+	<img src="https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/loader.gif?alt=media&token=75053ec5-b42f-4c9a-b459-e9d94b1c12e4" />
 </div>

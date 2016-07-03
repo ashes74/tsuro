@@ -37,7 +37,7 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
         var deck = new Deck(tiles).shuffle().tiles;
         deckArr.$add(deck);
 
-        initialMarkersArr.$add(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]);
+        initialMarkersArr.$add(["red", "pink", "yellow", "green", "jade", "sky", "ocean", "purple"]);
 
         $state.go('game', {
             "gameName": gameName
