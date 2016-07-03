@@ -1,4 +1,4 @@
-
+'use strict';
 tsuro.factory('gameFactory', function () {
 	return {
 		tiles: [{
@@ -192,4 +192,3 @@ tsuro.factory('gameFactory', function () {
 		}
 	}
 })
-``
