@@ -44,23 +44,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 	//new local game with game name defined by url
 	$scope.game = new Game($stateParams.gameName);
 
-	//when the board is loaded...
-	boardArr.$loaded().then(function (data) {
-		if (!data.length) {
-			boardArr.$add($scope.game.board);
-		}
-		$scope.game.board = boardArr[0];
-
-		//watching board for changes
-		boardRef.on('child_changed', function (snap) {
-			//NEED TO RETURN TO CHECK BOARD
-			console.log(snap);
-			$scope.game.board = snap.val();
-		});
-	});
-
-	$scope.spaces = _.flatten($scope.game.board);
-
 	//when the deck is loaded...
 	deckArr.$loaded().then(function (data) {
 
@@ -121,16 +104,14 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 				players.find(function (e, i) {
 					if (e.uid === user.uid) meIdx = i;
 				});
-
-				$scope.me = players[meIdx];
-				// $scope.game.currPlayer = meIdx;
+				$scope.me = new Player(user.uid);
+				firebasePlayersArr[meIdx] = $scope.me;
+				firebasePlayersArr.$save(meIdx);
 
 				$scope.game.players = players;
 				$scope.game.currentPlayer = $scope.game.players[0];
 				$scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid;
 				console.log("IS IT MY TURN?", $scope.myTurn)
-				if ($scope.me.marker === "n") $scope.me.marker = null;
-
 			} else {
 				// No user is signed in.
 				console.log("no one is logged in");
@@ -199,7 +180,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 	$scope.placeMarker = function (point) {
 
 			$scope.me.placeMarker(point);
-
+			console.log($scope.me);
 			// deal me three cards
 			$scope.me.tiles = $scope.game.deal(3);
 			$scope.clicked = true;
