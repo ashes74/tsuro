@@ -381,54 +381,61 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
         }
 
-        // If deck is empty & no one is dragon, set me as dragon
-        if ($scope.game.deck.length === 0 && !$scope.dragon) {
-            $scope.dragon = $scope.me;
-            console.log("set dragon to me")
-        } else if ($scope.game.deck.length === 0 && $scope.dragon) {
-            awaitingDragonHolders.push($scope.me);
-            console.log("I'm waiting for to be a dragon")
-        } else {
-            console.log("give me a tile")
-            firebasePlayersArr.$loaded()
-                .then(function (players) {
-                    //find me in the firebase players array
-                    var meIdx;
-										meIdx = getPlayerIndex(players, $scope.me, "uid");
+				//HACK: replacing dragon logic
+				//After playing a turn - draw a card if the deck has cards
+				console.log(`${$scope.me}:I've played give me a card`);
+				if($scope.game.deck.length>0 && !$scope.dragon) gameFactory.dealCardTo($scope.me)
+				console.log(`${$scope.me}: thanks for the card!`);
+				//TODO: add checks and GameFactory functions here to handle all dragon logic
 
-                    //set firebase me to local me
-                    firebasePlayersArr[meIdx].tiles = $scope.me.tiles.concat($scope.game.deal(1));
-                    console.log("dealed one tile to me!");
-
-                    //save it
-                    firebasePlayersArr.$save(meIdx);
-
-                    $scope.me = firebasePlayersArr[meIdx];
-                });
-
-            while ($scope.dragon && $scope.game.deck.length) {
-                $scope.dragon.tiles.push($scope.game.deal(1));
-                firebasePlayersArr.$loaded()
-                    .then(function (players) {
-                        //find me in the firebase players array
-                        var meIdx;
-												meIdx = getPlayerIndex(players, $scope.dragon, "uid");
-
-
-                        //set firebase me to local me
-                        firebasePlayersArr[meIdx] = $scope.dragon;
-
-                        //save it
-                        firebasePlayersArr.$save(meIdx);
-                    });
-
-                $scope.dragon = $scope.awaitingDragonHolders.shift() || null;
-            }
-        }
-
-        currPlayerArr[0][0] = $scope.game.nextCanPlay();
-        currPlayerArr.$save(0);
-        $scope.game.currentPlayer = $scope.game.players[currPlayerArr[0][0]];
+    //     // If deck is empty & no one is dragon, set me as dragon
+    //     if ($scope.game.deck.length === 0 && !$scope.dragon) {
+    //         $scope.dragon = $scope.me;
+    //         console.log("set dragon to me")
+    //     } else if ($scope.game.deck.length === 0 && $scope.dragon) {
+    //         awaitingDragonHolders.push($scope.me);
+    //         console.log("I'm waiting for to be a dragon")
+    //     } else {
+    //         console.log("give me a tile")
+    //         firebasePlayersArr.$loaded()
+    //             .then(function (players) {
+    //                 //find me in the firebase players array
+    //                 var meIdx;
+		// 								meIdx = getPlayerIndex(players, $scope.me, "uid");
+		//
+    //                 //set firebase me to local me
+    //                 firebasePlayersArr[meIdx].tiles = $scope.me.tiles.concat($scope.game.deal(1));
+    //                 console.log("dealed one tile to me!");
+		//
+    //                 //save it
+    //                 firebasePlayersArr.$save(meIdx);
+		//
+    //                 $scope.me = firebasePlayersArr[meIdx];
+    //             });
+		//
+    //         while ($scope.dragon && $scope.game.deck.length) {
+    //             $scope.dragon.tiles.push($scope.game.deal(1));
+    //             firebasePlayersArr.$loaded()
+    //                 .then(function (players) {
+    //                     //find me in the firebase players array
+    //                     var meIdx;
+		// 										meIdx = getPlayerIndex(players, $scope.dragon, "uid");
+		//
+		//
+    //                     //set firebase me to local me
+    //                     firebasePlayersArr[meIdx] = $scope.dragon;
+		//
+    //                     //save it
+    //                     firebasePlayersArr.$save(meIdx);
+    //                 });
+		//
+    //             $scope.dragon = $scope.awaitingDragonHolders.shift() || null;
+    //         }
+    //     }
+		//
+    //     currPlayerArr[0][0] = $scope.game.nextCanPlay();
+    //     currPlayerArr.$save(0);
+    //     $scope.game.currentPlayer = $scope.game.players[currPlayerArr[0][0]];
     };
 
 
