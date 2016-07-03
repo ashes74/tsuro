@@ -84,8 +84,6 @@ function Space(x, y, board) {
     }
 }
 
-
-// edge = boolean
 function Point(space) {
     if (space[0].y === 0) {
         if (space[0].i === 0 || space[0].i === 1) this.edge = true;
@@ -101,7 +99,6 @@ function Point(space) {
         else this.edge = false;
     }
     this.spaceId = 'space' + space[0].y + space[0].x + space[0].i;
-    this.neighbors = [{"n": 0}];
     this.travelled = false;
     this.spaces = space;
 }
