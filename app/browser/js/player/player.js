@@ -3,28 +3,18 @@
 function Player(uid) {
     // TODO: get uid from firebase auth
     this.uid = uid;
-
-    this.marker = "n";
-
-    // should be a Point object
-    this.point = null;
-
+    this.marker;
     // [x, y]
     // depends on the angular Space.x, Space.y
-    this.nextSpace = "n";
-
-    // in each Space.points array, find this specific point and get the position (integer) inside this space.
-    this.nextSpacePointsIndex = "n";
-
+    this.x;
+		this.y;
+		this.i;
     // maximun 3 tiles
-    this.tiles = 'n';
-
+    this.tiles;
     // if a player dies, it will be changed to false
     this.canPlay = true;
 }
-Player.prototype.hi = function () {
-        console.log("HI")
-    }
+
     // need to use self becuse we need to change $scope.me on gameCtrl and send to firebase
 Player.prototype.placeMarker = function (board, point, self) {
     // point looks like [x, y, pointsIndex] in the space
@@ -55,20 +45,30 @@ Player.prototype.newSpace = function (board, oldSpace, self) {
     }
 };
 
+//
+// Player.prototype.moveTo = function (pointer) {
+//     //always be returning 0 or 1 point in the array
+//     let nextPoint = pointer.neighbors.filter(function (neighbor) {
+//         return !neighbor.travelled && neighbor !== "n";
+//     })[0];
+//     return nextPoint;
+// };
+Player.prototype.move = function (board) {
+	//look at point, find untravelled neighbor move
 
-Player.prototype.moveTo = function (pointer) {
-    //always be returning 0 or 1 point in the array
-    let nextPoint = pointer.neighbors.filter(function (neighbor) {
-        return !neighbor.travelled && neighbor !== "n";
-    })[0];
-    return nextPoint;
-};
-
-
-Player.prototype.checkDeath = function (self) {
-    var allTravelled = self.point.neighbors.filter(function (neighbor) {
-        return neighbor.travelled;
-    });
-
-    if (self.point.edge || allTravelled.length === 2) self.canPlay = false;
+	let currPoint = board[this.y][this.x][this.i];
+	let end = false;
+	while (!end) {
+		let nextPoint = currPoint.neighbors.find((neighbor) => {
+			return !neighbor.travelled
+		})
+		if(nextPoint){
+			currPoint=nextPoint;
+		} else {
+			end = true
+			if (currPoint.neighbors.length==2 ||currPoint.edge) {
+				this.canPlay = false;
+			}
+		}
+	}
 };
