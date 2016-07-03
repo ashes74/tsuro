@@ -42,10 +42,10 @@ class Game {
     }
 
     //to be called at the end of a turn to set the currPlayer to the next eligible player in the players array;
-    goToNextPlayer() {
+    nextCanPlay() {
         if (this.getCanPlay().length > 1) {
             console.log(this.currPlayer, "currPlayer", "players", this.players)
-            let newIdx = this.currPlayer + 1 >= this.players.length ? 0 : this.currPlayer + 1;
+            var newIdx = this.currPlayer + 1 >= this.players.length ? 0 : this.currPlayer + 1;
             console.log("newIdx", newIdx)
             while (newIdx < this.players.length && !this.players[newIdx].canPlay) {
                 newIdx++;
@@ -56,7 +56,7 @@ class Game {
         } else {
             this.currPlayer = -1;
         }
-        return this.getCurrentPlayer();
+        return newIdx;
     }
 
     deal(num) {

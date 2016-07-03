@@ -1,6 +1,7 @@
 <section id="game" class="wrapper">
+<<<<<<< HEAD
   <aside class="tileDrawer">
-    <tile ng-repeat="tile in me.tiles" this-tile="tile" try-tile="tryTile(tile)" rotateccw="rotateTileCcw(tile)" rotatecw="rotateTileCw(tile)" place="placeTile(tile)" ng-show="me.tiles !== 'n'"></tile>
+    <tile ng-repeat="tile in me.tiles" this-tile="tile" try-tile="tryTile(tile)" rotateccw="rotateTileCcw(tile)" rotatecw="rotateTileCw(tile)" place="placeTile(tile)" my-turn="myTurn" ng-show="me.tiles !== 'n'"></tile>
   </aside>
   <main id="board">
     <!-- top row -->
@@ -11,13 +12,13 @@
       </div>
     </div>
     <div class="corner"></div>
+
     <!-- middle row -->
     <div class="frame vertical">
       <div ng-repeat="start in startleft" class="startpoints" ng-hide="!me || me.nextSpacePointsIndex !== 'n'" ng-click="placeMarker(start)">
         <span>◌</span>
       </div>
     </div>
-    <div class="space-container">
 
       <div ng-repeat="space in spaces" class="space" ng-class="{mynext: me.nextSpace.x === space.x && me.nextSpace.y === space.y}">
         <div class="player {{playerIndex(playerOnThisSpace(space))}} {{markerColor(playerOnThisSpace(space))}}" ng-show="playerOnThisSpace(space)"></div>
@@ -29,6 +30,7 @@
         <span>◌</span>
       </div>
     </div>
+    
     <!-- bottom row -->
     <div class="corner"></div>
     <div class="frame horizontal">
@@ -38,6 +40,7 @@
     </div>
     <div class="corner"></div>
   </main>
+  
   <aside class="playerDrawer">
     <div class="player {{player.marker}}" ng-repeat="player in game.players">
       <p>{{player.name}}</p>
@@ -46,9 +49,8 @@
 	    <div ng-click="reset()" class="reset">reset game</div>
 	    <div ng-click="leaveGame()" class="leave">leave game</div>
     </div>
-
-
   </aside>
+
 </section>
 <div class="markermodal" ng-show="!me.marker">
   <p>Choose your dragon wisely...</p>
