@@ -2,35 +2,22 @@
 
 function Player(uid) {
     // TODO: get uid from firebase auth
-    this.uid = uid;
-    this.marker;
-    // [x, y]
-    // depends on the angular Space.x, Space.y
-    this.x;
+		this.uid = uid;
+		this.marker;
+		// [x, y]
+		// depends on the angular Space.x, Space.y
+		this.x;
 		this.y;
 		this.i;
-    // maximun 3 tiles
-    this.tiles;
-    // if a player dies, it will be changed to false
-    this.canPlay = true;
-}
+		// maximun 3 tiles
+		this.tiles;
+		// if a player dies, it will be changed to false
+		this.canPlay = true;
+	}
 
-    // need to use self becuse we need to change $scope.me on gameCtrl and send to firebase
-Player.prototype.placeMarker = function (board, point, self) {
-    // point looks like [x, y, pointsIndex] in the space
-    var x = point[0];
-    var y = point[1];
-    var pointsIndex = point[2];
-
-    console.log("board in playr place marker", board, "point", point)
-    self.point = board[y][x].points[pointsIndex];
-    self.point.travelled = true;
-
-    //[x, y] from the point
-    self.nextSpace = board[y][x];
-
-    // in each Space.points array, find this specific point and get the position (integer) inside this space.
-    self.nextSpacePointsIndex = self.nextSpace.points.indexOf(self.point);
+Player.prototype.placeMarker = function (point) {
+    this.point.travelled = true;
+		this.assignXYI(point);
 };
 
 Player.prototype.newSpace = function (board, oldSpace, self) {
@@ -63,13 +50,7 @@ Player.prototype.move = function (board) {
 		})
 		if(nextPoint){
 			currPoint=nextPoint;
-			let space = parsePoint(nextPoint.spaceId);
-
-			//TODO: can we use Object.assign? Ask Ashi
-			// Object.assign(this, space);
-			this.x = space.x;
-			this.y = space.y;
-			this.i = space.i;
+			this.assignXYI(currPoint);
 		} else {
 			end = true
 			if (currPoint.neighbors.length==2 ||currPoint.edge) {
@@ -79,12 +60,11 @@ Player.prototype.move = function (board) {
 	}
 };
 
-
-let parsePoint = function (spaceId) {
+Player.prototype.assignXYI = function (spaceId) {
 	spaceArray = spaceId.split("");
 	let space;
-	space.i= spaceArray.pop();
-	space.x = spaceArray.pop();
-	space.y = spaceArray.pop();
+	this.i= spaceArray.pop();
+	this.x = spaceArray.pop();
+	this.y = spaceArray.pop();
 	return space;
-}
+};

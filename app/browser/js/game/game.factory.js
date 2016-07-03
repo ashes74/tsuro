@@ -188,6 +188,7 @@ tsuro.factory('gameFactory', function () {
 			});
 			// wrap around
 			tile.paths =  toRotate.slice(-2*rotationDifference).concat(toRotate.slice(0, -2*rotationDifference))
+			console.log("rotated tile connections", tile.paths);
 			return tile;
 		}
 	}
