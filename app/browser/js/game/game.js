@@ -313,21 +313,29 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 	};
 
 	spaceRef.on('child_added', function(snapshot){
-		var addedSpace = snapshot.val();
-		var spaceKey = snapshot.key;
-		var x = spaceKey.slice(-1);
-		var y = spaceKey.slice(-2,-1);
-		var space = $scope.game.board[y][x]; //look space up in game.board
+		var addedTile = snapshot.val();
+			 var spaceKey = snapshot.key;
+			 var x = spaceKey.slice(-2, -1);
+			 var y = spaceKey.slice(-1);
 
-		var tile = gameFactory.tiles[addedTile.tileId]; //look up tile by id
+			 console.log(x);
+			 console.log(y);
+			 var space = $scope.game.board[y][x]; //look space up in game.board
+			 console.log($scope.game.board);
+			 console.log(y);
+			 console.log(x);
+			 space.image = addedTile.img;
+			 space.rotation = addedTile.rotation;
 
-		var rotatedTile = gameFactory.rotateTile(tile) //rotate tile
+			 var tile = gameFactory.tiles[addedTile.tileId]; //look up tile by id
 
-		//make neighbor connections in game.board[y][x]
-		for (var i = 0; i < rotatedTile.paths.length; i++) {
-			if (!space.points[i].neighbors) space.points[i].neighbors = []; //if the point doesn't have neighbors... set to empty array
-			space.points[i].neighbors.push(space.points[rotatedTile.paths[i]]); //set each point's neighbors to it's corresponding point
-		}
+			 var rotatedTile = gameFactory.rotateTile(tile) //rotate tile
+
+			 //make neighbor connections in game.board[y][x]
+			 for (var i = 0; i < rotatedTile.paths.length; i++) {
+					 if (!space.points[i].neighbors) space.points[i].neighbors = []; //if the point doesn't have neighbors... set to empty array
+					 space.points[i].neighbors.push(space.points[rotatedTile.paths[i]]); //set each point's neighbors to it's corresponding point
+			 }
 		//TODO: trigger move
 		if($scope.me.x === x && $scope.me.y ===y){
 			$scope.me.move($scope.game.board);

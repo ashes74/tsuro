@@ -55,7 +55,6 @@ Player.prototype.newSpace = function (board, oldSpace, self) {
 // };
 Player.prototype.move = function (board) {
 	//look at point, find untravelled neighbor move
-
 	let currPoint = board[this.y][this.x][this.i];
 	let end = false;
 	while (!end) {
@@ -64,6 +63,13 @@ Player.prototype.move = function (board) {
 		})
 		if(nextPoint){
 			currPoint=nextPoint;
+			let space = parsePoint(nextPoint.spaceId);
+
+			//TODO: can we use Object.assign? Ask Ashi
+			// Object.assign(this, space);
+			this.x = space.x;
+			this.y = space.y;
+			this.i = space.i;
 		} else {
 			end = true
 			if (currPoint.neighbors.length==2 ||currPoint.edge) {
@@ -72,3 +78,13 @@ Player.prototype.move = function (board) {
 		}
 	}
 };
+
+
+let parsePoint = function (spaceId) {
+	spaceArray = spaceId.split("");
+	let space;
+	space.i= spaceArray.pop();
+	space.x = spaceArray.pop();
+	space.y = spaceArray.pop();
+	return space;
+}
