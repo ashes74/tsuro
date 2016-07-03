@@ -140,9 +140,10 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
     ****************/
 
     $scope.pickMarker = function(marker) {
-        boardArr.$loaded().then(function(data) {
-            pickMarkerFn(data, marker);
-        });
+         pickMarkerFn($scope.game.board, marker);
+        // boardArr.$loaded().then(function(data) {
+        //     pickMarkerFn(data, marker);
+        // });
     }
 
     function pickMarkerFn(board, marker) {
