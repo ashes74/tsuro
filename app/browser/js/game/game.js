@@ -46,11 +46,11 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
             boardArr.$add($scope.game.board);
         }
         $scope.game.board = boardArr[0];
-
+        console.log($scope.game.board)
         //watching board for changes
         boardRef.on('child_changed', function(snap) {
             //NEED TO RETURN TO CHECK BOARD
-            console.log(snap);
+            console.log(snap.val());
             $scope.game.board = snap.val();
         });
     });
@@ -307,18 +307,18 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
                 var pointsRef = spaceRef.child("points");
                 var pointsArr = $firebaseArray(pointsRef);
 
-                var promiseForEachPointNeighborsUpdate = function(idx) {
-                    var neighborRef = pointsRef.child(idx).child('neighbors');
-                    var neighborArr = $firebaseArray(neighborRef);
-                    neighborArr.$add(pointsArr[tile.paths[idx]]);
-                };
-                var allPromises = pointsArr.map(function(point, idx) {
-                    promiseForEachPointNeighborsUpdate(idx);
-                });
+                pointsArr.$loaded().then(function() {
 
-                Promise.all(allPromises).then(function(data) {
+                    var promiseForEachPointNeighborsUpdate = function(idx) {
+                        var neighborRef = pointsRef.child(idx).child('neighbors');
+                        var neighborArr = $firebaseArray(neighborRef);
+                        return neighborArr.$add(pointsArr[tile.paths[idx]]);
+                    };
+                    var allPromises = pointsArr.map(function(point, i) {
+                        promiseForEachPointNeighborsUpdate(i);
+                    });
 
-                    firebasePlayersArr.$loaded().then(function() {
+                    Promise.all(allPromises).then(function() {
                         var player = firebasePlayersArr[meIdx];
                         player.point = boardArr[0][player.nextSpace.y][player.nextSpace.x].points[player.nextSpacePointsIndex];
                         firebasePlayersArr.$save(meIdx);
@@ -334,49 +334,56 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
                         $scope.spaces = _.flatten($scope.game.board);
                         tile = gameFactory.rotateTile(tile);
                     }).then(function() {
-                        // console.log("now change all players")
-                        // firebasePlayersArr.forEach(function(p) {
-                        //     console.log("point before change", p.point)
-                        //     p.point.travelled = true;
-                        //     console.log(p.point);
-                        //     let movable = player.moveTo(p.point);
+                        console.log(boardArr);
+                        console.log("now change all players")
+                        firebasePlayersArr.forEach(function(p, idx) {
+                            console.log("point before change", p.point)
+                            p.point.travelled = true;
 
-                        //     console.log(movable);
+                            //this is why we want to restructure the code... the point of the player should be connected to the point on the space so that they can sync up together
+                            firebasePlayersArr.$save(idx);
 
-                        //     console.log("1st movable", movable)
-                        //     var pIdx = players.indexOf(p)
+                            console.log(p.point);
+                            let movable = player.moveTo(p.point);
 
-                        //     while (movable) {
-                        //         console.log("movable", movable)
-                        //         p.point.travelled = true;
-                        //         p.point = movable;
+                            console.log(movable);
 
-                        //         if (p.point.travelled === true) {
-                        //             p.canPlay = false;
-                        //             break;
-                        //         }
+                            console.log("1st movable", movable)
+                            var pIdx = players.indexOf(p)
 
-                        //         // Check the space that's not my current nextSpace
-                        //         var newNextSpaceInfo = p.point.spaces.filter(function(space) {
-                        //             return space.x !== p.nextSpace.x || space.y !== p.nextSpace.y
-                        //         })[0]
+                            while (movable) {
+                                console.log("movable", movable)
+                                p.point.travelled = true;
+                                firebasePlayersArr.$save(idx);
+                                p.point = movable;
 
-                        //         console.log("newNextSpaceInfo", newNextSpaceInfo);
+                                if (p.point.travelled === true) {
+                                    p.canPlay = false;
+                                    firebasePlayersArr.$save(idx);
+                                    break;
+                                }
 
-                        //         let oldSpace = p.nextSpace;
-                        //         let newSpace = $scope.game.board[newNextSpaceInfo.y][newNextSpaceInfo.x];
-                        //         p.nextSpace = newSpace;
-                        //         console.log(p.nextSpacePointsIndex);
-                        //         p.nextSpacePointsIndex = newNextSpaceInfo.i;
-                        //         firebasePlayersArr.$save(pIdx);
-                        //         // TODO: need more players to check if it works
-                        //         //player.checkDeath(p);
+                                // Check the space that's not my current nextSpace
+                                var newNextSpaceInfo = p.point.spaces.filter(function(space) {
+                                    return space.x !== p.nextSpace.x || space.y !== p.nextSpace.y
+                                })[0]
 
-                        //         movable = player.moveTo(p.point);
-                        //         console.log("movable at the end", movable)
-                        //     }
-                        //     console.log("end moving")
-                        // });
+                                console.log("newNextSpaceInfo", newNextSpaceInfo);
+
+                                let oldSpace = p.nextSpace;
+                                let newSpace = $scope.game.board[newNextSpaceInfo.y][newNextSpaceInfo.x];
+                                p.nextSpace = newSpace;
+                                console.log(p.nextSpacePointsIndex);
+                                p.nextSpacePointsIndex = newNextSpaceInfo.i;
+                                firebasePlayersArr.$save(pIdx);
+                                // TODO: need more players to check if it works
+                                //player.checkDeath(p);
+
+                                movable = player.moveTo(p.point);
+                                console.log("movable at the end", movable)
+                            }
+                            console.log("end moving")
+                        });
                     });
                 });
             });
