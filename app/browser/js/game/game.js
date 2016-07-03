@@ -21,11 +21,18 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
     var deckRef = gameRef.child('deck');
     var deckArr = $firebaseArray(deckRef);
 
+    var currPlayerRef = gameRef.child('currPlyaer');
+    // Should be an array with only one number
+    var currPlayerArr = $firebaseArray(currPlayerRef);
+
     var playersRef = gameRef.child('players');
     var firebasePlayersArr = $firebaseArray(playersRef);
 
     var markersRef = gameRef.child('availableMarkers');
     var markersArr = $firebaseArray(markersRef);
+
+    var spaceRef = ref.child('games').child($stateParams.gameName).child('spaces')
+    var spaceObj = $firebaseObject(spaceRef);
 
     var player = Object.create(Player.prototype);
 
@@ -98,9 +105,12 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
                 });
 
                 $scope.me = players[meIdx];
-                $scope.game.currPlayer = meIdx;
+                // $scope.game.currPlayer = meIdx;
 
-
+                $scope.game.players = players;
+                $scope.game.currentPlayer = $scope.game.players[0];
+                $scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid;
+                console.log("IS IT MY TURN?", $scope.myTurn)
                 if ($scope.me.marker === "n") $scope.me.marker = null;
 
             } else {
@@ -111,13 +121,27 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
         });
     });
 
+    // Start with first player in the array, index 0
+    currPlayerArr.$loaded()
+        .then(function(currPlayer) {
+            $scope.game.currPlayer = currPlayer[0][0];
+            console.log("when loaded, currPlayer", $scope.game.currPlayer)
+        })
+
+    // update your view for current player index
+    currPlayerRef.on('child_changed', function(data) {
+        $scope.game.currPlayer = data.val()[0];
+        $scope.game.currentPlayer = firebasePlayersArr[data.val()[0]];
+        $scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid;
+        console.log("IS IT MY TURN?", $scope.myTurn)
+    });
 
     /****************
     AVAILABLE PLAYER ACTIONS AT GAME START
     ****************/
 
     $scope.pickMarker = function(marker) {
-         pickMarkerFn($scope.game.board, marker);
+        pickMarkerFn($scope.game.board, marker);
     }
 
     function pickMarkerFn(board, marker) {
@@ -204,8 +228,6 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
     // TODO: how to show the rotated tile?
 
-    // CMT: assuming we use new Game() for each game
-    $scope.currentPlayer = $scope.game.getCurrentPlayer();
 
     // TODO: need a function to assign dragon
     $scope.dragon;
@@ -217,6 +239,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
     $scope.myTurn = function() {
         $scope.me === $scope.currentPlayer;
+
     };
 
     //these are tied to angular ng-click buttons
@@ -231,11 +254,6 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
         if (tile.rotation === -4) tile.rotation = 0;
         console.log('rotate ccw', tile);
     };
-
-
-    var spaceRef = ref.child('games').child($stateParams.gameName).child('spaces')
-    var spaceObj = $firebaseObject(spaceRef);
-
 
     $scope.placeTile = function(tile) {
         var spacex = $scope.me.nextSpace.x;
@@ -260,8 +278,6 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
         var x = spaceKey.slice(-2, -1);
         var y = spaceKey.slice(-1);
 
-        console.log(x);
-        console.log(y);
         var space = $scope.game.board[y][x]; //look space up in game.board
         console.log($scope.game.board);
 
@@ -278,6 +294,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
             space.points[i].neighbors.push(space.points[rotatedTile.paths[i]]); //set each point's neighbors to it's corresponding point           
         }
     });
+
 
     // // CMT: use player's and game's prototype function to place tile and then move all players
     // $scope.placeTile = function(tile) {
@@ -475,7 +492,6 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
     //     // }
     // }
 
-
     $scope.leaveGame = function() {
         console.log("i'm out");
 
@@ -526,6 +542,11 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
         var deck = new Deck(tiles).shuffle().tiles;
         initialDeckArr.$add(deck);
         deckArr.$add(deck);
+
+        currPlayerArr.$remove(0)
+            .then(function() {
+                currPlayerArr.$add([0])
+            })
 
         var initialMarkersRef = ref.child('games').child($stateParams.gameName).child('availableMarkers');
         $firebaseArray(initialMarkersRef).$add(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]);
@@ -612,7 +633,7 @@ tsuro.directive('tile', function() {
     return {
         templateUrl: 'browser/js/game/tile.directive.html',
         scope: {
-            thisTile: '=',
+            'thisTile': '=',
             'tryTile': '&tryTile',
             'rotateccw': '&rotateccw',
             'rotatecw': '&rotatecw',
