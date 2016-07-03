@@ -25,7 +25,7 @@ function Space(x, y, board) {
 
         if (i < 2) { //top
             corresponding = i === 0 ? 5 : 4; // 0 -> 5 & 1 -> 4
-            if (y === 0) this.points[i] = new Point(true, [{
+            if (y === 0) this.points[i] = new Point([{
                 x: x,
                 y: y,
                 i: i
@@ -35,13 +35,13 @@ function Space(x, y, board) {
             }
         } else if (i < 4) { //right
             corresponding = i === 2 ? 7 : 6;
-            if (x === 5) this.points[i] = new Point(true, [{
+            if (x === 5) this.points[i] = new Point([{
                 x: x,
                 y: y,
                 i: i
             }]);
             else {
-                this.points[i] = new Point(false, [{
+                this.points[i] = new Point([{
                     x: x,
                     y: y,
                     i: i
@@ -53,13 +53,13 @@ function Space(x, y, board) {
             }
         } else if (i < 6) { //bottom
             corresponding = i === 4 ? 1 : 0;
-            if (y === 5) this.points[i] = new Point(true, [{
+            if (y === 5) this.points[i] = new Point([{
                 x: x,
                 y: y,
                 i: i
             }]);
             else {
-                this.points[i] = new Point(false, [{
+                this.points[i] = new Point([{
                     x: x,
                     y: y,
                     i: i
@@ -71,7 +71,7 @@ function Space(x, y, board) {
             }
         } else { //left
             corresponding = i === 6 ? 3 : 2; // 6 -> 3 & 7 -> 2
-            if (x === 0) this.points[i] = new Point(true, [{
+            if (x === 0) this.points[i] = new Point([{
                 x: x,
                 y: y,
                 i: i
@@ -85,8 +85,20 @@ function Space(x, y, board) {
 
 
 // edge = boolean
-function Point(edge, space) {
-    this.edge = edge;
+function Point(space) {
+    if (space[0].y === 0) {
+        if (space[0].i === 0 || space[0].i === 1) this.edge = true;
+        else this.edge = false;
+    } else if (space[0].y === 5) {
+        if (space[0].i === 4 || space[0].i === 5) this.edge = true;
+        else this.edge = false;
+    } else if (space[0].x === 0) {
+        if (space[0].i === 6 || space[0].i === 7) this.edge = true;
+        else this.edge = false;
+    } else if (space[0].x === 5) {
+        if (space[0].i === 2 || space[0].i === 3) this.edge = true;
+        else this.edge = false;
+    }
     this.neighbors = ["n"];
     this.travelled = false;
     this.spaces = space;

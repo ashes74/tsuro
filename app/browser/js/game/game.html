@@ -1,40 +1,50 @@
 <section id="game" class="wrapper">
     <aside class="tileDrawer">
         <h2>YOUR TILES</h2>
-        <tile ng-repeat="tile in me.tiles" this-tile="tile" try-tile="tryTile(tile)" rotateccw="rotateTileCcw(tile)" rotatecw="rotateTileCw(tile)" place="placeTile(tile)"></tile>
+        <tile ng-repeat="tile in me.tiles" this-tile="tile" try-tile="tryTile(tile)" rotateccw="rotateTileCcw(tile)" rotatecw="rotateTileCw(tile)" place="placeTile(tile)" my-turn="myTurn"></tile>
     </aside>
     <main id="board">
         <!-- top row -->
         <div class="corner"></div>
         <div class="frame horizontal">
-            <div ng-repeat="start in starttop" class="startpoints" ng-disable="!me" ng-click="placeMarker(game.board,start)">
+
+            <div ng-repeat="start in starttop" class="startpoints" ng-diabled="!me || clicked" ng-click="clicked || placeMarker(start)">
                 <p>▼</p>
+
             </div>
         </div>
         <div class="corner"></div>
         <!-- middle row -->
         <div class="frame vertical">
-            <div ng-repeat="start in startleft" class="startpoints" ng-disable="!me.nextSpace.x === " ng-click="placeMarker(game.board,start)">
+
+            <div ng-repeat="start in startleft" class="startpoints" ng-diabled="!me || clicked" ng-click="clicked || placeMarker(start)">
                 <p>▶</p>
             </div>
         </div>
         <div class="space-container">
-            <div ng-repeat="space in spaces" class="space" ng-class="{mynext: me.nextSpace.x === space.x && me.nextSpace.y === space.y}"><img ng-hide="space.image==='n'" ng-src="{{space.image}}" ng-class="{east: space.rotation === 1 || space.rotation === -3, south: space.rotation === 2 || space.rotation === -2, west: space.rotation === 3 || space.rotation === -1}" /></div>
+            <div ng-repeat="space in spaces" class="space" ng-class="{mynext: me.nextSpace.x === space.x && me.nextSpace.y === space.y}"><img ng-hide="space.image==='n'" ng-src="{{space.image}}" ng-class="{east: space.rotation === 1 || space.rotation === -3, south: space.rotation === 2 || space.rotation === -2, west: space.rotation === 3 || space.rotation === -1}"/>{{space.y}},
+                {{space.x}}</div>
         </div>
         <div class="frame vertical">
-            <div ng-repeat="start in startright" class="startpoints" ng-disable="!me" ng-click="placeMarker(game.board,start)">
+
+            <div ng-repeat="start in startright" class="startpoints" ng-diabled="!me || clicked" ng-click="clicked || placeMarker(start)">
                 <p>◀</p>
+
             </div>
         </div>
 
         <!-- bottom row -->
         <div class="corner"></div>
         <div class="frame horizontal">
-            <div ng-repeat="start in startbottom" class="startpoints" ng-disable="!me" ng-click="placeMarker(game.board,start)">
+
+            <div ng-repeat="start in startbottom" class="startpoints" ng-diabled="!me || clicked" ng-click="clicked || placeMarker(start)">
                 <p>▲</p>
             </div>
         </div>
         <div class="corner"></div>
+        <h4>{{game.currentPlayer.uid}}
+            MY TURN:{{myTurn}}</h4>
+        <button ng-click="reset()">reset game</button>
     </main>
     <aside class="playerDrawer">
         <h2>PLAYERS</h2>
@@ -47,20 +57,5 @@
 
 <div class="markermodal" ng-show="!me.marker">
     <p>Choose your dragon wisely...</p>
-    <div ng-repeat="marker in game.availableMarkers" class="circle {{marker}}" ng-disable="me.marker || !me" ng-click="pickMarker(game.board, marker)"></div>
+    <div ng-repeat="marker in game.availableMarkers" class="circle {{marker}}" ng-disable="me.marker || !me" ng-click="pickMarker(marker)"></div>
 </div>
-<!-- TODO: We should just place the tile on the nextSpace for the player (floating on the board), and they can rotate, then click on the place the tile button to place it down ng-click="placeTile(tile)"-->
-
-<!-- <div ng-repeat="tile in me.tiles">
-    <p>
-        id:
-        {{tile.id}}, rotation:
-        {{tile.rotation}}, paths:
-        {{tile.paths}}
-    </p>
-</div>
-<button ng-click="rotateTileCw(me.tiles[0])">to the right</button>
-<button ng-click="placeTile(me.tiles[0])">place the tile</button>
-<button ng-click="rotateTileCcw(me.tiles[0])">to the left</button>
-<button ng-click="reset()">reset game</button>
-<button ng-click="leaveGame()">leave the game</button> -->
