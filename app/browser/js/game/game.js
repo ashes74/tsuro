@@ -290,9 +290,9 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     $scope.placeTile = function (tile) {
         console.log("placing tile...here's the paths", tile.paths, "rotation", tile.rotation);
 
-        console.log("my next space", $scope.me.nextSpace)
-        $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].image = tile.imageUrl;
-        $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].rotation = tile.rotation;
+        console.log("my next space", $scope.me)
+        $scope.game.board[$scope.me.y][$scope.me.x].image = tile.imageUrl;
+        $scope.game.board[$scope.me.y][$scope.me.x].rotation = tile.rotation;
 
         // CMT: need this line here in order to update the $scope.spaces for the html
         $scope.spaces = _.flatten($scope.game.board);

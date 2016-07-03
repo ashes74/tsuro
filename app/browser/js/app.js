@@ -15,3 +15,5 @@ tsuro.constant('firebaseUrl', 'https://path-of-the-dragon.firebaseio.com/');
 tsuro.config(function ($urlRouterProvider) {
     $urlRouterProvider.otherwise('/');
 });
+
+module.exports = tsuro;
