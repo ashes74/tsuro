@@ -85,6 +85,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                             player.find((player, i) => {
                                 if (player.uid === user.uid) $scope.meIdx = i
                             });
+
                             $scope.me.marker = player[$scope.meIdx].marker;
                             $scope.clicked = player[$scope.meIdx].clicked;
                             $scope.me.x = player[$scope.meIdx].x;
@@ -217,7 +218,8 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         var rotation = tile.rotation;
         placeTileOnSpace(spacex, spacey, tileId, tileImg, rotation);
     }
-    var placeTileOnSpace = function (x, y, tileId, img, rotate) {
+
+    function placeTileOnSpace(x, y, tileId, img, rotate) {
         var spaceId = 'space' + x + y;
         console.log(`spaceId = ${spaceId}`);
         spaceObj[spaceId] = {
@@ -233,8 +235,8 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         console.log("got a tile", snapshot)
         var addedTile = snapshot.val();
         var spaceKey = snapshot.key;
-        var x = spaceKey.slice(-2, -1);
-        var y = spaceKey.slice(-1);
+        var x = +spaceKey.slice(-2, -1);
+        var y = +spaceKey.slice(-1);
         var space = $scope.game.board[y][x]; // look space up in game.board
 
         console.log($scope.game.board);
@@ -250,12 +252,28 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             space.points[i].neighbors.push(space.points[rotatedTile.paths[i]]);
         }
         // trigger move
-        console.log("spaceRef", $scope.me)
+        console.log("spaceRef", typeof x, typeof $scope.me.x)
         if ($scope.me.x === x && $scope.me.y === y) {
+            console.log("inside if")
             $scope.me.move($scope.game.board);
+            firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
+            firebasePlayersArr[$scope.meIdx].point = $scope.me.point;
+            firebasePlayersArr[$scope.meIdx].x = $scope.me.x;
+            firebasePlayersArr[$scope.meIdx].y = $scope.me.y;
+            firebasePlayersArr[$scope.meIdx].i = $scope.me.i;
+            firebasePlayersArr.$save($scope.meIdx);
+            // syncWithFirebase();
         }
     });
 
+    // function syncWithFirebase() {
+    //     firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
+    //     firebasePlayersArr[$scope.meIdx].point = $scope.me.point;
+    //     firebasePlayersArr[$scope.meIdx].x = $scope.me.x;
+    //     firebasePlayersArr[$scope.meIdx].y = $scope.me.y;
+    //     firebasePlayersArr[$scope.meIdx].i = $scope.me.i;
+    //     firebasePlayersArr.$save($scope.meIdx);
+    // }
 
     // $scope.placeTile = function (tile) {
     //

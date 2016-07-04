@@ -29,29 +29,38 @@ Player.prototype.placeMarker = function (point, board) {
 };
 
 Player.prototype.move = function (board) {
-    let currPoint = board[this.y][this.x][this.i];
+    console.log("move board", board)
+    let currPoint = board[this.y][this.x].points[this.i];
+    console.log("move currPoint", currPoint)
+
     currPoint.travelled = true;
     let end = false;
+    console.log("end outside", end)
     while (!end) {
         let nextPoint = currPoint.neighbors.find((neighbor) => !neighbor.travelled);
         if (nextPoint) {
             currPoint = nextPoint;
             currPoint.travelled = true;
+            this.point = currPoint;
             this.assignXYI(currPoint);
+            console.log("next point", this)
         } else {
+            console.log("no next point", this)
             end = true;
             if (currPoint.neighbors.length === 2 || currPoint.edge) this.canPlay = false;
         }
+        console.log("end inside at the end", end)
     }
 }
 
 
-Player.prototype.assignXYI = function (spaceId) {
-    console.log(spaceId)
-    spaceArray = spaceId.split("");
+Player.prototype.assignXYI = function (point) {
+    console.log("assignXYI point", point);
+    let spaceArray = point.spaceId.split("");
     let space;
-    this.i = spaceArray.pop();
-    this.x = spaceArray.pop();
-    this.y = spaceArray.pop();
+    this.i = +spaceArray.pop();
+    this.x = +spaceArray.pop();
+    this.y = +spaceArray.pop();
+    console.log("me assignXYI i x y", typeof this.i, this.i, this.x, this.y)
     return space;
 };
