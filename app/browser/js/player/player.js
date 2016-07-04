@@ -59,7 +59,7 @@ Player.prototype.assignXYI = function (point) {
     var self = this;
     console.log("self", self)
     let spaceObj = point.spaces.find(function (space) {
-        return space.i !== self.i;
+        return !(space.x === self.x && space.y === self.y);
     });
     console.log("spaceArr", spaceObj)
     this.i = spaceObj.i;
