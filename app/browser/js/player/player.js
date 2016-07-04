@@ -56,11 +56,14 @@ Player.prototype.move = function (board) {
 
 Player.prototype.assignXYI = function (point) {
     console.log("assignXYI point", point);
-    let spaceArray = point.spaceId.split("");
-    let space;
-    this.i = +spaceArray.pop();
-    this.x = +spaceArray.pop();
-    this.y = +spaceArray.pop();
+    var self = this;
+    console.log("self", self)
+    let spaceObj = point.spaces.find(function (space) {
+        return space.i !== self.i;
+    });
+    console.log("spaceArr", spaceObj)
+    this.i = spaceObj.i;
+    this.x = spaceObj.x;
+    this.y = spaceObj.y;
     console.log("me assignXYI i x y", typeof this.i, this.i, this.x, this.y)
-    return space;
 };

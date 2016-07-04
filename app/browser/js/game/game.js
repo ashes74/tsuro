@@ -256,7 +256,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         if ($scope.me.x === x && $scope.me.y === y) {
             console.log("inside if")
             $scope.me.move($scope.game.board);
-            firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
+            console.log("in on", $scope.me)
             firebasePlayersArr[$scope.meIdx].point = $scope.me.point;
             firebasePlayersArr[$scope.meIdx].x = $scope.me.x;
             firebasePlayersArr[$scope.meIdx].y = $scope.me.y;
