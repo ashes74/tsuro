@@ -100,7 +100,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
                     players.find(function(e, i) {
                         if (e.uid === user.uid) meIdx = i;
                     });
-
+                    console.log($scope.game.players);
                     $scope.game.players = players;
                     $scope.me = $scope.game.players[meIdx];
 
@@ -118,7 +118,9 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
     currPlayerRef.on('value', function(snap) {
         $scope.game.currentPlayerIdx = snap.val();
+        console.log(snap.val());
         $scope.game.currentPlayer = $scope.game.players[$scope.game.currentPlayerIdx];
+        console.log($scope.game.players);
 
         if ($scope.game.count < 35) {
             $scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid;
@@ -275,9 +277,10 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
         console.log(firebasePlayersArr.length);
         console.log(currPlayerArr.length);
+        console.log(currPlayerArr);
 
-        var nextPlayerIdx = $scope.game.currentPlayerIdx + 1 > firebasePlayersArr.length ? 0 : $scope.game.currentPlayerIdx + 1;
-        currPlayerRef.set({ 'currentPlayerIdx': nextPlayerIdx });
+        var nextPlayerIdx = $scope.game.currentPlayerIdx + 1 >= firebasePlayersArr.length ? 0 : $scope.game.currentPlayerIdx + 1;
+        gameRef.update({"currentPlayerIdx" :nextPlayerIdx});
     });
 
     $scope.leaveGame = function() {
@@ -360,7 +363,7 @@ tsuro.directive('tile', function() {
             'rotateccw': '&rotateccw',
             'rotatecw': '&rotatecw',
             'place': '&place',
-
+            'myTurn': '&myTurn'
         }
     };
 });

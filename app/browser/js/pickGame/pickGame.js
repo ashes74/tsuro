@@ -11,17 +11,24 @@ tsuro.controller('pickGameCtrl', function($scope, $state, $firebaseArray, $fireb
     var obj = $firebaseObject(ref);
 
     $scope.createGame = function(gameName) {
-        var gameNameRef = ref.child('games').child(gameName);
-        var playersRef = gameNameRef.child('players');
+        var gameRef = ref.child('games').child(gameName);
+        var playersRef = gameRef.child('players');
 
-        var initialMarkersRef = gameNameRef.child('availableMarkers');
+        var initialMarkersRef = gameRef.child('availableMarkers');
         var initialMarkersArr = $firebaseArray(initialMarkersRef);
 
-        var deckRef = gameNameRef.child('deck');
+        var deckRef = gameRef.child('deck');
         var deckArr = $firebaseArray(deckRef);
 
-        gameNameRef.set({ "gameName": gameName });
-        gameNameRef.set({ "currentPlayerIdx": 0 });
+        var currentPlayerIndexArr = $firebaseArray(gameRef.child('currentPlayerIdx'));
+
+        gameRef.set({
+            'name': gameName,
+            'currentPlayerIdx': 0
+        });
+
+        // $firebaseArray(gameRef).$add({"name": gameName});
+        // currentPlayerIndexArr.$add({"currentPlayerIdx": 0});
 
         var tiles = gameFactory.tiles;
         var deck = new Deck(tiles).shuffle().tiles;
