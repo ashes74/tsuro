@@ -401,18 +401,8 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     $scope.leaveGame = function () {
         console.log("i'm out");
 
-        firebasePlayersArr.$loaded()
-            .then(function (players) {
-                //find me in the firebase players array
-                var meIdx;
-
-                players.find(function (e, i) {
-                    if (e.uid === $scope.me.uid) meIdx = i;
-                });
-
-                // remove the player from firebase
-                firebasePlayersArr.$remove(firebasePlayersArr[meIdx]);
-            });
+        // remove the player from firebase
+        firebasePlayersArr.$remove(firebasePlayersArr[$scope.meIdx]);
 
         $state.go('pickGame');
     };
