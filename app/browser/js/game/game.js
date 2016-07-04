@@ -44,6 +44,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         $scope.game.deck = deckArr;
 
         // don't start watching players until there is a deck in the game
+        //'child_changed'
         playersRef.on("value", function (snap) {
             var snapPlayers = snap.val(); //grab the value of the snapshot (all players in game in Firebase)
 
@@ -86,11 +87,13 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                                 if (player.uid === user.uid) $scope.meIdx = i
                             });
 
+                            console.log($scope.me.marker);
+                            console.log(player[$scope.meIdx].marker);
                             $scope.me.marker = player[$scope.meIdx].marker;
                             $scope.clicked = player[$scope.meIdx].clicked;
                             $scope.me.x = player[$scope.meIdx].x;
                             $scope.me.y = player[$scope.meIdx].y;
-                            $scope.me.i = player[$scope.meIdx].i
+                            $scope.me.i = player[$scope.meIdx].i;
 
                             // $scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid;
                             // console.log("IS IT MY TURN?", $scope.myTurn)
@@ -170,7 +173,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         $scope.me.placeMarker(point, $scope.game.board);
         $scope.me.tiles = $scope.game.deal(3);
         $scope.me.clicked = true;
-
         // FOR SOME REASON I can't just do firebasePlayersArr[$scope.meIdx] = $scope.me;
         firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
         firebasePlayersArr[$scope.meIdx].point = $scope.me.point;
@@ -257,14 +259,19 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         console.log("spaceRef", typeof x, typeof $scope.me.x)
         if ($scope.me.x === x && $scope.me.y === y) {
             console.log("inside if")
-            $scope.me.move($scope.game.board);
+            // $scope.me.move($scope.game.board);
+            $scope.me.point = $scope.me.move($scope.game.board);
             console.log("in on", $scope.me, "meidx", $scope.meIdx);
 
             // TODO: this doesn't send to firebase
-            firebasePlayersArr[$scope.meIdx].point = $scope.me.point;
+         
             firebasePlayersArr[$scope.meIdx].x = $scope.me.x;
             firebasePlayersArr[$scope.meIdx].y = $scope.me.y;
             firebasePlayersArr[$scope.meIdx].i = $scope.me.i;
+            firebasePlayersArr.$save($scope.meIdx);
+            
+            console.log($scope.me.point);
+            firebasePlayersArr[$scope.meIdx].point = $scope.me.point;
             firebasePlayersArr.$save($scope.meIdx);
             // syncWithFirebase();
         }
