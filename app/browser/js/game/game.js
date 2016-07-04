@@ -196,16 +196,16 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     };
 
     // these are tied to angular ng-click buttons
+    //these are tied to angular ng-click buttons
     $scope.rotateTileCw = function (tile) {
         tile.rotation++;
-        tile.rotation %= 4; // set rotation to be between 0 and 3
+        if (tile.rotation === 4) tile.rotation = 0;
         console.log("rotate cw", tile);
     };
 
     $scope.rotateTileCcw = function (tile) {
         tile.rotation--;
-        tile.rotation %= 4; // set rotation to be between -0 and -3
-        tile.rotation += 4 // set it to be between +0 and +3
+        if (tile.rotation === -4) tile.rotation = 0;
         console.log('rotate ccw', tile);
     };
 
@@ -232,19 +232,19 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     };
 
     spaceRef.on('child_added', function (snapshot) {
-        console.log("got a tile", snapshot)
+        console.log("got a tile", snapshot.val())
         var addedTile = snapshot.val();
         var spaceKey = snapshot.key;
         var x = +spaceKey.slice(-2, -1);
         var y = +spaceKey.slice(-1);
         var space = $scope.game.board[y][x]; // look space up in game.board
 
-        console.log($scope.game.board);
         space.image = addedTile.img;
         space.rotation = addedTile.rotation;
         var tile = gameFactory.tiles[addedTile.tileId]; // look up tile by id
-        var rotatedTile = gameFactory.rotateTile(tile); // rotate tile
-
+        console.log("tile", tile)
+        var rotatedTile = gameFactory.rotateTile(tile, snapshot.val().rotation); // rotate tile
+        console.log(rotatedTile, "rotated")
         for (var i = 0; i < rotatedTile.paths.length; i++) {
             // if the point doesn't have neighbors... set to empty array
             if (!space.points[i].neighbors) space.points[i].neighbors = [];
@@ -256,7 +256,9 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         if ($scope.me.x === x && $scope.me.y === y) {
             console.log("inside if")
             $scope.me.move($scope.game.board);
-            console.log("in on", $scope.me)
+            console.log("in on", $scope.me, "meidx", $scope.meIdx);
+
+            // TODO: this doesn't send to firebase
             firebasePlayersArr[$scope.meIdx].point = $scope.me.point;
             firebasePlayersArr[$scope.meIdx].x = $scope.me.x;
             firebasePlayersArr[$scope.meIdx].y = $scope.me.y;
