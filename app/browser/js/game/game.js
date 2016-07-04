@@ -419,6 +419,8 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
     // TODO: need to remove this game room's moves from firebase?
     $scope.reset = function () {
+        spaceObj.$remove()
+
         markersArr.$remove(0)
             .then(function (ref) {
                 console.log("removed all markers", ref.key);
@@ -429,15 +431,8 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 console.log("removed the deck", ref.key);
             });
 
-        initialDeckArr.$remove(0)
-            .then(function (ref) {
-                console.log("reomved the initialDeck", ref.key)
-            })
-
         var tiles = gameFactory.tiles;
-
         var deck = new Deck(tiles).shuffle().tiles;
-        initialDeckArr.$add(deck);
         deckArr.$add(deck);
 
 
@@ -446,13 +441,18 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 currPlayerArr.$add([0])
             })
 
-        var initialMarkersRef = ref.child('games').child($stateParams.gameName).child('availableMarkers');
-        $firebaseArray(initialMarkersRef).$add(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]);
+        markersArr.$add(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]);
+        currPlayerArr.$add([0]);
 
 
         var players = $firebaseArray(playersRef);
         players.$loaded().then(function (data) {
             for (var i = 0; i < data.length; i++) {
+                data[i].clicked = true;
+                data[i].i = null;
+                data[i].x = null;
+                data[i].y = null;
+                data[i].clicked = false;
                 data[i].canPlay = null;
                 data[i].marker = null;
                 data[i].point = null;
@@ -460,6 +460,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 players.$save(i);
             }
         });
+
 
         $state.reload()
         console.log($scope.me);

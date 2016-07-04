@@ -218,7 +218,7 @@ tsuro.factory('gameFactory', function () {
             //TODO: fix the rotation
             if (rotationDifference < 0) throw new Error;
             //add rotationDifference
-            let toRotate = tiles.paths.map((path) => {
+            let toRotate = tile.paths.map((path) => {
                 return path = (path + (2 * rotationDifference)) % 8; //add the rotation difference and wrap around 8
             });
             // wrap around

@@ -14,8 +14,8 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
     $scope.createGame = function (gameName) {
         var gameNameRef = ref.child('games').child(gameName);
         var playersRef = gameNameRef.child('players');
-        var initialMarkersRef = gameNameRef.child('availableMarkers');
-        var initialMarkersArr = $firebaseArray(initialMarkersRef);
+        var markersRef = gameNameRef.child('availableMarkers');
+        var markersArr = $firebaseArray(markersRef);
         var deckRef = gameNameRef.child('deck');
         var deckArr = $firebaseArray(deckRef);
         var currPlayerRef = gameNameRef.child('currPlyaer');
@@ -44,7 +44,7 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
         var deckRef = ref.child('games').child(gameName).child('deck');
         deckArr.$add(deck);
 
-        initialMarkersArr.$add(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]);
+        markersArr.$add(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]);
         currPlayerArr.$add([0]);
 
         $state.go('game', {
