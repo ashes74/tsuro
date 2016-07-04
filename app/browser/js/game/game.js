@@ -268,8 +268,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             firebasePlayersArr[$scope.meIdx].x = $scope.me.x;
             firebasePlayersArr[$scope.meIdx].y = $scope.me.y;
             firebasePlayersArr[$scope.meIdx].i = $scope.me.i;
-            firebasePlayersArr.$save($scope.meIdx);
-            
+
             console.log($scope.me.point);
             firebasePlayersArr[$scope.meIdx].point = $scope.me.point;
             firebasePlayersArr.$save($scope.meIdx);
