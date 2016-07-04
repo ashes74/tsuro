@@ -19,9 +19,12 @@ function Player(uid) {
 
 
 // need to use self becuse we need to change $scope.me on gameCtrl and send to firebase
-Player.prototype.placeMarker = function (board, point, self) {
+Player.prototype.placeMarker = function (point, board) {
+    this.x = point[0];
+    this.y = point[1];
+    this.i = point[2];
+    this.point = board[y][x][i];
     this.point.travelled = true;
-    this.assignXYI(point);
 };
 
 Player.prototype.move = function (board) {
@@ -43,6 +46,7 @@ Player.prototype.move = function (board) {
 
 
 Player.prototype.assignXYI = function (spaceId) {
+    console.log(spaceId)
     spaceArray = spaceId.split("");
     let space;
     this.i = spaceArray.pop();

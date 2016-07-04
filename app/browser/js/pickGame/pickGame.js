@@ -29,7 +29,9 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
 
         firebase.auth().onAuthStateChanged(function (user) {
             if (user) {
-                var newPlayer = new Player(user.uid)
+                var newPlayer = {
+                    uid: user.uid
+                }
                 $firebaseArray(playersRef).$add(newPlayer)
             } else {
                 console.log("no one logged in")
