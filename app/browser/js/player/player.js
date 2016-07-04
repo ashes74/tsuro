@@ -43,6 +43,7 @@ Player.prototype.move = function (board) {
         } else {
             end = true;
             if (currPoint.neighbors.length === 2 || currPoint.edge) this.canPlay = false;
+            console.log("cannot play", this.canPlay)
         }
     }
 }
