@@ -196,16 +196,18 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     };
 
     // these are tied to angular ng-click buttons
-    //these are tied to angular ng-click buttons
+    // these are tied to angular ng-click buttons
+    // TODO: doesn't work
     $scope.rotateTileCw = function (tile) {
         tile.rotation++;
-        if (tile.rotation === 4) tile.rotation = 0;
+        tile.rotation %= 4; //set rotation to be between 0 and 3
         console.log("rotate cw", tile);
     };
 
     $scope.rotateTileCcw = function (tile) {
         tile.rotation--;
-        if (tile.rotation === -4) tile.rotation = 0;
+        tile.rotation %= 4; //set rotation to be between -0 and -3
+        tile.rotation += 4 //set it to be between +0 and +3
         console.log('rotate ccw', tile);
     };
 
