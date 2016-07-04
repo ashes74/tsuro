@@ -23,7 +23,8 @@ Player.prototype.placeMarker = function (point, board) {
     this.x = point[0];
     this.y = point[1];
     this.i = point[2];
-    this.point = board[y][x][i];
+    console.log(this.i)
+    this.point = board[this.y][this.x].points[this.i];
     this.point.travelled = true;
 };
 
