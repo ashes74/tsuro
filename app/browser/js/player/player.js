@@ -59,10 +59,17 @@ Player.prototype.newSpace = function (board, oldSpace, self) {
 
 Player.prototype.moveTo = function (pointer) {
     //always be returning 0 or 1 point in the array
-    let nextPoint = pointer.neighbors.filter(function (neighbor) {
-        return !neighbor.travelled && neighbor !== "n";
-    })[0];
-    return nextPoint;
+    for (var key in pointer.neighbors){
+        console.log(pointer.neighbors);
+        if (!pointer.neighbors[key].travelled && pointer.neighbors[key].n !== 0){
+            return pointer.neighbors[key];
+        }
+    }
+
+    // let nextPoint = pointer.neighbors.filter(function (neighbor) {
+    //     return !neighbor.travelled && neighbor !== "n";
+    // })[0];
+    // return nextPoint;
 };
 
 
