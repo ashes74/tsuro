@@ -1,5 +1,6 @@
 tsuro.factory('gameFactory', function() {
     return {
+        markers: ["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"],
         tiles: {
             1: {
                 id: 1,
@@ -250,6 +251,7 @@ tsuro.factory('gameFactory', function() {
             } else {
                 return tile;
             }
-        }
+        },
+
     }
 })
