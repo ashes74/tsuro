@@ -4,7 +4,7 @@ function Player(uid) {
     // TODO: get uid from firebase auth
     this.uid = uid;
 
-    this.marker = "n";
+    // this.marker = "n";
 
     // should be a Point object
     this.point = null;

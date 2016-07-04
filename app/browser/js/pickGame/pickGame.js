@@ -1,4 +1,4 @@
-tsuro.config(function ($stateProvider) {
+tsuro.config(function($stateProvider) {
     $stateProvider.state('pickGame', {
         url: '/pickgame',
         templateUrl: '/browser/js/pickGame/pickGame.html',
@@ -6,51 +6,45 @@ tsuro.config(function ($stateProvider) {
     });
 });
 
-tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $firebaseObject, gameFactory) {
+tsuro.controller('pickGameCtrl', function($scope, $state, $firebaseArray, $firebaseObject, gameFactory) {
     var ref = firebase.database().ref();
     var obj = $firebaseObject(ref);
 
-
-    $scope.createGame = function (gameName) {
+    $scope.createGame = function(gameName) {
         var gameNameRef = ref.child('games').child(gameName);
         var playersRef = gameNameRef.child('players');
+
         var initialMarkersRef = gameNameRef.child('availableMarkers');
         var initialMarkersArr = $firebaseArray(initialMarkersRef);
+
         var deckRef = gameNameRef.child('deck');
         var deckArr = $firebaseArray(deckRef);
-        var currPlayerRef = gameNameRef.child('currPlyaer');
-        // Should be an array with only one number
-        var currPlayerArr = $firebaseArray(currPlayerRef);
 
-        $firebaseArray(gameNameRef).$add({
-            "gameName": gameName
-        });
-
-
-        firebase.auth().onAuthStateChanged(function (user) {
-            if (user) {
-                var newPlayer = new Player(user.uid)
-                $firebaseArray(playersRef).$add(newPlayer)
-            } else {
-                console.log("no one logged in")
-            }
-        })
+        gameNameRef.set({ "gameName": gameName });
+        gameNameRef.set({ "currentPlayerIdx": 0 });
 
         var tiles = gameFactory.tiles;
-
         var deck = new Deck(tiles).shuffle().tiles;
-        var deckRef = ref.child('games').child(gameName).child('deck');
-        deckArr.$add(deck);
 
-        initialMarkersArr.$add(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]);
-        currPlayerArr.$add([0]);
+        initialMarkersArr.$add(gameFactory.markers);
 
-        $state.go('game', {
-            "gameName": gameName
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                var newPlayer = new Player(user.uid);
+                $firebaseArray(playersRef).$add(newPlayer);
+            } else {
+                console.log("no one logged in");
+            }
+        });
+
+        deckArr.$add(deck).then(function() {
+            $state.go('game', {
+                "gameName": gameName
+            });
         });
     };
 
-    $scope.goToGameList = function () {
+    $scope.goToGameList = function() {
         $state.go('gamelist');
     };
 });
