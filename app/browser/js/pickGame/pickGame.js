@@ -18,7 +18,7 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
         var markersArr = $firebaseArray(markersRef);
         var deckRef = gameNameRef.child('deck');
         var deckArr = $firebaseArray(deckRef);
-        var currPlayerRef = gameNameRef.child('currPlyaer');
+        var currPlayerRef = gameNameRef.child('currPlayer');
         // Should be an array with only one number
         var currPlayerArr = $firebaseArray(currPlayerRef);
 
