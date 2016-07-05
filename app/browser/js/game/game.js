@@ -260,7 +260,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         if ($scope.me.x === x && $scope.me.y === y) {
             console.log("inside if")
             // $scope.me.move($scope.game.board);
-            $scope.me.point = $scope.me.move($scope.game.board);
+            // $scope.me.point = $scope.me.move($scope.game.board);
             console.log("in on", $scope.me, "meidx", $scope.meIdx);
 
             // TODO: this doesn't send to firebase
@@ -268,10 +268,16 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             firebasePlayersArr[$scope.meIdx].x = $scope.me.x;
             firebasePlayersArr[$scope.meIdx].y = $scope.me.y;
             firebasePlayersArr[$scope.meIdx].i = $scope.me.i;
-
-            console.log($scope.me.point);
-            firebasePlayersArr[$scope.meIdx].point = $scope.me.point;
-            firebasePlayersArr.$save($scope.meIdx);
+            firebasePlayersArr.$save($scope.meIdx)
+            
+            console.log($scope.me.move($scope.game.board));
+            firebasePlayersArr[$scope.meIdx].point = $scope.me.move($scope.game.board);
+            firebasePlayersArr.$save($scope.meIdx).then(function(ref){
+                console.log(ref.key)
+            })
+            .catch(function(err){
+                console.log(err);
+            })
             // syncWithFirebase();
         }
     });
