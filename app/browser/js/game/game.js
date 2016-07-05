@@ -440,8 +440,8 @@ tsuro.directive('tile', function () {
             'tryTile': '&tryTile',
             'rotateccw': '&rotateccw',
             'rotatecw': '&rotatecw',
-            'place': '&place'
-                // 'myTurn': '='
+            'place': '&place',
+            'myTurn': '='
         }
     };
 });
