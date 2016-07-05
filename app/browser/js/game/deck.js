@@ -15,6 +15,7 @@ class Deck {
     }
 
     deal(num) {
+			//TODO: add firebase sync functions
         return this.tiles.splice(0, num);
     }
 
