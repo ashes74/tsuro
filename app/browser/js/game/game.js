@@ -228,8 +228,8 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             console.log("I'm waiting for to be a dragon")
         } else {
             console.log("give me a tile")
-            $scope.me.tiles.concat($scope.game.deal(1));
-            console.log("dealed one tile to me!");
+            $scope.me.tiles.push($scope.game.deal(1)[0]);
+            console.log("dealed one tile to me!", $scope.me.tiles);
 
             firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
             firebasePlayersArr.$save($scope.meIdx);
