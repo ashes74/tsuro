@@ -22,10 +22,8 @@ class Game {
         return this.players[this.currPlayer];
     }
 
-    moveAllPlayers() {
-        this.players.forEach((player) => player.keepMoving(player))
-    }
-
+		//moveAllPlayers removed because each person will listen to their next space and move themselves
+		
     getDeadPlayerTiles() {
         var deadPlayersTiles = [];
         console.log(this.players)
