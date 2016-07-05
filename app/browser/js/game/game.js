@@ -19,9 +19,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     var deckRef = gameRef.child('deck');
     var deckArr = $firebaseArray(deckRef);
 
-    var currPlayerRef = gameRef.child('currPlayer');
-    // Should be an array with only one number
-    var currPlayerArr = $firebaseArray(currPlayerRef);
+    var currPlayerRef = gameRef.child('currentPlayerIndex');
 
     var playersRef = gameRef.child('players');
     var firebasePlayersArr = $firebaseArray(playersRef);
@@ -42,13 +40,15 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     // Start with first player in the array, index 0
     $scope.game.currPlayer = 0;
 
-    currPlayerRef.on('child_changed', function (snapshot) {
+    currPlayerRef.on('value', function (snapshot) {
         console.log("currPlayer index changes", snapshot.val())
-        $scope.game.currPlayer = snapshot.val()[0];
-        $scope.game.currentPlayer = $scope.game.players[$scope.game.currPlayer];
-        $scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid;
-        console.log("IS IT MY TURN?", $scope.myTurn)
+        $scope.game.currentPlayerIndex = snapshot.val();
+        $scope.game.currentPlayer = $scope.game.players[$scope.game.currentPlayerIndex];
 
+        if (spaceArr.length <= 1) {
+            $scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid;
+            console.log("IS IT MY TURN?", $scope.myTurn);
+        }
     });
 
     // when the deck is loaded, local deck is the firebase deck
@@ -106,6 +106,9 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                             $scope.me.y = player[$scope.meIdx].y;
                             $scope.me.i = player[$scope.meIdx].i;
 
+                            $scope.game.currentPlayer = $scope.game.players[0];
+                            $scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid;
+                            console.log("IS IT MY TURN?", $scope.myTurn);
                         } else {
                             console.log("no one is logged in");
                         }
@@ -241,10 +244,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             //     $scope.dragon = $scope.awaitingDragonHolders.shift() || null;
             // }
         }
-
-        currPlayerArr[0][0] = $scope.game.nextCanPlay();
-        currPlayerArr.$save(0);
-        $scope.game.currentPlayer = $scope.game.players[currPlayerArr[0][0]];
     };
 
 
@@ -319,6 +318,9 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                     deckArr.$add($scope.game.deck)
                 })
         }
+        gameRef.update({
+            "currentPlayerIndex": $scope.game.nextCanPlay()
+        });
     });
 
     $scope.leaveGame = function () {
