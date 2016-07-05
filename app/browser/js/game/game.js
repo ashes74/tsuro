@@ -53,6 +53,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
     });
 
+
     // when the deck is loaded, local deck is the firebase deck
     deckArr.$loaded().then(function () {
         $scope.game.deck = deckArr;
@@ -188,9 +189,9 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
     ****************/
     $scope.tryTile = function(tile) {
 
-        $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].image = tile.imageUrl;
-        $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].rotation = tile.rotation;
-        $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].testing = true;
+        $scope.game.board[$scope.me.y][$scope.me.x].image = tile.imageUrl;
+        $scope.game.board[$scope.me.y][$scope.me.x].rotation = tile.rotation;
+        $scope.game.board[$scope.me.y][$scope.me.x].testing = true;
 
         $scope.chosenTile = tile;
 
@@ -204,7 +205,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
         var player = null;
 
         for(var i = 0; i < players.length; i++){
-            if(players[i].nextSpace.x === space.x && players[i].nextSpace.y === space.y) player = players[i];
+            if(players[i].x === space.x && players[i].y === space.y) player = players[i];
         }
         if(!player) return null;
         return player;
@@ -212,7 +213,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
     $scope.playerIndex = function(player){
         if(player){
-            switch (player.nextSpacePointsIndex){
+            switch (player.i){
                 case 0: 
                     return "zero";
                 case 1:
@@ -269,6 +270,8 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
     // CMT: use player's and game's prototype function to place tile and then move all players
     $scope.placeTile = function (tile) {
+    	  $scope.game.board[$scope.me.y][$scope.me.x].testing = false;
+
         var spacex = $scope.me.x;
         var spacey = $scope.me.y;
         var tileId = tile.id;

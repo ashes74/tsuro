@@ -19,6 +19,9 @@ $paper: #f4f1df;
   animation-iteration-count: infinite;
   animation-direction: alternate;
   box-shadow: 0 0 10px $gray; 
+  &:hover {
+    animation-play-state: paused;
+  }
 }
 
 @mixin button(){
@@ -201,11 +204,27 @@ section.wrapper {
         box-sizing: border-box;
         position: relative;
 
+        .placehover {
+          background-color: $mountain;
+          color: white;
+          padding: 5px 10px;
+          border-radius: 10px;
+          text-transform: uppercase;
+          letter-spacing: 3px;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%,-50%);
+          z-index: 6;
+        }
+
         img {
           width:100%;
           position: relative;
           z-index: 5;
-          &.testing {@include testing-tile(testing)}
+          &.testing {
+            @include testing-tile(testing)
+          }
           
           &.east { 
             transform: rotate(90deg); 
@@ -244,7 +263,7 @@ section.wrapper {
           border-radius: 50%;
           transform: translate(-50%,-50%);
           z-index: 100;
-
+          &.active {font-weight: 600}
           &.zero { top: 0; left: 30%; }
           &.one { top: 0; left: 70%; }
           &.two { top: 30%; left: 100%; }
@@ -352,6 +371,7 @@ section.wrapper {
   background-color: #fff;
   border-radius: 25px;
   box-shadow: 0 0 10px #808080;
+  z-index: 100;
   
   p {
     font-size: 2em;

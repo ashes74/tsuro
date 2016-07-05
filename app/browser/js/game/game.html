@@ -6,7 +6,7 @@
     <!-- top row -->
     <div class="corner"></div>
     <div class="frame horizontal">
-      <div ng-repeat="start in starttop" class="startpoints" ng-hide="!me || me.nextSpacePointsIndex !== 'n'" ng-click="placeMarker(start)">
+      <div ng-repeat="start in starttop" class="startpoints" ng-hide="!me || me.i || me.i === 0" ng-click="placeMarker(start)">
         <span>◌</span>
       </div>
     </div>
@@ -14,22 +14,24 @@
 
     <!-- middle row -->
     <div class="frame vertical">
-      <div ng-repeat="start in startleft" class="startpoints" ng-hide="!me || me.nextSpacePointsIndex !== 'n'" ng-click="placeMarker(start)">
+      <div ng-repeat="start in startleft" class="startpoints" ng-hide="!me || me.i || me.i === 0" ng-click="placeMarker(start)">
         <span>◌</span>
       </div>
     </div>
     <div class="space-container">
-      <div ng-repeat="space in spaces" class="space" ng-class="{mynext: me.nextSpace.x === space.x && me.nextSpace.y === space.y}">
+      <div ng-repeat="space in spaces" class="space" ng-class="{mynext: me.x === space.x && me.y === space.y}">
+      
 
         <div class="player {{playerIndex(playerOnThisSpace(space))}} {{markerColor(playerOnThisSpace(space))}}" ng-show="playerOnThisSpace(space)"></div>
+        <div class="placehover" ng-show="space.testing" ng-click="placeTile(chosenTile)">Place</div>
 
-        <img ng-hide="space.image==='n'" ng-src="{{space.image}}" ng-click="placeTile(chosenTile)" ng-class="{east: space.rotation === 1 || space.rotation === -3, south: space.rotation === 2 || space.rotation === -2, west: space.rotation === 3 || space.rotation === -1, testing: space.testing}" />
+        <img ng-hide="space.image==='n'" ng-src="{{space.image}}" ng-class="{east: space.rotation === 1 || space.rotation === -3, south: space.rotation === 2 || space.rotation === -2, west: space.rotation === 3 || space.rotation === -1, testing: space.testing}" />
       </div>
     </div>
 
 
     <div class="frame vertical">
-      <div ng-repeat="start in startright" class="startpoints" ng-hide="!me || me.nextSpacePointsIndex !== 'n'" ng-click="placeMarker(start)">
+      <div ng-repeat="start in startright" class="startpoints" ng-hide="!me || me.i || me.i === 0" ng-click="placeMarker(start)">
         <span>◌</span>
       </div>
     </div>
@@ -37,7 +39,7 @@
     <!-- bottom row -->
     <div class="corner"></div>
     <div class="frame horizontal">
-      <div ng-repeat="start in startbottom" class="startpoints" ng-hide="!me || me.nextSpacePointsIndex !== 'n'" ng-click="placeMarker(start)">
+      <div ng-repeat="start in startbottom" class="startpoints" ng-hide="!me || me.i || me.i === 0" ng-click="placeMarker(start)">
         <span>◌</span>
       </div>
     </div>
@@ -45,8 +47,10 @@
   </main>
   
   <aside class="playerDrawer">
+  {{game.currentPlayer}}
     <div class="player {{player.marker}}" ng-repeat="player in game.players">
-      <p>{{player.name}}</p>
+      <p ng-class="{active: game.currentPlayer.uid === player.uid}">{{player.name}}</p>
+  
 	</div>
  		<div class="game-buttons">
 	    <div ng-click="reset()" class="reset">reset game</div>
@@ -59,8 +63,4 @@
 <div class="markermodal" ng-show="!me.marker">
   <p>Choose your dragon wisely...</p>
   <div ng-repeat="marker in game.availableMarkers" class="circle {{marker}}" ng-disable="me.marker || !me" ng-click="pickMarker(marker)"></div>
-</div>
-
-<div class="loader" ng-if="!me && !game.board">
-	<img src="https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/loader.gif?alt=media&token=75053ec5-b42f-4c9a-b459-e9d94b1c12e4" />
 </div>
