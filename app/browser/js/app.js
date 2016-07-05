@@ -12,6 +12,9 @@ tsuro.config(function() {
 
 tsuro.constant('firebaseUrl', 'https://the-paths-of-dragons.firebaseio.com/');
 
-tsuro.config(function($urlRouterProvider) {
-    $urlRouterProvider.otherwise('/');
+tsuro.config(function ($urlRouterProvider, $locationProvider) {
+    // remove '#' from urls
+    // $locationProvider.html5Mode(true);
+    $urlRouterProvider.otherwise('/login');
+    $urlRouterProvider.when('/', '/login');
 });

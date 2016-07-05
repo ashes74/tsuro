@@ -27,6 +27,7 @@
       </div>
     </div>
 
+
     <div class="frame vertical">
       <div ng-repeat="start in startright" class="startpoints" ng-hide="!me || me.nextSpacePointsIndex !== 'n'" ng-click="placeMarker(start)">
         <span>◌</span>
@@ -52,6 +53,7 @@
 	    <div ng-click="leaveGame()" class="leave">leave game</div>
     </div>
   </aside>
+
 
 </section>
 <div class="markermodal" ng-show="!me.marker">

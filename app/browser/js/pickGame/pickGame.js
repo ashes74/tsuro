@@ -14,11 +14,11 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
     $scope.createGame = function (gameName) {
         var gameNameRef = ref.child('games').child(gameName);
         var playersRef = gameNameRef.child('players');
-        var initialMarkersRef = gameNameRef.child('availableMarkers');
-        var initialMarkersArr = $firebaseArray(initialMarkersRef);
+        var markersRef = gameNameRef.child('availableMarkers');
+        var markersArr = $firebaseArray(markersRef);
         var deckRef = gameNameRef.child('deck');
         var deckArr = $firebaseArray(deckRef);
-        var currPlayerRef = gameNameRef.child('currPlyaer');
+        var currPlayerRef = gameNameRef.child('currPlayer');
         // Should be an array with only one number
         var currPlayerArr = $firebaseArray(currPlayerRef);
 
@@ -29,7 +29,10 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
 
         firebase.auth().onAuthStateChanged(function (user) {
             if (user) {
-                var newPlayer = new Player(user.uid, user.displayName);
+                var newPlayer = {
+                    uid: user.uid,
+                    name: user.displayName
+                };
                 $firebaseArray(playersRef).$add(newPlayer);
             } else {
                 console.log("no one logged in");

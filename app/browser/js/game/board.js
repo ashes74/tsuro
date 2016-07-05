@@ -15,11 +15,8 @@ Board.prototype.drawBoard = function () {
 function Space(x, y, board) {
     this.x = x;
     this.y = y;
-    this.tile;
-    // this.image = "n";
     this.points = [null, null, null, null, null, null, null, null];
-    // this.tileUrl = "n";
-    // this.tileId = "n";
+
 
     for (var i = 0; i < 8; i++) {
         let corresponding;
@@ -101,7 +98,6 @@ function Point(space) {
         else this.edge = false;
     }
     this.spaceId = 'space' + space[0].y + space[0].x + space[0].i;
-    this.neighbors = [{"n": 0}];
     this.travelled = false;
     this.spaces = space;
 }

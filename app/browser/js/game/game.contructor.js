@@ -28,6 +28,7 @@ class Game {
 
     deadPlayers() {
         var deadPlayersTiles = [];
+        console.log(this.players)
         this.players.forEach(function (player) {
             if (!player.canPlay && player.tiles.length > 0) {
                 deadPlayersTiles.push(player.tiles);
