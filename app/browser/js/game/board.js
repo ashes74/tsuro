@@ -16,10 +16,9 @@ function Space(x, y, board) {
     this.x = x;
     this.y = y;
     this.tile;
-    // this.image = "n";
     this.points = [null, null, null, null, null, null, null, null];
-    // this.tileUrl = "n";
-    // this.tileId = "n";
+
+
 
     for (var i = 0; i < 8; i++) {
         let corresponding;
