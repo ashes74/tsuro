@@ -28,6 +28,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
     var spaceRef = gameRef.child('spaces');
     var spaceObj = $firebaseObject(spaceRef);
+    var spaceArr = $firebaseArray (spaceRef);
 
     var initialMarkersRef = gameRef.child('availableMarkers');
 
@@ -110,7 +111,10 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
                     }
                     $scope.game.currentPlayer = $scope.game.players[0];
                     $scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid;
+                     console.log($scope.game.currentPlayer);
+                    console.log($scope.me.uid);
                     console.log("IS IT MY TURN?", $scope.myTurn);
+
                 }
 
             });
@@ -122,7 +126,10 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
         $scope.game.currentPlayer = $scope.game.players[$scope.game.currentPlayerIdx];
         console.log($scope.game.players);
 
-        if ($scope.game.count < 35) {
+        console.log(spaceObj);
+        console.log(spaceArr);
+
+        if (spaceArr.length <= 1) {
             $scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid;
             console.log("IS IT MY TURN?", $scope.myTurn);
         }
