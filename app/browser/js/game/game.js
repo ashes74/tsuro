@@ -89,7 +89,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 else $scope.game.players[existingPlayerIndex] = localPlayer;
             }
             // on login, find me in the $scope.game players array
-            firebase.auth().onAuthStateChanged(function (user) {
+            // firebase.auth().onAuthStateChanged(function (user) {
 							console.log(`User authenticated ${user}`);
                 firebasePlayersArr.$loaded()
                     .then(function (player) {
@@ -118,7 +118,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 												console.log("new deck made: ", $scope.game.deck);
                     })
             })
-        });
+        // });
     });
 
     // when that markers array is loaded, update the available markers array on scope

@@ -16,7 +16,11 @@ class Deck {
 
     deal(num) {
 			//TODO: add firebase sync functions
-        return this.tiles.splice(0, num);
+        let newTiles= this.tiles.splice(0, num);
+				this.tiles.$save(0).then(function (ref) {
+						console.log('dealt a card!');
+				});
+				return newTiles;
     }
 
     reload(tiles) {
