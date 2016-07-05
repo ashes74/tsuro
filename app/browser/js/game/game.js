@@ -79,7 +79,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 firebasePlayersArr.$loaded()
                     .then(function (player) {
                         if (user) {
-                            console.log("scope game", $scope.game)
                             $scope.me = $scope.game.players.find((player) => player.uid === user.uid);
 
                             $scope.meIdx;
@@ -87,8 +86,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                                 if (player.uid === user.uid) $scope.meIdx = i
                             });
 
-                            console.log($scope.me.marker);
-                            console.log(player[$scope.meIdx].marker);
                             $scope.me.marker = player[$scope.meIdx].marker;
                             $scope.clicked = player[$scope.meIdx].clicked;
                             $scope.me.x = player[$scope.meIdx].x;
@@ -168,8 +165,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     };
 
     var placeMarkerFn = function (point) {
-        console.log("point in ctrl", point);
-        console.log("board", $scope.game.board)
         $scope.me.placeMarker(point, $scope.game.board);
         $scope.me.tiles = $scope.game.deal(3);
         $scope.me.clicked = true;
@@ -203,14 +198,15 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     $scope.rotateTileCw = function (tile) {
         tile.rotation++;
         tile.rotation %= 4; //set rotation to be between 0 and 3
-        console.log("rotate cw", tile);
+        console.log("rotate cw", tile.rotation);
     };
 
     $scope.rotateTileCcw = function (tile) {
+        console.log("ccw original", tile.rotation)
         tile.rotation--;
         tile.rotation %= 4; //set rotation to be between -0 and -3
         tile.rotation += 4 //set it to be between +0 and +3
-        console.log('rotate ccw', tile);
+        console.log('rotate ccw', tile.rotation);
     };
 
     // CMT: use player's and game's prototype function to place tile and then move all players
@@ -258,21 +254,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         // trigger move
         console.log("spaceRef", typeof x, typeof $scope.me.x)
         if ($scope.me.x === x && $scope.me.y === y) {
-            console.log("inside if")
-            // $scope.me.move($scope.game.board);
-            $scope.me.point = $scope.me.move($scope.game.board);
-            console.log("in on", $scope.me, "meidx", $scope.meIdx);
-
-            // TODO: this doesn't send to firebase
-         
-            firebasePlayersArr[$scope.meIdx].x = $scope.me.x;
-            firebasePlayersArr[$scope.meIdx].y = $scope.me.y;
-            firebasePlayersArr[$scope.meIdx].i = $scope.me.i;
-
-            console.log($scope.me.point);
-            firebasePlayersArr[$scope.meIdx].point = $scope.me.point;
-            firebasePlayersArr.$save($scope.meIdx);
-            // syncWithFirebase();
+            $scope.me.move($scope.game.board);
         }
     });
 
