@@ -188,7 +188,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
     // TODO: need a function to assign dragon
     $scope.dragon;
-    $scope.awaitingDragonHolders = [];
+    $scope.dragonQueue = [];
 
     $scope.start = function () {
 
@@ -218,17 +218,20 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         var tileId = tile.id;
         var tileImg = tile.imageUrl;
         var rotation = tile.rotation;
+				//triggers placing tile on space
         placeTileOnSpace(spacex, spacey, tileId, tileImg, rotation);
         $scope.me.tiles = $scope.me.tiles.filter(t => t.id !== tile.id);
         firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
         firebasePlayersArr.$save($scope.meIdx);
 
-
+				//deal new card
+				//if no card in the deck push in dragonQueue;
+				//scope.dragon = scope.dragon || dragonQueue.shift();
         if ($scope.game.deck.length === 0 && !$scope.dragon) {
             $scope.dragon = $scope.me;
             console.log("set dragon to me")
         } else if ($scope.game.deck.length === 0 && $scope.dragon) {
-            $scope.awaitingDragonHolders.push($scope.me);
+            $scope.dragonQueue.push($scope.me);
             console.log("I'm waiting for to be a dragon")
         } else {
             console.log("give me a tile")
@@ -241,7 +244,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             // // TODO: HOW TO DO THIS IN FIREBASE?
             // while ($scope.dragon && $scope.game.deck.length) {
             //     $scope.dragon.tiles.push($scope.game.deal(1));
-            //     $scope.dragon = $scope.awaitingDragonHolders.shift() || null;
+            //     $scope.dragon = $scope.dragonQueue.shift() || null;
             // }
         }
     };
