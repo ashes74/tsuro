@@ -147,7 +147,6 @@ section.wrapper {
 /////GAME PAGE/////
 #game {
   display: flex;
-  justify-content: space-between;
 
   #board {
     width: 94vh;
@@ -221,7 +220,6 @@ section.wrapper {
 
         img {
           width:100%;
-          height: auto;
           position: absolute;
           top:0; left: 0;
           z-index: 5;
@@ -286,9 +284,9 @@ section.wrapper {
 
   /////TILE DRAWER/////
   .tileDrawer {
-    // position: fixed;
-    // top: 0;
-    // left: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
     height: 92vh;
     padding: 4vh;
     display: flex;
@@ -329,9 +327,9 @@ section.wrapper {
   }
   /////PLAYER DRAWER/////
   .playerDrawer {
-    // position: fixed;
-    // top: 0;
-    // right: 0;
+    position: fixed;
+    top: 0;
+    right: 0;
     height: 92vh;
     padding: 4vh 0 4vh 4vh;
     display: flex;
