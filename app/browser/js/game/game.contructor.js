@@ -26,7 +26,7 @@ class Game {
         this.players.forEach((player) => player.keepMoving(player))
     }
 
-    deadPlayers() {
+    getDeadPlayerTiles() {
         var deadPlayersTiles = [];
         console.log(this.players)
         this.players.forEach(function (player) {

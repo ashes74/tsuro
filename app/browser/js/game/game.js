@@ -224,9 +224,13 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
         firebasePlayersArr.$save($scope.meIdx);
 
-				let dragonRef = gameRef.child('dragon');
+				// CHECK DEATH
+				//if someone dies return their cards to the deck serve the dragonQueue
+				checkDeath();
+
+				//REFRESHING MY HAND
 				let firebaseDragonArr = $firebaseArray(gameRef.child('dragonQueue'));
-				//REFRESHING A HAND
+				let dragonRef = gameRef.child('dragon');
 				//if no card in the deck push in dragonQueue;
 				if ($scope.game.deck.length === 0){
 					console.log("deck is empty");
@@ -256,8 +260,12 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 				//TODO: add dragon and dragonQueue changes locally
 				dragonRef.on('value', (arguments) => {})
 
-			
+
     };
+
+		function checkDeath() {
+
+		}
 
 
     function placeTileOnSpace(x, y, tileId, img, rotate) {
@@ -318,10 +326,10 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             }
         }
 
-        if ($scope.game.deadPlayers().length) {
+        if ($scope.game.getDeadPlayerTiles().length) {
             // with new cards & need to reshuffle
-            // because the deadPlayers() returns a 2D array, use reduce to flatten it
-            var deadPlayerTiles = $scope.game.deadPlayers().reduce(function (a, b) {
+            // because the getDeadPlayerTiles() returns a 2D array, use reduce to flatten it
+            var deadPlayerTiles = $scope.game.getDeadPlayerTiles().reduce(function (a, b) {
                 return a = a.concat(b)
             })
             $scope.game.deck = $scope.game.deck.concat(deadPlayerTiles);
