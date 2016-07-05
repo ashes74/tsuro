@@ -232,6 +232,8 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
         $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].rotation = tile.rotation;
         $scope.game.board[$scope.me.nextSpace.y][$scope.me.nextSpace.x].testing = true;
 
+        $scope.chosenTile = tile;
+
         // CMT: need this line here in order to update the $scope.spaces for the html
         $scope.spaces = _.flatten($scope.game.board);
     };

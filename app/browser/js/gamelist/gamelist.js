@@ -26,6 +26,7 @@ tsuro.controller('gameList', function ($scope, firebaseUrl, $firebaseObject, $st
                 gamelist.push([i, $scope.gamelist[i]]);
             }
             $scope.gameNames = gamelist.slice(2);
+            console.log($scope.gameNames);
         });
 
 

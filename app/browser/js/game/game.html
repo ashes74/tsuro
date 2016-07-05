@@ -20,8 +20,10 @@
     </div>
     <div class="space-container">
       <div ng-repeat="space in spaces" class="space" ng-class="{mynext: me.nextSpace.x === space.x && me.nextSpace.y === space.y}">
+
         <div class="player {{playerIndex(playerOnThisSpace(space))}} {{markerColor(playerOnThisSpace(space))}}" ng-show="playerOnThisSpace(space)"></div>
-        <img ng-hide="space.image==='n'" ng-src="{{space.image}}" ng-class="{east: space.rotation === 1 || space.rotation === -3, south: space.rotation === 2 || space.rotation === -2, west: space.rotation === 3 || space.rotation === -1, testing: space.testing}" />
+
+        <img ng-hide="space.image==='n'" ng-src="{{space.image}}" ng-click="placeTile(chosenTile)" ng-class="{east: space.rotation === 1 || space.rotation === -3, south: space.rotation === 2 || space.rotation === -2, west: space.rotation === 3 || space.rotation === -1, testing: space.testing}" />
       </div>
     </div>
 

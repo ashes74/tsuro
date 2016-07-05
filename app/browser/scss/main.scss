@@ -21,11 +21,28 @@ $paper: #f4f1df;
   box-shadow: 0 0 10px $gray; 
 }
 
+@mixin button(){
+  width: 100%;
+  padding: 2%;
+  margin: 10px 0;
+  border-radius: 10px;
+  box-sizing: border-box;
+  border: 1px solid $red; 
+  background-color: $red;
+  
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  cursor: pointer;
+}
+
 /////STRUCTURE/////
 body {
     font-family: $geosans;
     text-align: center;
     background-image: url('https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-bg.jpg?alt=media&token=d0078f3a-7445-47ba-8641-3a794a1499ab');
+    background-attachment: fixed;
+    background-repeat: no-repeat;
     background-size: cover;
 }
 section.wrapper {
@@ -34,6 +51,94 @@ section.wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+/////LOGIN PAGE/////
+#login {
+  .login-button {
+    @include button()
+
+    &:hover {
+      background-color: transparent;
+      color: $red;
+    }
+  }
+}
+/////PICKGAME PAGE/////
+#pickGame {
+  input {
+    @include button()
+    display: inline-block;
+    width:74%;
+    border-radius: 10px 0 0 10px;
+
+    background-color: transparent;
+    color: $red;
+
+    &:focus {
+      outline: 0; 
+      background-color: #fff;
+    }
+  }
+  .create-button {
+    @include button()
+    display: inline-block;
+    width: 26%;
+    border-radius: 0 10px 10px 0;
+  }
+
+  .join-button {
+    @include button()
+
+    &:hover {
+      background-color: transparent;
+      color: $red;
+    }
+  }
+}
+
+/////GAME LIST PAGE/////
+#gamelist {
+  #list {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    overflow-y: scroll;
+    margin-top: 0;
+  margin-bottom: auto;
+    .game {
+      width: 29vw;
+      margin: 2vw;
+      padding: 10px 10px 20px 10px;
+      display: inline-block;
+      box-sizing: border-box;
+      border: 1px solid $gray;
+      position: relative;
+      overflow: hidden;
+
+      .gamename { 
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        font-weight: 600;
+        margin-bottom:0;
+      }
+      
+      .join-button {
+        @include button();
+        position: absolute;
+        left: 0; bottom: 0;
+        background-color: $gray;
+        border-color: $gray;
+        border-radius: 0;
+        margin: -1px;
+        width: 101%;
+        &:hover {
+          color: $gray;
+          background-color: #fff;
+        }
+      }
+    }
+  }
 }
 
 /////GAME PAGE/////
