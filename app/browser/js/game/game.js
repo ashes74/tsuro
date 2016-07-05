@@ -53,7 +53,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
     // when the deck is loaded, local deck is the firebase deck
     deckArr.$loaded().then(function () {
-        $scope.game.deck = deckArr;
+        $scope.game.deck = new Deck(deckArr);
 
         // don't start watching players until there is a deck in the game
         //'child_changed'
@@ -232,7 +232,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 				let firebaseDragonArr = $firebaseArray(gameRef.child('dragonQueue'));
 				let dragonRef = gameRef.child('dragon');
 				//if no card in the deck push in dragonQueue;
-				if ($scope.game.deck.length === 0){
+				if ($scope.game.deck.length() === 0){
 					console.log("deck is empty");
 					$scope.dragonQueue.push($scope.me)
 					//push to Firebase
@@ -310,6 +310,11 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             firebasePlayersArr[$scope.meIdx].canPlay = $scope.me.canPlay;
             firebasePlayersArr.$save($scope.meIdx);
         }
+
+				//if I die return my cards to the deck
+				if(!$scope.me.canPlay){
+					$scope.game.deck.reload($scope.me.tiles).shuffle();
+				}
 
         if ($scope.game.checkOver()) {
             if ($scope.game.players.length === 1) {

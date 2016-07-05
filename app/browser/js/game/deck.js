@@ -19,7 +19,12 @@ class Deck {
     }
 
     reload(tiles) {
-        this.tiles.push(tiles)
+        this.tiles.concat(tiles)
         return this;
     }
+
+		length(){
+			return this.tiles.length
+		}
+
 }
