@@ -197,15 +197,15 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     // TODO: doesn't work
     $scope.rotateTileCw = function (tile) {
         tile.rotation++;
-        tile.rotation %= 4; //set rotation to be between 0 and 3
+        if (tile.rotation === 4) tile.rotation = 0; //set rotation to be between 0 and 3
         console.log("rotate cw", tile.rotation);
     };
 
     $scope.rotateTileCcw = function (tile) {
         console.log("ccw original", tile.rotation)
         tile.rotation--;
-        tile.rotation %= 4; //set rotation to be between -0 and -3
-        tile.rotation += 4 //set it to be between +0 and +3
+        if (tile.rotation === -4) tile.rotation = 0; //set rotation to be between -0 and -3
+        if (tile.rotation < 0) tile.rotation += 4 //set it to be between +0 and +3
         console.log('rotate ccw', tile.rotation);
     };
 
@@ -242,7 +242,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         space.image = addedTile.img;
         space.rotation = addedTile.rotation;
         var tile = gameFactory.tiles[addedTile.tileId]; // look up tile by id
-        console.log("tile", tile)
+        console.log("tile", tile, "snapshot.val().rotation", snapshot.val().rotation)
         var rotatedTile = gameFactory.rotateTile(tile, snapshot.val().rotation); // rotate tile
         console.log(rotatedTile, "rotated")
         for (var i = 0; i < rotatedTile.paths.length; i++) {

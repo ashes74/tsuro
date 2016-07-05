@@ -213,8 +213,8 @@ tsuro.factory('gameFactory', function () {
             }
         },
         // TODO: Doesn't work
-        rotateTile: function (tile) {
-            let rotationDifference = tile.rotation;
+        rotateTile: function (tile, rotation) {
+            let rotationDifference = rotation;
             //TODO: fix the rotation
             if (rotationDifference < 0) throw new Error;
             //add rotationDifference
