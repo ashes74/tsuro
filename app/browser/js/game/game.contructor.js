@@ -12,7 +12,7 @@ class Game {
 
         //index of the currentPlayer in the players
         this.currPlayer;
-
+				this.deck;
         this.dragon = null;
         this.moves;
     }
@@ -23,7 +23,7 @@ class Game {
     }
 
 		//moveAllPlayers removed because each person will listen to their next space and move themselves
-		
+
     getDeadPlayerTiles() {
         var deadPlayersTiles = [];
         console.log(this.players)
