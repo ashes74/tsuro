@@ -7,20 +7,15 @@ class Game {
         this.name = name;
         this.count = 35;
         this.board = new Board().drawBoard();
+        this.availableMarkers = ["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"];
         this.players = [];
-        this.availableMarkers = ["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]
-
-        //index of the currentPlayer in the players
-        this.currPlayer;
-
+        // this.currPlayer;
         this.dragon = null;
-        this.moves;
     }
 
-    getCurrentPlayer() {
-        if (this.currPlayer === -1) return;
-        return this.players[this.currPlayer];
-    }
+    // getCurrentPlayer(idx) {
+    //     return this.players[idx];
+    // }
 
     moveAllPlayers() {
         this.players.forEach((player) => player.keepMoving(player))
