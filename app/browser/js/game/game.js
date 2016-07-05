@@ -29,6 +29,8 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
     var spaceRef = ref.child('games').child($stateParams.gameName).child('spaces')
     var spaceObj = $firebaseObject(spaceRef);
+    var spaceArr = $firebaseArray(spaceRef);
+
 
     /****************
     INITIALIZING GAME
@@ -38,18 +40,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     $scope.game = new Game($stateParams.gameName);
 
     // Start with first player in the array, index 0
-    $scope.game.currPlayer = 0;
-
-    currPlayerRef.on('value', function (snapshot) {
-        console.log("currPlayer index changes", snapshot.val())
-        $scope.game.currentPlayerIndex = snapshot.val();
-        $scope.game.currentPlayer = $scope.game.players[$scope.game.currentPlayerIndex];
-
-        if (spaceArr.length <= 1) {
-            $scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid;
-            console.log("IS IT MY TURN?", $scope.myTurn);
-        }
-    });
+    $scope.game.currentPlayerIndex = 0;
 
     // when the deck is loaded, local deck is the firebase deck
     deckArr.$loaded().then(function () {
@@ -105,7 +96,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                             $scope.me.y = player[$scope.meIdx].y;
                             $scope.me.i = player[$scope.meIdx].i;
 
-                            $scope.game.currentPlayer = $scope.game.players[0];
+                            $scope.game.currentPlayer = $scope.game.players[$scope.game.currentPlayerIndex];
                             $scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid;
                             console.log("IS IT MY TURN?", $scope.myTurn);
                         } else {
@@ -129,6 +120,19 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
     $scope.spaces = _.flatten($scope.game.board);
 
+    currPlayerRef.on('value', function (snapshot) {
+        console.log("currPlayer index changes", snapshot.val())
+        $scope.game.currentPlayerIndex = snapshot.val();
+        $scope.game.currentPlayer = $scope.game.players[$scope.game.currentPlayerIndex];
+        console.log("scope.game.currentPlayerIndex", $scope.game.currentPlayerIndex);
+
+        console.log("spaceArr", spaceArr);
+        if (spaceArr.length >= 1) {
+            console.log("inside if", spaceArr)
+            $scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid;
+            console.log("IS IT MY TURN?", $scope.myTurn);
+        }
+    });
 
     /****************
     AVAILABLE PLAYER ACTIONS AT GAME START
@@ -170,7 +174,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         $scope.me.clicked = true;
         // FOR SOME REASON I can't just do firebasePlayersArr[$scope.meIdx] = $scope.me;
         firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
-        firebasePlayersArr[$scope.meIdx].point = $scope.me.point;
+        // firebasePlayersArr[$scope.meIdx].point = $scope.me.point;
         firebasePlayersArr[$scope.meIdx].x = $scope.me.x;
         firebasePlayersArr[$scope.meIdx].y = $scope.me.y;
         firebasePlayersArr[$scope.meIdx].i = $scope.me.i;
@@ -317,9 +321,11 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                     deckArr.$add($scope.game.deck)
                 })
         }
-        gameRef.update({
-            "currentPlayerIndex": $scope.game.nextCanPlay()
-        });
+        if ($scope.me.uid === $scope.game.currentPlayer.uid) {
+            gameRef.update({
+                "currentPlayerIndex": $scope.game.nextCanPlay()
+            });
+        }
     });
 
     $scope.leaveGame = function () {
@@ -349,10 +355,9 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 deckArr.$add(deck);
             });
 
-        currPlayerArr.$remove(0)
-            .then(function () {
-                currPlayerArr.$add([0])
-            })
+        gameRef.update({
+            'currentPlayerIndex': 0
+        })
 
         firebasePlayersArr.$loaded().then(function (data) {
             for (var i = 0; i < data.length; i++) {

@@ -13,12 +13,12 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
 
     $scope.createGame = function (gameName) {
         var gameRef = ref.child('games').child(gameName);
-        var playersRef = gameNameRef.child('players');
-        var markersRef = gameNameRef.child('availableMarkers');
+        var playersRef = gameRef.child('players');
+        var markersRef = gameRef.child('availableMarkers');
         var markersArr = $firebaseArray(markersRef);
-        var deckRef = gameNameRef.child('deck');
+        var deckRef = gameRef.child('deck');
         var deckArr = $firebaseArray(deckRef);
-        var currPlayerRef = gameNameRef.child('currPlayer');
+        var currPlayerRef = gameRef.child('currPlayer');
         // Should be an array with only one number
         var currPlayerArr = $firebaseArray(currPlayerRef);
 
@@ -42,7 +42,7 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
         var tiles = gameFactory.tiles;
 
         var deck = new Deck(tiles).shuffle().tiles;
-        var deckRef = ref.child('games').child(gameName).child('deck');
+        var deckRef = gameRef.child('deck');
         deckArr.$add(deck);
 
         markersArr.$add(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]);
