@@ -45,12 +45,9 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
     $scope.game.currPlayer = 0;
 
     currPlayerRef.on('child_changed', function (snapshot) {
-        console.log("currPlayer index changes", snapshot.val())
         $scope.game.currPlayer = snapshot.val()[0];
         $scope.game.currentPlayer = $scope.game.players[$scope.game.currPlayer];
         $scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid;
-        console.log("IS IT MY TURN?", $scope.myTurn)
-
     });
 
 
@@ -76,7 +73,6 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
                 // if not found, create new player
                 if (!localPlayer) {
-                    console.log('i didnt find a local player!');
                     localPlayer = new Player(snapPlayers[thisPlayer].uid);
                     thisIsANewPlayer = true;
                 }
@@ -111,9 +107,8 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
                         } else {
                             console.log("no one is logged in");
                         }
-                        console.log('im here!!!!!!!!');
-                    })
-            })
+                    });
+            });
         });
     });
 
@@ -255,16 +250,13 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
     $scope.rotateTileCw = function (tile) {
         tile.rotation++;
         if (tile.rotation === 4) tile.rotation = 0; //set rotation to be between 0 and 3
-        console.log("rotate cw", tile.rotation);
     };
 
 
     $scope.rotateTileCcw = function (tile) {
-        console.log("ccw original", tile.rotation)
         tile.rotation--;
         if (tile.rotation === -4) tile.rotation = 0; //set rotation to be between -0 and -3
-        if (tile.rotation < 0) tile.rotation += 4 //set it to be between +0 and +3
-        console.log('rotate ccw', tile.rotation);
+        if (tile.rotation < 0) tile.rotation += 4; //set it to be between +0 and +3
     };
 
 
@@ -285,15 +277,10 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
         if ($scope.game.deck.length === 0 && !$scope.dragon) {
             $scope.dragon = $scope.me;
-            console.log("set dragon to me")
         } else if ($scope.game.deck.length === 0 && $scope.dragon) {
             $scope.awaitingDragonHolders.push($scope.me);
-            console.log("I'm waiting for to be a dragon")
         } else {
-            console.log("give me a tile")
             $scope.me.tiles.push($scope.game.deal(1)[0]);
-            console.log("dealed one tile to me!", $scope.me.tiles);
-
             firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
             firebasePlayersArr.$save($scope.meIdx);
 
@@ -312,18 +299,15 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
     function placeTileOnSpace(x, y, tileId, img, rotate) {
         var spaceId = 'space' + x + y;
-        console.log(`spaceId = ${spaceId}`);
         spaceObj[spaceId] = {
             'tileId': tileId,
             'img': img,
             'rotation': rotate
         };
         spaceObj.$save();
-        console.log("tile placement sent to Firebase");
     };
 
     spaceRef.on('child_added', function (snapshot) {
-        console.log("got a tile", snapshot.val())
         var addedTile = snapshot.val();
         var spaceKey = snapshot.key;
         var x = +spaceKey.slice(-2, -1);
@@ -333,9 +317,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
         space.image = addedTile.img;
         space.rotation = addedTile.rotation;
         var tile = gameFactory.tiles[addedTile.tileId]; // look up tile by id
-        console.log("tile", tile, "snapshot.val().rotation", snapshot.val().rotation)
         var rotatedTile = gameFactory.rotateTile(tile, snapshot.val().rotation); // rotate tile
-        console.log(rotatedTile, "rotated")
         for (var i = 0; i < rotatedTile.paths.length; i++) {
             // if the point doesn't have neighbors... set to empty array
             if (!space.points[i].neighbors) space.points[i].neighbors = [];
@@ -343,7 +325,6 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
             space.points[i].neighbors.push(space.points[rotatedTile.paths[i]]);
         }
         // trigger move
-        console.log("spaceRef", typeof x, typeof $scope.me.x)
         if ($scope.me.x === x && $scope.me.y === y) {
             $scope.me.move($scope.game.board);
             firebasePlayersArr[$scope.meIdx].x = $scope.me.x;
@@ -360,11 +341,11 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
                 // TODO: disable everything, let the players reset the game
                 $scope.gameOver = true;
-                console.log("game over, winner is ", $scope.winner.uid)
+                console.log("game over, winner is ", $scope.winner.uid);
             } else {
                 // TODO: disable everything, let the players decide wether reset the game or not
                 $scope.gameOver;
-                console.log("game over, no one wins")
+                console.log("game over, no one wins");
             }
         }
 
@@ -372,14 +353,14 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
             // with new cards & need to reshuffle
             // because the deadPlayers() returns a 2D array, use reduce to flatten it
             var deadPlayerTiles = $scope.game.deadPlayers().reduce(function (a, b) {
-                return a = a.concat(b)
-            })
+                return a = a.concat(b);
+            });
             $scope.game.deck = $scope.game.deck.concat(deadPlayerTiles);
             $scope.game.deck = $scope.game.deck.shuffle();
             deckArr.$remove()
                 .then(function () {
-                    deckArr.$add($scope.game.deck)
-                })
+                    deckArr.$add($scope.game.deck);
+                });
         }
     });
 
@@ -398,13 +379,11 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
         markersArr.$remove(0)
             .then(function(ref) {
-                console.log("removed all markers", ref.key);
                 markersArr.$add(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]);
             });
 
         deckArr.$remove(0)
             .then(function(ref) {
-                console.log("removed the deck", ref.key);
                 var tiles = gameFactory.tiles;
                 var deck = new Deck(tiles).shuffle().tiles;
                 deckArr.$add(deck);
@@ -432,8 +411,6 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
 
         $state.reload();
-        console.log($scope.me);
-
     };
 
 
@@ -492,7 +469,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
         [5, 4, 3],
         [5, 5, 2],
         [5, 5, 3]
-    ]
+    ];
 });
 
 tsuro.directive('tile', function() {
