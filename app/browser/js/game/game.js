@@ -46,6 +46,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         // don't start watching players until there is a deck in the game
         //'child_changed'
         playersRef.on("value", function (snap) {
+					console.log("player snapshot received");
             var snapPlayers = snap.val(); //grab the value of the snapshot (all players in game in Firebase)
 
             // for each player in this collection...
@@ -76,8 +77,10 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             }
             // on login, find me in the $scope.game players array
             firebase.auth().onAuthStateChanged(function (user) {
+							console.log(`User authenticated ${user}`);
                 firebasePlayersArr.$loaded()
                     .then(function (player) {
+											console.log(`Player is ${player}`);
                         if (user) {
                             $scope.me = $scope.game.players.find((player) => player.uid === user.uid);
 
