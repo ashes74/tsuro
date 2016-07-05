@@ -46,7 +46,6 @@ Player.prototype.move = function (board) {
             console.log("cannot play", this.canPlay)
         }
     }
-    return currPoint;
 }
 
 
