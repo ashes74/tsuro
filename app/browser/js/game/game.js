@@ -224,29 +224,39 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
         firebasePlayersArr.$save($scope.meIdx);
 
-				//deal new card
+				let dragonRef = gameRef.child('dragon');
+				let firebaseDragonArr = $firebaseArray(gameRef.child('dragonQueue'));
+				//REFRESHING A HAND
 				//if no card in the deck push in dragonQueue;
-				//scope.dragon = scope.dragon || dragonQueue.shift();
-        if ($scope.game.deck.length === 0 && !$scope.dragon) {
-            $scope.dragon = $scope.me;
-            console.log("set dragon to me")
-        } else if ($scope.game.deck.length === 0 && $scope.dragon) {
-            $scope.dragonQueue.push($scope.me);
-            console.log("I'm waiting for to be a dragon")
-        } else {
-            console.log("give me a tile")
-            $scope.me.tiles.push($scope.game.deal(1)[0]);
-            console.log("dealed one tile to me!", $scope.me.tiles);
+				if ($scope.game.deck.length === 0){
+					console.log("deck is empty");
+					$scope.dragonQueue.push($scope.me)
+					//push to Firebase
+					$firebaseDragonArr.$add($scope.me.uid);
+					console.log(`added myself to the dragonQueue`);
+					//scope.dragon =current dragon or next in queue;
+					$scope.dragon = $scope.dragon || $scope.dragonQueue.shift();
+					console.log(`current dragon is ${scope.dragon}`);
+					//upload dragon info to Firebase - uid
+					gameRef.set({'dragon': $scope.dragon.uid})
 
-            firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
-            firebasePlayersArr.$save($scope.meIdx);
+				}
+				else {
+					console.log(`deck has cards`);
+					//if deck and dragon deal to dragonQueue first until players have 3 tiles
+					while ($scope.dragon && $scope.deck.length>0) {
+						console.log(`serving dragonQueue first`);
+						if($scope.dragon.tiles.length<3)$scope.dragon.tiles.concat($scope.game.deal(1))
+						console.log(`${$scope.dragon} dealt card`);
+						$scope.dragon = $scope.dragonQueue.shift()
+					}
+					//deal to me if I dont have three.
+					if($scope.me.tiles.length <3) $scope.me.tiles.concat($scope.game.deal(1))
+				}
+				//TODO: add dragon and dragonQueue changes locally
+				dragonRef.on('value', (arguments) => {})
 
-            // // TODO: HOW TO DO THIS IN FIREBASE?
-            // while ($scope.dragon && $scope.game.deck.length) {
-            //     $scope.dragon.tiles.push($scope.game.deal(1));
-            //     $scope.dragon = $scope.dragonQueue.shift() || null;
-            // }
-        }
+			
     };
 
 
