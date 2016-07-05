@@ -54,7 +54,8 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     // when the deck is loaded, local deck is the firebase deck
     deckArr.$loaded().then(function () {
 			//TODO: make deck type Deck after Deck has firebase sync functions
-        $scope.game.deck = deckArr;
+        $scope.game.deck = new Deck(deckArr);
+				console.log("new deck made: ", $scope.game.deck);
 
         // don't start watching players until there is a deck in the game
         //'child_changed'
@@ -92,7 +93,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 							console.log(`User authenticated ${user}`);
                 firebasePlayersArr.$loaded()
                     .then(function (player) {
-											console.log(`Player is ${player}`);
+											console.log("Player is", player);
                         if (user) {
                             $scope.me = $scope.game.players.find((player) => player.uid === user.uid);
 
@@ -114,6 +115,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                             console.log("no one is logged in");
                         }
                         console.log('im here!!!!!!!!');
+												console.log("new deck made: ", $scope.game.deck);
                     })
             })
         });
@@ -214,6 +216,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
     // CMT: use player's and game's prototype function to place tile and then move all players
     $scope.placeTile = function (tile) {
+			console.log("I'm running Lori's version");
         var spacex = $scope.me.x;
         var spacey = $scope.me.y;
         var tileId = tile.id;
@@ -224,6 +227,8 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         $scope.me.tiles = $scope.me.tiles.filter(t => t.id !== tile.id);
         firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
         firebasePlayersArr.$save($scope.meIdx);
+				console.log(`deck: ${$scope.game.deck}`);
+
 
 				// CHECK DEATH
 				//if someone dies return their cards to the deck serve the dragonQueue
@@ -233,7 +238,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 				let firebaseDragonArr = $firebaseArray(gameRef.child('dragonQueue'));
 				let dragonRef = gameRef.child('dragon');
 				//if no card in the deck push in dragonQueue;
-				if ($scope.game.deck.length === 0){
+				if ($scope.game.deck.length() === 0){
 					console.log("deck is empty");
 					$scope.dragonQueue.push($scope.me)
 					//push to Firebase
@@ -314,7 +319,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
 				//if I die return my cards to the deck
 				if(!$scope.me.canPlay){
-					$scope.game.deck = $scope.game.deck.concat(deadPlayerTiles)
+					$scope.game.deck.reload($scope.me).shuffle();
 				}
 
         if ($scope.game.checkOver()) {
@@ -332,19 +337,19 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             }
         }
 
-        if ($scope.game.getDeadPlayerTiles().length) {
-            // with new cards & need to reshuffle
-            // because the getDeadPlayerTiles() returns a 2D array, use reduce to flatten it
-            var deadPlayerTiles = $scope.game.getDeadPlayerTiles().reduce(function (a, b) {
-                return a = a.concat(b)
-            })
-            $scope.game.deck = $scope.game.deck.concat(deadPlayerTiles);
-            $scope.game.deck = $scope.game.deck.shuffle();
-            deckArr.$remove()
-                .then(function () {
-                    deckArr.$add($scope.game.deck)
-                })
-        }
+        // if ($scope.game.getDeadPlayerTiles().length) {
+        //     // with new cards & need to reshuffle
+        //     // because the getDeadPlayerTiles() returns a 2D array, use reduce to flatten it
+        //     var deadPlayerTiles = $scope.game.getDeadPlayerTiles().reduce(function (a, b) {
+        //         return a = a.concat(b)
+        //     })
+        //     $scope.game.deck = $scope.game.deck.concat(deadPlayerTiles);
+        //     $scope.game.deck = $scope.game.deck.shuffle();
+        //     deckArr.$remove()
+        //         .then(function () {
+        //             deckArr.$add($scope.game.deck)
+        //         })
+        // }
         gameRef.update({
             "currentPlayerIndex": $scope.game.nextCanPlay()
         });
