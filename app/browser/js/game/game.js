@@ -363,7 +363,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 data[i].marker = null;
                 data[i].point = null;
                 data[i].tiles = null;
-                players.$save(i);
+                firebasePlayersArr.$save(i);
             }
         });
 
