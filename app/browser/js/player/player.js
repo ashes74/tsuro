@@ -40,6 +40,10 @@ Player.prototype.move = function (board) {
             currPoint.travelled = true;
             this.point = currPoint;
             this.assignXYI(currPoint);
+            if (currPoint.edge) {
+                this.canPlay = false;
+                end = true;
+            }
         } else {
             end = true;
             if (currPoint.neighbors.length === 2 || currPoint.edge) this.canPlay = false;

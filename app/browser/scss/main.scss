@@ -147,6 +147,7 @@ section.wrapper {
 /////GAME PAGE/////
 #game {
   display: flex;
+  justify-content: space-between;
 
   #board {
     width: 94vh;
@@ -200,8 +201,8 @@ section.wrapper {
       .space {
         width: calc(100%/6);
         height: calc(100%/6);
-        border: 1px dotted #ccc;
-        box-sizing: border-box;
+        // border: 1px dotted #ccc;
+        // box-sizing: border-box;
         position: relative;
 
         .placehover {
@@ -220,7 +221,9 @@ section.wrapper {
 
         img {
           width:100%;
-          position: relative;
+          height: auto;
+          position: absolute;
+          top:0; left: 0;
           z-index: 5;
           &.testing {
             @include testing-tile(testing)
@@ -283,9 +286,9 @@ section.wrapper {
 
   /////TILE DRAWER/////
   .tileDrawer {
-    position: fixed;
-    top: 0;
-    left: 0;
+    // position: fixed;
+    // top: 0;
+    // left: 0;
     height: 92vh;
     padding: 4vh;
     display: flex;
@@ -297,6 +300,8 @@ section.wrapper {
       margin-bottom: 3vh;
       position: relative;
       cursor: pointer;
+      box-sizing: border-box;
+      border: 1px solid $mountain;
       
         .ccw {
           width: 20%; height: 20%;
@@ -324,9 +329,9 @@ section.wrapper {
   }
   /////PLAYER DRAWER/////
   .playerDrawer {
-    position: fixed;
-    top: 0;
-    right: 0;
+    // position: fixed;
+    // top: 0;
+    // right: 0;
     height: 92vh;
     padding: 4vh 0 4vh 4vh;
     display: flex;

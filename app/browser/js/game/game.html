@@ -24,8 +24,9 @@
 
         <div class="player {{playerIndex(playerOnThisSpace(space))}} {{markerColor(playerOnThisSpace(space))}}" ng-show="playerOnThisSpace(space)"></div>
         <div class="placehover" ng-show="space.testing" ng-click="placeTile(chosenTile)">Place</div>
-
-        <img ng-hide="space.image==='n'" ng-src="{{space.image}}" ng-class="{east: space.rotation === 1 || space.rotation === -3, south: space.rotation === 2 || space.rotation === -2, west: space.rotation === 3 || space.rotation === -1, testing: space.testing}" />
+        
+        <img src="https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_blank.png?alt=media&token=8daab765-7a13-4936-b7ae-eb42114bca44" />
+        <img ng-hide="space.image === 'n'" ng-src="{{space.image}}" ng-class="{east: space.rotation === 1, south: space.rotation === 2, west: space.rotation === 3, testing: space.testing}" />
       </div>
     </div>
 
