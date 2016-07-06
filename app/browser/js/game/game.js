@@ -252,11 +252,6 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
     $scope.dragonQueue = [];
 
 
-    $scope.myTurn = function() {
-        $scope.me === $scope.currentPlayer;
-    };
-
-
     // these are tied to angular ng-click buttons
     // TODO: doesn't work
     $scope.rotateTileCw = function (tile) {
@@ -288,46 +283,6 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
         $scope.me.tiles = $scope.me.tiles.filter(t => t.id !== tile.id);
         firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
         firebasePlayersArr.$save($scope.meIdx);
-
-				checkDeath();
-				let firebaseDragonArr = $firebaseArray(gameRef.child('dragonQueue'));
-				let dragonRef = gameRef.child('dragon');
-				//DRAGON
-				//if no card in the deck push in dragonQueue;
-				if ($scope.game.deck.length() === 0){
-					console.log("deck is empty");
-					$scope.dragonQueue.push($scope.me)
-					//push to Firebase
-					$firebaseDragonArr.$add($scope.me.uid);
-					console.log(`added myself to the dragonQueue`);
-					//scope.dragon =current dragon or next in queue;
-					$scope.dragon = $scope.dragon || $scope.dragonQueue.shift();
-					console.log(`current dragon is ${scope.dragon}`);
-					//upload dragon info to Firebase - uid
-					gameRef.set({'dragon': $scope.dragon.uid})
-
-				}else {
-					console.log(`deck has cards`);
-					// // if deck and dragon deal to dragonQueue first until players have 3 tiles
-					// while ($scope.dragon && $scope.deck.length>0) {
-					// 	console.log(`serving dragonQueue first`);
-					// 	if($scope.dragon.tiles.length<3)$scope.dragon.tiles.concat($scope.game.deal(1))
-					// 	console.log(`${$scope.dragon} dealt card`);
-					// 	$scope.dragon = $scope.dragonQueue.shift()
-					// }
-					//deal to me if I dont have three.
-					console.log(`attempting to refresh a hand`);
-					if($scope.me.tiles.length <3){
-						let newTile = $scope.game.deal(1)
-						console.log("getting card", newTile);
-						$scope.me.tiles= $scope.me.tiles.concat(newTile);
-						syncDeck();
-					}
-					console.log("deckArr and scope deck:", deckArr, $scope.game.deck);
-					console.log(`dealt new card:`, $scope.me.tiles);
-				}
-				//TODO: add dragon and dragonQueue changes locally
-				// dragonRef.on('value', (arguments) => {})
 
     };
 
@@ -400,6 +355,50 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
                 }
 								$scope.gameOver = true;
             }
+
+						let firebaseDragonArr = $firebaseArray(gameRef.child('dragonQueue'));
+						let dragonRef = gameRef.child('dragon');
+						//DRAGON
+						//if no card in the deck push in dragonQueue;
+						if ($scope.game.deck.length() === 0){
+							console.log("deck is empty");
+							$scope.dragonQueue.push($scope.me)
+							//push to Firebase
+							$firebaseDragonArr.$add($scope.me.uid);
+							console.log(`added myself to the dragonQueue`);
+							//scope.dragon =current dragon or next in queue;
+							$scope.dragon = $scope.dragon || $scope.dragonQueue.shift();
+							console.log(`current dragon is ${scope.dragon}`);
+							//upload dragon info to Firebase - uid
+							gameRef.set({'dragon': $scope.dragon.uid})
+
+						}else {
+							console.log(`deck has cards`);
+							// if deck and dragon deal to dragonQueue first until players have 3 tiles
+							while ($scope.dragon && $scope.deck.length>0) {
+								console.log(`serving dragonQueue first`);
+								if($scope.dragon.tiles.length<3){
+									//TODO: LA : consider _.flatten
+									$scope.dragon.tiles = $scope.dragon.tiles.concat($scope.game.deal(1));
+								}
+								console.log(`${$scope.dragon} dealt card`);
+								$scope.dragon = $scope.dragonQueue.shift()
+							}
+							//deal to me if I dont have three.
+							console.log(`attempting to refresh a hand`);
+							if($scope.me.tiles.length < 3 && $scope.me.canPlay){
+								let newTile = $scope.game.deal(1)
+								console.log("getting card", newTile);
+								$scope.me.tiles= $scope.me.tiles.concat(newTile);
+								console.log(`dealt new card:`, $scope.me.tiles);
+								syncDeck();
+							}
+							console.log("deckArr and scope deck:", deckArr, $scope.game.deck);
+						}
+
+						//TODO: add dragon and dragonQueue changes locally
+						// dragonRef.on('value', (arguments) => {})
+
 
 
             if ($scope.me.uid === $scope.game.currentPlayer.uid) {

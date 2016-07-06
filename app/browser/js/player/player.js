@@ -3,7 +3,7 @@
 function Player(uid,name) {
     // TODO: get uid from firebase auth
     this.uid = uid;
-    this.name = name;
+    this.name = name || "Mystery Player";
     this.marker;
 
     // should be a Point object
