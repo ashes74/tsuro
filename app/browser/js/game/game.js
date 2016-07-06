@@ -207,15 +207,15 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
     };
 
 
-    $scope.playerOnThisSpace = function(space){
-        var players = $scope.game.players;
-        var player = null;
+    $scope.playersOnThisSpace = function(space){
+        var gamePlayers = $scope.game.players;
 
-        for(var i = 0; i < players.length; i++){
-            if(players[i].x === space.x && players[i].y === space.y) player = players[i];
-        }
-        if(!player) return null;
-        return player;
+        var playersOnThisSpace = gamePlayers.filter(function(player){
+            if(player.x === space.x && player.y === space.y) return player;
+        });
+        
+        if(playersOnThisSpace.length === 0) return null;
+        return playersOnThisSpace;
     };
 
     $scope.playerIndex = function(player){
@@ -241,10 +241,6 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
                     break;
             }
         }
-    };
-
-    $scope.markerColor = function(player){
-        if(player) return player.marker;
     };
 
     // TODO: need a function to assign dragon
@@ -326,7 +322,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
     };
 
     spaceRef.on('child_added', function (snapshot) {
-        console.log("got a tile", snapshot.val())
+        console.log("got a tile", snapshot.val());
         var addedTile = snapshot.val();
         var spaceKey = snapshot.key;
         var x = +spaceKey.slice(-2, -1);
@@ -358,7 +354,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
         // trigger move
 
         if ($scope.me) {
-            console.log("spaceRef", x, $scope.me.x)
+            console.log("spaceRef", x, $scope.me.x);
             if ($scope.me.x === x && $scope.me.y === y) {
                 $scope.me.move($scope.game.board);
                 firebasePlayersArr[$scope.meIdx].x = $scope.me.x;
@@ -375,11 +371,11 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
                     // TODO: disable everything, let the players reset the game
                     $scope.gameOver = true;
-                    console.log("game over, winner is ", $scope.winner.uid)
+                    console.log("game over, winner is ", $scope.winner.uid);
                 } else {
                     // TODO: disable everything, let the players decide wether reset the game or not
                     $scope.gameOver;
-                    console.log("game over, no one wins")
+                    console.log("game over, no one wins");
                 }
             }
 
@@ -387,14 +383,14 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
                 // with new cards & need to reshuffle
                 // because the deadPlayers() returns a 2D array, use reduce to flatten it
                 var deadPlayerTiles = $scope.game.deadPlayers().reduce(function (a, b) {
-                    return a = a.concat(b)
-                })
+                    return a = a.concat(b);
+                });
                 $scope.game.deck = $scope.game.deck.concat(deadPlayerTiles);
                 $scope.game.deck = $scope.game.deck.shuffle();
                 deckArr.$remove()
                     .then(function () {
-                        deckArr.$add($scope.game.deck)
-                    })
+                        deckArr.$add($scope.game.deck);
+                    });
             }
             if ($scope.me.uid === $scope.game.currentPlayer.uid) {
                 gameRef.update({
