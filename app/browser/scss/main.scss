@@ -27,13 +27,12 @@ $paper: #f4f1df;
 @mixin button(){
   width: 100%;
   padding: 2%;
-  margin: 10px 0;
+  margin: 10px auto;
   border-radius: 10px;
   box-sizing: border-box;
   border: 1px solid $red; 
-  background-color: $red;
   
-  color: #fff;
+  color: $red;
   text-transform: uppercase;
   letter-spacing: 3px;
   cursor: pointer;
@@ -62,8 +61,8 @@ section.wrapper {
     @include button()
 
     &:hover {
-      background-color: transparent;
-      color: $red;
+      background-color: $red;
+      color: white;
     }
   }
 }
@@ -71,6 +70,7 @@ section.wrapper {
 #pickGame {
   input {
     @include button()
+    vertical-align: bottom;
     display: inline-block;
     width:74%;
     border-radius: 10px 0 0 10px;
@@ -85,6 +85,8 @@ section.wrapper {
   }
   .create-button {
     @include button()
+    background-color: $red;
+    color: white;
     display: inline-block;
     width: 26%;
     border-radius: 0 10px 10px 0;
@@ -136,6 +138,8 @@ section.wrapper {
         border-radius: 0;
         margin: -1px;
         width: 101%;
+        color: white;
+
         &:hover {
           color: $gray;
           background-color: #fff;
@@ -207,6 +211,7 @@ section.wrapper {
 
         .placehover {
           background-color: $mountain;
+          opacity: .7;
           color: white;
           padding: 5px 10px;
           border-radius: 10px;
@@ -217,6 +222,7 @@ section.wrapper {
           left: 50%;
           transform: translate(-50%,-50%);
           z-index: 6;
+          font-size: .75em;
         }
 
         img {
@@ -224,6 +230,9 @@ section.wrapper {
           position: absolute;
           top:0; left: 0;
           z-index: 5;
+          transition: all 1s;
+
+
           &.testing {
             @include throbbing(testing)
           }
@@ -404,6 +413,24 @@ section.wrapper {
   }
 }
 
+/////GAME NOTIFICATIONS/////
+.game-notifications {
+  position: fixed;
+  top: 50%; left: 50%;
+  z-index: 15;
+  transform: translate(-50%, -50%);
+  font-size: 2em;
+  color: $mountain;
+  p {
+    @include throbbing(deadPlayers);
+    @keyframes deadPlayers {
+        from { transform: scale(1); }
+        to { transform: scale(1.15);}
+    }
+    box-shadow: none;
+  }
+}
+
 .loader {
   width: 100%; height: 100%;
   position: fixed;
@@ -417,14 +444,15 @@ section.wrapper {
 }
 /////TYPOGRAPHY/////
 h1 {
-  font-size: 4em;
-  letter-spacing: 8px;
+  font-size: 3em;
+  letter-spacing: 20px;
   font-weight: 300;
-  span {
-    font-size: 0.5em;
-    font-weight: 300;
-    letter-spacing: 10px;
-  }
+  margin-bottom: 0;
+}
+h2 {
+  font-weight: 300;
+  font-size: 1.5em;
+  margin-bottom: 3em;
 }
 a { text-decoration: none; }
 

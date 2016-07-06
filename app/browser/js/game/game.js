@@ -8,9 +8,15 @@ tsuro.config(function($stateProvider) {
 
 tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $stateParams, $firebaseObject, $firebaseArray, $state, gameFactory) {
 
-		$scope.deadPlayers = [{
-			name: 'Kimber'
-		}, {name: 'Lori'}];
+		// $scope.deadPlayers = [{
+		// 	name: 'Kimber'
+		// }, {name: 'Lori'}
+  //       ];
+
+        // $scope.winners = [{
+        //     name: 'Kimber'
+        // }, {name: 'Lori'}
+        // ];
 
     var ref = firebase.database().ref();
     var obj = $firebaseObject(ref);
@@ -198,8 +204,10 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
     GAMEPLAY ACTIONS
     ****************/
     $scope.tryTile = function(tile) {
-
-        $scope.game.board[$scope.me.y][$scope.me.x].image = tile.imageUrl;
+        if($scope.game.board[$scope.me.y][$scope.me.x].image !== tile.imageUrl) {
+            $scope.game.board[$scope.me.y][$scope.me.x].image = tile.imageUrl;
+            console.log('updated pic');
+        }
         $scope.game.board[$scope.me.y][$scope.me.x].rotation = tile.rotation;
         $scope.game.board[$scope.me.y][$scope.me.x].testing = true;
 
@@ -262,6 +270,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
         tile.rotation++;
         if (tile.rotation === 4) tile.rotation = 0; //set rotation to be between 0 and 3
         console.log("rotate cw", tile.rotation);
+        $scope.tryTile(tile);
     };
 
 
@@ -271,6 +280,8 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
         if (tile.rotation === -4) tile.rotation = 0; //set rotation to be between -0 and -3
         if (tile.rotation < 0) tile.rotation += 4 //set it to be between +0 and +3
         console.log('rotate ccw', tile.rotation);
+
+        $scope.tryTile(tile);
     };
 
 
