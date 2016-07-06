@@ -19,5 +19,15 @@ tsuro.controller('loginCtrl', function ($scope, $state, $firebaseAuth, $rootScop
         });
 
     };
+    $scope.logInWithFacebook = function () {
+        auth.$signInWithPopup("facebook").then(function (authData) {
+            console.log("Logged in as:", authData);
+            $rootScope.currentUser = authData;
+            $state.go('pickGame');
+        }).catch(function (error) {
+            console.error("Authentication failed:", error);
+        });
+
+    };
 
 });
