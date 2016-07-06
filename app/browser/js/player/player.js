@@ -1,74 +1,73 @@
 'use strict'
 
-function Player(uid) {
+function Player(uid,name) {
     // TODO: get uid from firebase auth
     this.uid = uid;
-
-    this.marker = "n";
+    this.name = name || "Mystery Player";
+    this.marker;
 
     // should be a Point object
-    this.point = null;
-
-    // [x, y]
-    // depends on the angular Space.x, Space.y
-    this.nextSpace = "n";
-
-    // in each Space.points array, find this specific point and get the position (integer) inside this space.
-    this.nextSpacePointsIndex = "n";
+    this.x;
+    this.y;
+    this.i;
 
     // maximun 3 tiles
     this.tiles = 'n';
 
     // if a player dies, it will be changed to false
     this.canPlay = true;
-}
-Player.prototype.hi = function () {
-        console.log("HI")
+};
+
+
+// need to use self becuse we need to change $scope.me on gameCtrl and send to firebase
+Player.prototype.placeMarker = function (point, board) {
+    this.x = point[0];
+    this.y = point[1];
+    this.i = point[2];
+    this.point = board[this.y][this.x].points[this.i];
+    this.point.travelled = true;
+};
+
+Player.prototype.move = function (board) {
+    let currPoint = board[this.y][this.x].points[this.i];
+    console.log(currPoint)
+    currPoint.travelled = true;
+    let end = false;
+    while (!end) {
+
+        let nextPoint = currPoint.neighbors.find((neighbor) => !neighbor.travelled);
+        console.log(nextPoint)
+        if (nextPoint) {
+            currPoint = nextPoint;
+            currPoint.travelled = true;
+            console.log(this.point);
+            this.point = currPoint;
+            this.assignXYI(currPoint);
+        } else {
+            if (currPoint.neighbors.length === 2 || currPoint.edge) this.canPlay = false;
+            console.log("can play", this.canPlay)
+            end = true;
+        }
     }
-    // need to use self becuse we need to change $scope.me on gameCtrl and send to firebase
-Player.prototype.placeMarker = function (board, point, self) {
-    // point looks like [x, y, pointsIndex] in the space
-    var x = point[0];
-    var y = point[1];
-    var pointsIndex = point[2];
-
-    console.log("board in playr place marker", board, "point", point)
-    self.point = board[y][x].points[pointsIndex];
-    self.point.travelled = true;
-
-    //[x, y] from the point
-    self.nextSpace = board[y][x];
-
-    // in each Space.points array, find this specific point and get the position (integer) inside this space.
-    self.nextSpacePointsIndex = self.nextSpace.points.indexOf(self.point);
-};
-
-Player.prototype.newSpace = function (board, oldSpace, self) {
-    if (self.nextSpacePointsIndex === 0 || self.nextSpacePointsIndex === 1) {
-        return board[oldSpace.y - 1][oldSpace.x];
-    } else if (self.nextSpacePointsIndex === 2 || self.nextSpacePointsIndex === 3) {
-        return board[oldSpace.y][oldSpace.x + 1];
-    } else if (self.nextSpacePointsIndex === 4 || self.nextSpacePointsIndex === 5) {
-        return board[oldSpace.y + 1][oldSpace.x];
-    } else {
-        return board[oldSpace.y][oldSpace.x - 1];
-    }
 };
 
 
-Player.prototype.moveTo = function (pointer) {
-    //always be returning 0 or 1 point in the array
-    let nextPoint = pointer.neighbors.filter(function (neighbor) {
-        return !neighbor.travelled && neighbor !== "n";
-    })[0];
-    return nextPoint;
-};
+Player.prototype.assignXYI = function (point) {
+    var self = this;
 
-
-Player.prototype.checkDeath = function (self) {
-    var allTravelled = self.point.neighbors.filter(function (neighbor) {
-        return neighbor.travelled;
+    console.log("self", self);
+    let spaceObj = point.spaces.find(function (space) {
+        return !(space.x === self.x && space.y === self.y);
     });
 
-    if (self.point.edge || allTravelled.length === 2) self.canPlay = false;
+    if (spaceObj) {
+        console.log("spaceObj in XYI", spaceObj)
+        this.i = spaceObj.i;
+        this.x = spaceObj.x;
+        this.y = spaceObj.y;
+    } else {
+        this.i = +point.spaceId.slice(-1);
+        this.x = +point.spaceId.slice(6,-1);
+        this.y = +point.spaceId.slice(5,-2);
+    }
 };

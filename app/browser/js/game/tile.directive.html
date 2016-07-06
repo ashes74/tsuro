@@ -2,8 +2,7 @@
 			east: thisTile.rotation === 1 || thisTile.rotation === -3,
 			south: thisTile.rotation === 2 || thisTile.rotation === -2,
 			west: thisTile.rotation === 3 || thisTile.rotation === -1
-			}"/>
-<button ng-click="rotateccw(thisTile)" class="ccw">↺</button>
-<button ng-show="myTurn" ng-click="place(thisTile)" class="place">PLACE</button>
-<button ng-click="tryTile(thisTile)" class="try">TRY</button>
-<button ng-click="rotatecw(thisTile)" class="cw">↻</button>
+			}" 
+			ng-click="tryTile(thisTile)"/>
+<img src="https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/rotate-ccw.png?alt=media&token=41e379f5-8f07-4997-9c70-36d8c26d861e" ng-click="rotateccw(thisTile)" class="ccw"/>
+<img src="https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/rotate-cw.png?alt=media&token=d754bf45-394d-4acf-b216-a4e82ae86a47" ng-click="rotatecw(thisTile)" class="cw"/>
