@@ -12,7 +12,7 @@ function Player(uid,name) {
     this.i;
 
     // maximun 3 tiles
-    this.tiles = 'n';
+    this.tiles;
 
     // if a player dies, it will be changed to false
     this.canPlay = true;
