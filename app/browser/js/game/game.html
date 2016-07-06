@@ -48,8 +48,8 @@
   </main>
   
   <aside class="playerDrawer">
-    <div class="player {{player.marker}}" ng-repeat="player in game.players">
-      <p ng-class="{active: game.currentPlayer.uid === player.uid}">{{player.name}}</p>
+    <div class="player {{player.marker}}" ng-class="{currentPlayer: game.currentPlayer.uid === player.uid, dead: !player.canPlay}" ng-repeat="player in game.players">
+      <p>{{player.name}}</p>
   
 	</div>
  		<div class="game-buttons">

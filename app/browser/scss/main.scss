@@ -108,11 +108,12 @@ section.wrapper {
     flex-wrap: wrap;
     overflow-y: scroll;
     margin-top: 0;
-  margin-bottom: auto;
+    margin-bottom: auto;
+
     .game {
       width: 29vw;
       margin: 2vw;
-      padding: 10px 10px 20px 10px;
+      padding: 10px 10px 36px 10px;
       display: inline-block;
       box-sizing: border-box;
       border: 1px solid $gray;
@@ -264,7 +265,7 @@ section.wrapper {
           border-radius: 50%;
           transform: translate(-50%,-50%);
           z-index: 100;
-          &.active {font-weight: 600}
+
           &.zero { top: 0; left: 30%; }
           &.one { top: 0; left: 70%; }
           &.two { top: 30%; left: 100%; }
@@ -340,6 +341,12 @@ section.wrapper {
       margin-bottom: 3vh;
       padding: 5px 0;
       color: #fff;
+      
+      &.currentPlayer {font-weight: 600;}
+      &.dead {
+        background-color: $gray;
+        opacity: .4;
+      }
 
       p { margin: 0; }
 
@@ -349,7 +356,7 @@ section.wrapper {
     .game-buttons {
       position: absolute;
       bottom: 0;
-        margin-bottom: 4vh;
+      margin-bottom: 4vh;
       
       .leave, .reset {
         width: calc(97vh/3);

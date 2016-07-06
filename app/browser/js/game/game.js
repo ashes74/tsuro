@@ -502,7 +502,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
         [5, 4, 3],
         [5, 5, 2],
         [5, 5, 3]
-    ]
+    ];
 });
 
 tsuro.directive('tile', function() {
