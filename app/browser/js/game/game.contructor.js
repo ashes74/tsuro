@@ -34,6 +34,7 @@ class Game {
                 deadPlayersTiles.push(player.tiles);
             }
         });
+        console.log("deadPlayersTiles", deadPlayersTiles)
         return deadPlayersTiles;
     }
 
