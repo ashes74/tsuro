@@ -100,8 +100,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                         $scope.me.y = player[$scope.meIdx].y;
                         $scope.me.i = player[$scope.meIdx].i;
                         $scope.game.currentPlayer = $scope.game.players[$scope.game.currentPlayerIndex];
-                        $scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid;
-                        console.log("IS IT MY TURN?", $scope.myTurn, "scope.me", $scope.me);
+                        $scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid && $scope.me.canPlay === true;
                     } else {
                         console.log("no one is logged in");
                     }
@@ -129,10 +128,9 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         $scope.game.currentPlayer = $scope.game.players[$scope.game.currentPlayerIndex];
         console.log("scope.game.currentPlayerIndex", $scope.game.currentPlayerIndex);
 
-        console.log("spaceArr", spaceArr);
         if (spaceArr.length >= 1) {
             console.log("inside if", spaceArr)
-            $scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid;
+            $scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid && $scope.me.canPlay === true;
             console.log("IS IT MY TURN?", $scope.myTurn);
         }
     });
@@ -180,7 +178,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         $scope.me.clicked = true;
         // FOR SOME REASON I can't just do firebasePlayersArr[$scope.meIdx] = $scope.me;
         firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
-        // firebasePlayersArr[$scope.meIdx].point = $scope.me.point;
         firebasePlayersArr[$scope.meIdx].x = $scope.me.x;
         firebasePlayersArr[$scope.meIdx].y = $scope.me.y;
         firebasePlayersArr[$scope.meIdx].i = $scope.me.i;
@@ -256,26 +253,22 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         $scope.me === $scope.currentPlayer;
     };
 
-
-    // these are tied to angular ng-click buttons
-    // TODO: doesn't work
     $scope.rotateTileCw = function (tile) {
         tile.rotation++;
-        if (tile.rotation === 4) tile.rotation = 0; //set rotation to be between 0 and 3
-        console.log("rotate cw", tile.rotation);
+        //set rotation to be between 0 and 3
+        if (tile.rotation === 4) tile.rotation = 0;
     };
 
 
     $scope.rotateTileCcw = function (tile) {
-        console.log("ccw original", tile.rotation)
         tile.rotation--;
-        if (tile.rotation === -4) tile.rotation = 0; //set rotation to be between -0 and -3
-        if (tile.rotation < 0) tile.rotation += 4 //set it to be between +0 and +3
-        console.log('rotate ccw', tile.rotation);
+        // set rotation to be between -0 and -3
+        if (tile.rotation === -4) tile.rotation = 0;
+        // set it to be between +0 and +3
+        if (tile.rotation < 0) tile.rotation += 4;
     };
 
 
-    // CMT: use player's and game's prototype function to place tile and then move all players
     $scope.placeTile = function (tile) {
         $scope.game.board[$scope.me.y][$scope.me.x].testing = false;
 
@@ -322,7 +315,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             'rotation': rotate
         };
         spaceObj.$save();
-        console.log("tile placement sent to Firebase");
     };
 
     spaceRef.on('child_added', function (snapshot) {
@@ -336,9 +328,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         space.image = addedTile.img;
         space.rotation = addedTile.rotation;
         var tile = gameFactory.tiles[addedTile.tileId]; // look up tile by id
-        console.log("tile", tile, "snapshot.val().rotation", snapshot.val().rotation)
-        var rotatedTile = gameFactory.rotateTile(tile, snapshot.val().rotation); // rotate tile
-        console.log(rotatedTile, "rotated")
+        var rotatedTile = gameFactory.rotateTile(tile, snapshot.val().rotation);
 
         for (var i = 0; i < rotatedTile.paths.length; i++) {
             if ($scope.game.players.length) {
@@ -351,6 +341,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
             // if the point doesn't have neighbors... set to empty array
             if (!space.points[i].neighbors) space.points[i].neighbors = [];
+
             // set each point's neighbors to it's corresponding point
             space.points[i].neighbors.push(space.points[rotatedTile.paths[i]]);
         }
@@ -420,7 +411,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         markersArr.$remove(0)
             .then(function (ref) {
                 console.log("removed all markers", ref.key);
-                markersArr.$add(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]);
+                markersArr.$add(gameFactory.markers);
             });
 
         deckArr.$remove(0)
