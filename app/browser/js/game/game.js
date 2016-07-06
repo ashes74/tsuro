@@ -1,4 +1,4 @@
-tsuro.config(function($stateProvider) {
+tsuro.config(function ($stateProvider) {
     $stateProvider.state('game', {
         url: '/game/:gameName',
         templateUrl: '/browser/js/game/game.html',
@@ -6,7 +6,7 @@ tsuro.config(function($stateProvider) {
     });
 });
 
-tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $stateParams, $firebaseObject, $firebaseArray, $state, gameFactory) {
+tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stateParams, $firebaseObject, $firebaseArray, $state, gameFactory) {
 
 
     var ref = firebase.database().ref();
@@ -117,14 +117,14 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
     });
 
     //if someone else picks a marker, update your view
-    markersRef.on('child_changed', function(data) {
+    markersRef.on('child_changed', function (data) {
         $scope.game.availableMarkers = data.val();
     });
 
     $scope.spaces = _.flatten($scope.game.board);
 
     currPlayerRef.on('value', function (snapshot) {
-        console.log("currPlayer index changes", snapshot.val())
+        console.log("currentPlayerIndexPlayer index changes", snapshot.val())
         $scope.game.currentPlayerIndex = snapshot.val();
         $scope.game.currentPlayer = $scope.game.players[$scope.game.currentPlayerIndex];
         console.log("scope.game.currentPlayerIndex", $scope.game.currentPlayerIndex);
@@ -165,7 +165,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
     $scope.clicked = false;
 
 
-    $scope.placeMarker = function(point) {
+    $scope.placeMarker = function (point) {
         placeMarkerFn($scope.game.board, point);
     };
 
@@ -194,7 +194,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
     /****************
     GAMEPLAY ACTIONS
     ****************/
-    $scope.tryTile = function(tile) {
+    $scope.tryTile = function (tile) {
 
         $scope.game.board[$scope.me.y][$scope.me.x].image = tile.imageUrl;
         $scope.game.board[$scope.me.y][$scope.me.x].rotation = tile.rotation;
@@ -207,44 +207,44 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
     };
 
 
-    $scope.playerOnThisSpace = function(space){
+    $scope.playerOnThisSpace = function (space) {
         var players = $scope.game.players;
         var player = null;
 
-        for(var i = 0; i < players.length; i++){
-            if(players[i].x === space.x && players[i].y === space.y) player = players[i];
+        for (var i = 0; i < players.length; i++) {
+            if (players[i].x === space.x && players[i].y === space.y) player = players[i];
         }
-        if(!player) return null;
+        if (!player) return null;
         return player;
     };
 
-    $scope.playerIndex = function(player){
-        if(player){
-            switch (player.i){
-                case 0: 
-                    return "zero";
-                case 1:
-                    return "one";
-                case 2:
-                    return "two";
-                case 3:
-                    return "three";
-                case 4:
-                    return "four";
-                case 5:
-                    return "five";
-                case 6:
-                    return "six";
-                case 7:
-                    return "seven";
-                default: 
-                    break;
+    $scope.playerIndex = function (player) {
+        if (player) {
+            switch (player.i) {
+            case 0:
+                return "zero";
+            case 1:
+                return "one";
+            case 2:
+                return "two";
+            case 3:
+                return "three";
+            case 4:
+                return "four";
+            case 5:
+                return "five";
+            case 6:
+                return "six";
+            case 7:
+                return "seven";
+            default:
+                break;
             }
         }
     };
 
-    $scope.markerColor = function(player){
-        if(player) return player.marker;
+    $scope.markerColor = function (player) {
+        if (player) return player.marker;
     };
 
     // TODO: need a function to assign dragon
@@ -252,7 +252,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
     $scope.awaitingDragonHolders = [];
 
 
-    $scope.myTurn = function() {
+    $scope.myTurn = function () {
         $scope.me === $scope.currentPlayer;
     };
 
@@ -277,7 +277,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
     // CMT: use player's and game's prototype function to place tile and then move all players
     $scope.placeTile = function (tile) {
-    	  $scope.game.board[$scope.me.y][$scope.me.x].testing = false;
+        $scope.game.board[$scope.me.y][$scope.me.x].testing = false;
 
         var spacex = $scope.me.x;
         var spacey = $scope.me.y;
@@ -404,7 +404,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
         }
     });
 
-    $scope.leaveGame = function() {
+    $scope.leaveGame = function () {
         console.log("i'm out");
 
         // remove the player from firebase
@@ -418,13 +418,13 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
         spaceObj.$remove();
 
         markersArr.$remove(0)
-            .then(function(ref) {
+            .then(function (ref) {
                 console.log("removed all markers", ref.key);
                 markersArr.$add(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]);
             });
 
         deckArr.$remove(0)
-            .then(function(ref) {
+            .then(function (ref) {
                 console.log("removed the deck", ref.key);
                 var tiles = gameFactory.tiles;
                 var deck = new Deck(tiles).shuffle().tiles;
@@ -515,7 +515,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
     ];
 });
 
-tsuro.directive('tile', function() {
+tsuro.directive('tile', function () {
     return {
         templateUrl: 'browser/js/game/tile.directive.html',
         scope: {
