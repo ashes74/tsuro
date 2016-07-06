@@ -12,18 +12,19 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
 
 
     $scope.createGame = function (gameName) {
-        var gameNameRef = ref.child('games').child(gameName);
-        var playersRef = gameNameRef.child('players');
-        var markersRef = gameNameRef.child('availableMarkers');
+        var gameRef = ref.child('games').child(gameName);
+        var playersRef = gameRef.child('players');
+        var markersRef = gameRef.child('availableMarkers');
         var markersArr = $firebaseArray(markersRef);
-        var deckRef = gameNameRef.child('deck');
+        var deckRef = gameRef.child('deck');
         var deckArr = $firebaseArray(deckRef);
-        var currPlayerRef = gameNameRef.child('currPlayer');
+        var currPlayerRef = gameRef.child('currPlayer');
         // Should be an array with only one number
         var currPlayerArr = $firebaseArray(currPlayerRef);
 
-        $firebaseArray(gameNameRef).$add({
-            "gameName": gameName
+        gameRef.set({
+            "gameName": gameName,
+            'currentPlayerIndex': 0
         });
 
 

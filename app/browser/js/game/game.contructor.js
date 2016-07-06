@@ -11,15 +11,15 @@ class Game {
         this.availableMarkers = ["red", "pink", "yellow", "green", "jade", "sky", "ocean", "purple"];
 
         //index of the currentPlayer in the players
-        this.currPlayer;
+        this.currentPlayerIndex;
 
         this.dragon = null;
         this.moves;
     }
 
     getCurrentPlayer() {
-        if (this.currPlayer === -1) return;
-        return this.players[this.currPlayer];
+        if (this.currentPlayerIndex === -1) return;
+        return this.players[this.currentPlayerIndex];
     }
 
     moveAllPlayers() {
@@ -32,7 +32,6 @@ class Game {
         this.players.forEach(function (player) {
             if (!player.canPlay && player.tiles.length > 0) {
                 deadPlayersTiles.push(player.tiles);
-                isDeadPlayer = true;
             }
         });
         return deadPlayersTiles;
@@ -42,20 +41,20 @@ class Game {
         return this.getCanPlay().length <= 1;
     }
 
-    //to be called at the end of a turn to set the currPlayer to the next eligible player in the players array;
+    //to be called at the end of a turn to set the currentPlayerIndex to the next eligible player in the players array;
     nextCanPlay() {
         if (this.getCanPlay().length > 1) {
-            console.log(this.currPlayer, "currPlayer", "players", this.players)
-            var newIdx = this.currPlayer + 1 >= this.players.length ? 0 : this.currPlayer + 1;
+            console.log(this.currentPlayerIndex, "currentPlayerIndex", "players", this.players)
+            var newIdx = this.currentPlayerIndex + 1 >= this.players.length ? 0 : this.currentPlayerIndex + 1;
             console.log("newIdx", newIdx)
             while (newIdx < this.players.length && !this.players[newIdx].canPlay) {
                 newIdx++;
                 if (newIdx === this.players.length) newIdx = 0;
                 console.log(newIdx)
             }
-            this.currPlayer = newIdx;
+            this.currentPlayerIndex = newIdx;
         } else {
-            this.currPlayer = -1;
+            this.currentPlayerIndex = -1;
         }
         return newIdx;
     }
