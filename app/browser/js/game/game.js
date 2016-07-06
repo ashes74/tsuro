@@ -46,7 +46,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
     // when the deck is loaded, local deck is the firebase deck
     deckArr.$loaded().then(function () {
-        $scope.game.deck = new Deck(deckArr[0]);
+        $scope.game.deck.tiles = deckArr[0];
 
         console.log("inside loaded scope deck", $scope.game.deck);
     });
