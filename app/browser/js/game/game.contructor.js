@@ -63,12 +63,9 @@ class Game {
     deal(num) {
         var tiles = [];
         for (var i = 0; i < num; i++) {
-            var tile = this.deck[0].splice(0, 1);
+            var tile = this.deck.tiles.splice(0, 1);
             // Saving to firebase, since we use firebase deck, it comes with $save fnc
             console.log("deck.save", this.deck)
-            this.deck.$save(0).then(function (ref) {
-                console.log('dealt a card!');
-            });
             tiles = tiles.concat(tile);
             console.log(tiles)
         }
