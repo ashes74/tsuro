@@ -32,7 +32,6 @@ class Game {
         this.players.forEach(function (player) {
             if (!player.canPlay && player.tiles.length > 0) {
                 deadPlayersTiles.push(player.tiles);
-                isDeadPlayer = true;
             }
         });
         return deadPlayersTiles;
