@@ -1,6 +1,6 @@
 <section id="game" class="wrapper">
   <aside class="tileDrawer">
-    <tile ng-repeat="tile in me.tiles" ng-init="{$first: tryTile(tile)}" this-tile="tile" try-tile="tryTile(tile)" rotateccw="rotateTileCcw(tile)" rotatecw="rotateTileCw(tile)" ng-dblclick="placeTile(tile)" my-turn="myTurn" ng-show="me.tiles !== 'n'"></tile>
+    <tile ng-repeat="tile in me.tiles" ng-init="{$first: tryTile(tile)}" this-tile="tile" try-tile="tryTile(tile)" rotateccw="rotateTileCcw(tile)" rotatecw="rotateTileCw(tile)" ng-dblclick="placeTile(tile)" ng-disable="!myTurn" my-turn="myTurn" ng-show="me.tiles !== 'n'"></tile>
   </aside>
   <main id="board">
     <!-- top row -->
