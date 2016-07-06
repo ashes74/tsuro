@@ -46,7 +46,8 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
     // when the deck is loaded, local deck is the firebase deck
     deckArr.$loaded().then(function () {
-        $scope.game.deck = new Deck(deckArr);
+        $scope.game.deck = new Deck(deckArr[0]);
+
         console.log("inside loaded scope deck", $scope.game.deck);
     });
 
@@ -165,11 +166,6 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
     // once placed the marker, cannot place again
     $scope.clicked = false;
 
-
-    $scope.placeMarker = function(point) {
-        placeMarkerFn($scope.game.board, point);
-    };
-
     //  Have player pick their start point
     $scope.placeMarker = function (point) {
         placeMarkerFn(point);
@@ -179,6 +175,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
         $scope.me.placeMarker(point, $scope.game.board);
 				console.log("dealing cards");
         $scope.me.tiles = $scope.game.deal(3);
+				syncDeck();
 				console.log(`my tiles ${$scope.me.tiles}`);
         $scope.me.clicked = true;
         // FOR SOME REASON I can't just do firebasePlayersArr[$scope.meIdx] = $scope.me;
@@ -311,7 +308,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
 				}else {
 					console.log(`deck has cards`);
-					//if deck and dragon deal to dragonQueue first until players have 3 tiles
+					// // if deck and dragon deal to dragonQueue first until players have 3 tiles
 					// while ($scope.dragon && $scope.deck.length>0) {
 					// 	console.log(`serving dragonQueue first`);
 					// 	if($scope.dragon.tiles.length<3)$scope.dragon.tiles.concat($scope.game.deal(1))
@@ -320,16 +317,21 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 					// }
 					//deal to me if I dont have three.
 					console.log(`attempting to refresh a hand`);
-					if($scope.me.tiles.length <3) $scope.me.tiles.concat($scope.game.deal(1))
-					console.log(deckArr);
-					console.log(`dealt new card: ${$scope.me.tiles}`);
+					if($scope.me.tiles.length <3){
+						let newTile = $scope.game.deal(1)
+						console.log("getting card", newTile);
+						$scope.me.tiles= $scope.me.tiles.concat(newTile);
+						syncDeck();
+					}
+					console.log("deckArr and scope deck:", deckArr, $scope.game.deck);
+					console.log(`dealt new card:`, $scope.me.tiles);
 				}
 				//TODO: add dragon and dragonQueue changes locally
 				// dragonRef.on('value', (arguments) => {})
 
     };
 
-		//Kinber needs $scope.deadPlayers array that shows all dead people from each round - needs to be added to firebase
+		//Kimber needs $scope.deadPlayers array that shows all dead people from each round
 		function checkDeath() {
 
 		}
@@ -381,6 +383,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 						//if I die return my cards to the deck
 						if(!$scope.me.canPlay){
 							$scope.game.deck.reload($scope.me.tiles).shuffle();
+							syncDeck();
 							$scope.me.tiles = [];
 						}
             if ($scope.game.checkOver()) {
@@ -516,6 +519,12 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
         [5, 5, 2],
         [5, 5, 3]
     ]
+
+		function syncDeck(){
+			console.log(`syncing deck`, deckArr);
+			 deckArr[0] = $scope.game.deck.tiles;
+			return deckArr.$save(0);
+		}
 });
 
 tsuro.directive('tile', function() {

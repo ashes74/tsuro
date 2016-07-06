@@ -16,7 +16,7 @@ class Deck {
 
     deal(num) {
 			console.log(`attempting to deal`);
-			let newTiles= this.tiles[0].splice(0, num);
+			let newTiles= this.tiles.splice(0, num);
 			console.log(`returning ${newTiles}`, newTiles);
 			console.log('dealt a card!');
 
@@ -24,7 +24,9 @@ class Deck {
     }
 
     reload(tiles) {
-        this.tiles.concat(tiles)
+			for (var i = 0; i < tiles.length; i++) {
+				this.tiles.push(tiles[i]);
+			}
         return this;
     }
 
