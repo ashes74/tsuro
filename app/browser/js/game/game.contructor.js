@@ -8,18 +8,18 @@ class Game {
         this.count = 35;
         this.board = new Board().drawBoard();
         this.players = [];
-        this.availableMarkers = ["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]
+        this.availableMarkers = ["red", "pink", "yellow", "green", "jade", "sky", "ocean", "purple"];
 
         //index of the currentPlayer in the players
-        this.currPlayer;
+        this.currentPlayerIndex;
 
         this.dragon = null;
         this.moves;
     }
 
     getCurrentPlayer() {
-        if (this.currPlayer === -1) return;
-        return this.players[this.currPlayer];
+        if (this.currentPlayerIndex === -1) return;
+        return this.players[this.currentPlayerIndex];
     }
 
     moveAllPlayers() {
@@ -28,12 +28,13 @@ class Game {
 
     deadPlayers() {
         var deadPlayersTiles = [];
+        console.log(this.players)
         this.players.forEach(function (player) {
             if (!player.canPlay && player.tiles.length > 0) {
                 deadPlayersTiles.push(player.tiles);
-                isDeadPlayer = true;
             }
         });
+        console.log("deadPlayersTiles", deadPlayersTiles)
         return deadPlayersTiles;
     }
 
@@ -41,20 +42,20 @@ class Game {
         return this.getCanPlay().length <= 1;
     }
 
-    //to be called at the end of a turn to set the currPlayer to the next eligible player in the players array;
+    //to be called at the end of a turn to set the currentPlayerIndex to the next eligible player in the players array;
     nextCanPlay() {
         if (this.getCanPlay().length > 1) {
-            console.log(this.currPlayer, "currPlayer", "players", this.players)
-            var newIdx = this.currPlayer + 1 >= this.players.length ? 0 : this.currPlayer + 1;
+            console.log(this.currentPlayerIndex, "currentPlayerIndex", "players", this.players)
+            var newIdx = this.currentPlayerIndex + 1 >= this.players.length ? 0 : this.currentPlayerIndex + 1;
             console.log("newIdx", newIdx)
             while (newIdx < this.players.length && !this.players[newIdx].canPlay) {
                 newIdx++;
                 if (newIdx === this.players.length) newIdx = 0;
                 console.log(newIdx)
             }
-            this.currPlayer = newIdx;
+            this.currentPlayerIndex = newIdx;
         } else {
-            this.currPlayer = -1;
+            this.currentPlayerIndex = -1;
         }
         return newIdx;
     }
@@ -62,10 +63,9 @@ class Game {
     deal(num) {
         var tiles = [];
         for (var i = 0; i < num; i++) {
-            var tile = this.deck[0].splice(0, 1);
-            this.deck.$save(0).then(function (ref) {
-                console.log('dealt a card!');
-            });
+            var tile = this.deck.tiles.splice(0, 1);
+            // Saving to firebase, since we use firebase deck, it comes with $save fnc
+            console.log("deck.save", this.deck)
             tiles = tiles.concat(tile);
             console.log(tiles)
         }

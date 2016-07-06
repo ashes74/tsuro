@@ -12,38 +12,37 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
 
 
     $scope.createGame = function (gameName) {
-        var gameNameRef = ref.child('games').child(gameName);
-        var playersRef = gameNameRef.child('players');
-        var initialMarkersRef = gameNameRef.child('availableMarkers');
-        var initialMarkersArr = $firebaseArray(initialMarkersRef);
-        var deckRef = gameNameRef.child('deck');
+        var gameRef = ref.child('games').child(gameName);
+        var playersRef = gameRef.child('players');
+        var markersRef = gameRef.child('availableMarkers');
+        var markersArr = $firebaseArray(markersRef);
+        var deckRef = gameRef.child('deck');
         var deckArr = $firebaseArray(deckRef);
-        var currPlayerRef = gameNameRef.child('currPlyaer');
-        // Should be an array with only one number
-        var currPlayerArr = $firebaseArray(currPlayerRef);
 
-        $firebaseArray(gameNameRef).$add({
-            "gameName": gameName
+        gameRef.set({
+            "gameName": gameName,
+            'currentPlayerIndex': 0
         });
 
 
         firebase.auth().onAuthStateChanged(function (user) {
             if (user) {
-                var newPlayer = new Player(user.uid)
-                $firebaseArray(playersRef).$add(newPlayer)
+                var newPlayer = {
+                    uid: user.uid,
+                    name: user.displayName
+                };
+                $firebaseArray(playersRef).$add(newPlayer);
             } else {
-                console.log("no one logged in")
+                console.log("no one logged in");
             }
-        })
+        });
 
         var tiles = gameFactory.tiles;
 
         var deck = new Deck(tiles).shuffle().tiles;
-        var deckRef = ref.child('games').child(gameName).child('deck');
         deckArr.$add(deck);
 
-        initialMarkersArr.$add(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]);
-        currPlayerArr.$add([0]);
+        markersArr.$add(gameFactory.markers);
 
         $state.go('game', {
             "gameName": gameName

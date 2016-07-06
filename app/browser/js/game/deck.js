@@ -6,6 +6,7 @@ class Deck {
     }
 
     shuffle() {
+        console.log("tiles shuffle", this.tiles)
         this.tiles = _.shuffle(this.tiles)
         return this;
     }
