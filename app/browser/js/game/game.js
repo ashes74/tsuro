@@ -207,15 +207,15 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
     };
 
 
-    $scope.playerOnThisSpace = function(space){
-        var players = $scope.game.players;
-        var player = null;
+    $scope.playersOnThisSpace = function(space){
+        var gamePlayers = $scope.game.players;
 
-        for(var i = 0; i < players.length; i++){
-            if(players[i].x === space.x && players[i].y === space.y) player = players[i];
-        }
-        if(!player) return null;
-        return player;
+        var playersOnThisSpace = gamePlayers.filter(function(player){
+            if(player.x === space.x && player.y === space.y) return player;
+        });
+        
+        if(playersOnThisSpace.length === 0) return null;
+        return playersOnThisSpace;
     };
 
     $scope.playerIndex = function(player){
@@ -241,10 +241,6 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
                     break;
             }
         }
-    };
-
-    $scope.markerColor = function(player){
-        if(player) return player.marker;
     };
 
     // TODO: need a function to assign dragon

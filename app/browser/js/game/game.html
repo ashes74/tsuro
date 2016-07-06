@@ -22,7 +22,8 @@
       <div ng-repeat="space in spaces" class="space" ng-class="{mynext: me.x === space.x && me.y === space.y}">
       
 
-        <div class="player {{playerIndex(playerOnThisSpace(space))}} {{markerColor(playerOnThisSpace(space))}}" ng-show="playerOnThisSpace(space)"></div>
+        <div ng-repeat="player in playersOnThisSpace(space)" class="player {{playerIndex(player)}} {{player.marker}}" ng-show="player.canPlay"></div>
+
         <div class="placehover" ng-show="space.testing && myTurn" ng-click="placeTile(chosenTile)">Place</div>
         
         <img src="https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_blank.png?alt=media&token=8daab765-7a13-4936-b7ae-eb42114bca44" />
@@ -51,10 +52,10 @@
     <div class="player {{player.marker}}" ng-class="{currentPlayer: game.currentPlayer.uid === player.uid, dead: !player.canPlay}" ng-repeat="player in game.players">
       <p>{{player.name}}</p>
   
-	</div>
- 		<div class="game-buttons">
-	    <div ng-click="reset()" class="reset">reset game</div>
-	    <div ng-click="leaveGame()" class="leave">leave game</div>
+  </div>
+    <div class="game-buttons">
+      <div ng-click="reset()" class="reset">reset game</div>
+      <div ng-click="leaveGame()" class="leave">leave game</div>
     </div>
   </aside>
 
