@@ -8,6 +8,9 @@ tsuro.config(function($stateProvider) {
 
 tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $stateParams, $firebaseObject, $firebaseArray, $state, gameFactory) {
 
+		$scope.deadPlayers = [{
+			name: 'Kimber'
+		}, {name: 'Lori'}];
 
     var ref = firebase.database().ref();
     var obj = $firebaseObject(ref);

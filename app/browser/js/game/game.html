@@ -65,3 +65,8 @@
   <p>Choose your dragon wisely...</p>
   <div ng-repeat="marker in game.availableMarkers" class="circle {{marker}}" ng-disable="me.marker || !me" ng-click="pickMarker(marker)"></div>
 </div>
+
+<div class="game-notifications">
+  <p ng-repeat="player in deadPlayers">{{player.name}} fell off their path...</p>
+  <p ng-show="winningPlayer">{{winner.name}} won!</p>
+</div>
