@@ -29,5 +29,13 @@ tsuro.controller('loginCtrl', function ($scope, $state, $firebaseAuth, $rootScop
         });
 
     };
+    $scope.logInWithGithub = function () {
+        auth.$signInWithRedirect("github").then(function () {
+            // Never called because of page redirect
+        }).catch(function (error) {
+            console.error("Authentication failed:", error);
+        });
+
+    };
 
 });
