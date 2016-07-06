@@ -8,7 +8,7 @@ class Game {
         this.count = 35;
         this.board = new Board().drawBoard();
         this.players = [];
-        this.availableMarkers = ["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]
+        this.availableMarkers = ["red", "pink", "yellow", "green", "jade", "sky", "ocean", "purple"];
 
         //index of the currentPlayer in the players
 				this.deck;
@@ -30,9 +30,9 @@ class Game {
         this.players.forEach(function (player) {
             if (!player.canPlay && player.tiles.length > 0) {
                 deadPlayersTiles.push(player.tiles);
-                isDeadPlayer = true;
             }
         });
+        console.log("deadPlayersTiles", deadPlayersTiles)
         return deadPlayersTiles;
     }
 
@@ -62,6 +62,8 @@ class Game {
         var tiles = [];
         for (var i = 0; i < num; i++) {
             var tile = this.deck[0].splice(0, 1);
+            // Saving to firebase, since we use firebase deck, it comes with $save fnc
+            console.log("deck.save", this.deck)
             this.deck.$save(0).then(function (ref) {
                 console.log('dealt a card!');
             });
