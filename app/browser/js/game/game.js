@@ -99,7 +99,6 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
                         $scope.me.x = player[$scope.meIdx].x;
                         $scope.me.y = player[$scope.meIdx].y;
                         $scope.me.i = player[$scope.meIdx].i;
-
                         $scope.game.currentPlayer = $scope.game.players[$scope.game.currentPlayerIndex];
                         $scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid;
                         console.log("IS IT MY TURN?", $scope.myTurn, "scope.me", $scope.me);
@@ -340,13 +339,24 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
         console.log("tile", tile, "snapshot.val().rotation", snapshot.val().rotation)
         var rotatedTile = gameFactory.rotateTile(tile, snapshot.val().rotation); // rotate tile
         console.log(rotatedTile, "rotated")
+
         for (var i = 0; i < rotatedTile.paths.length; i++) {
+            if ($scope.game.players.length) {
+                $scope.game.players.forEach(function (player) {
+                    if (player.x === x && player.y === y && player.i === i) {
+                        space.points[i].travelled = true;
+                    }
+                })
+            }
+
             // if the point doesn't have neighbors... set to empty array
             if (!space.points[i].neighbors) space.points[i].neighbors = [];
             // set each point's neighbors to it's corresponding point
             space.points[i].neighbors.push(space.points[rotatedTile.paths[i]]);
         }
+
         // trigger move
+
         if ($scope.me) {
             console.log("spaceRef", x, $scope.me.x)
             if ($scope.me.x === x && $scope.me.y === y) {

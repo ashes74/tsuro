@@ -212,8 +212,6 @@ tsuro.factory('gameFactory', function () {
                 rotation: 0
             }
         },
-
-        // TODO: Doesn't work
         rotateTile: function (tile, rotation) {
             console.log("rotate tile inside factory", rotation);
             if (rotation > 0) {
