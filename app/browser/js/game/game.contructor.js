@@ -61,16 +61,6 @@ class Game {
     }
 
     deal(num) {
-        // var tiles = [];
-        // for (var i = 0; i < num; i++) {
-        //     var tile = this.deck[0].splice(0, 1);
-        //     this.deck.$save(0).then(function (ref) {
-        //         console.log('dealt a card!');
-        //     });
-        //     tiles = tiles.concat(tile);
-        //     console.log(tiles)
-        // }
-        // return tiles;
 				return this.deck.deal(num);
     }
 

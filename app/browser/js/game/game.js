@@ -69,7 +69,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
             // if not found, create new player
             if (!localPlayer) {
-                console.log('i didnt find a local player!');
+                console.log('Got a new player, creating a local version', thisPlayer);
                 localPlayer = new Player(snapPlayers[thisPlayer].uid);
                 thisIsANewPlayer = true;
             }
@@ -345,14 +345,11 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
                 if ($scope.game.getCanPlay().length === 1) {
                     // TODO: tell winner she won
                     $scope.winner = $scope.game.getCanPlay()[0];
-
-                    // TODO: disable everything, let the players reset the game
                     console.log("game over, winner is ", $scope.winner.uid)
                 } else {
-                    // TODO: disable everything, let the players decide wether reset the game or not
-                    // $scope.gameOver = true;
                     console.log("game over, no one wins")
                 }
+								// TODO: disable everything, let the players reset the game
 								$scope.gameOver = true;
             }
 
@@ -390,7 +387,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 								let newTile = $scope.game.deal(1)
 								console.log("getting card", newTile);
 								$scope.me.tiles= $scope.me.tiles.concat(newTile);
-								console.log(`dealt new card:`, $scope.me.tiles);
+								console.log(`new hand after deal:`, $scope.me.tiles);
 								syncDeck();
 								firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
 								firebasePlayersArr.$save($scope.meIdx);
