@@ -17,6 +17,7 @@ tsuro.controller('gameList', function ($scope, firebaseUrl, $firebaseObject, $st
     var synchRef = ref.child("games");
     var synchronizedObj = $firebaseObject(synchRef);
 
+
     // This returns a promise...you can.then() and assign value to $scope.variable
     // gamelist is whatever we are calling it in the angular html.
     synchronizedObj.$bindTo($scope, "gamelist")
@@ -26,6 +27,7 @@ tsuro.controller('gameList', function ($scope, firebaseUrl, $firebaseObject, $st
                 gamelist.push([i, $scope.gamelist[i]]);
             }
             $scope.gameNames = gamelist.slice(2);
+            console.log($scope.gameNames);
         });
 
 
@@ -34,19 +36,22 @@ tsuro.controller('gameList', function ($scope, firebaseUrl, $firebaseObject, $st
     $scope.join = function (gameName) {
         var gameNameRef = ref.child('games').child(gameName);
         var playersRef = gameNameRef.child('players');
+        var firebasePlayersArr = $firebaseArray(playersRef);
 
         firebase.auth().onAuthStateChanged(function (user) {
-            var firebasePlayersArr = $firebaseArray(playersRef);
 
             firebasePlayersArr.$loaded().then(function (data) {
                     var FBplayers = data;
 
                     if (user) {
                         if (!FBplayers.filter(function (player) {
-                                return player.uid === user.uid
+                                return player.uid === user.uid;
                             }).length) {
-                            var newPlayer = new Player(user.uid)
-                            $firebaseArray(playersRef).$add(newPlayer)
+                            var newPlayer = {
+                                uid: user.uid,
+                                name: user.displayName
+                            };
+                            firebasePlayersArr.$add(newPlayer);
                         }
                     } else {
                         // No user is signed in.

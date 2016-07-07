@@ -1,194 +1,238 @@
-
 tsuro.factory('gameFactory', function () {
-	return {
-		tiles: [{
-			id: 1,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_01.png?alt=media&token=dc2e553b-f4da-442e-97e8-d0d808c2d5c0",
-			paths: [5, 6, 4, 7, 2, 0, 1, 3],
-			rotation: 0
-		}, {
-			id: 2,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_02.png?alt=media&token=bbb0b596-74ea-49a8-9f6c-b42627ccd873",
-			paths: [1, 0, 4, 7, 2, 6, 5, 3],
-			rotation: 0
-		}, {
-			id: 3,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_03.png?alt=media&token=4dd1ff85-0204-4895-8957-3b7073559117",
-			paths: [1, 0, 4, 6, 2, 7, 3, 5],
-			rotation: 0
-		}, {
-			id: 4,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_04.png?alt=media&token=90dd2de8-9c99-4cb7-86ff-7863b0a5641c",
-			paths: [2, 5, 0, 7, 6, 1, 4, 3],
-			rotation: 0
-		}, {
-			id: 5,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_05.png?alt=media&token=5912a47b-854a-46d0-bfeb-005913d24158",
-			paths: [4, 2, 1, 6, 0, 7, 3, 5],
-			rotation: 0
-		}, {
-			id: 6,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_06.png?alt=media&token=056b8938-6e1f-481e-9d34-b6b27f2cd9e3",
-			paths: [1, 0, 5, 7, 6, 2, 4, 3],
-			rotation: 0
-		}, {
-			id: 7,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_07.png?alt=media&token=b5ddbaf6-f061-4206-9f9b-92bc863bb484",
-			paths: [2, 4, 0, 6, 1, 7, 3, 5],
-			rotation: 0
-		}, {
-			id: 8,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_08.png?alt=media&token=8ad6340e-f8a5-4ff2-bdaf-0a85e2bbc630",
-			paths: [4, 7, 5, 6, 0, 2, 3, 1],
-			rotation: 0
-		}, {
-			id: 9,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_09.png?alt=media&token=6a1a62b8-1872-460d-9276-5b48f3a38a39",
-			paths: [1, 0, 7, 6, 5, 4, 3, 2],
-			rotation: 0
-		}, {
-			id: 10,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_10.png?alt=media&token=63e8a214-3aef-4da6-8827-133db9b9b4ef",
-			paths: [4, 5, 6, 7, 0, 1, 2, 3],
-			rotation: 0
-		}, {
-			id: 11,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_11.png?alt=media&token=57869682-5c4d-4f80-832b-ebc46080a4c5",
-			paths: [7, 2, 1, 4, 3, 6, 5, 0],
-			rotation: 0
-		}, {
-			id: 12,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_12.png?alt=media&token=e505f22b-9d52-49d1-9b71-4dcdce56853f",
-			paths: [2, 7, 0, 5, 6, 3, 4, 1],
-			rotation: 0
-		}, {
-			id: 13,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_13.png?alt=media&token=f0ac4eb9-7b81-4dfb-b0cb-aecc0290ae3b",
-			paths: [5, 4, 7, 6, 1, 0, 3, 2],
-			rotation: 0
-		}, {
-			id: 14,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_14.png?alt=media&token=7ff24e77-6737-412b-bacd-414bf4f643c9",
-			paths: [3, 2, 1, 0, 7, 6, 5, 4],
-			rotation: 0
-		}, {
-			id: 15,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_15.png?alt=media&token=a1ad7c0c-8e6d-4474-9fde-0b47d04104c1",
-			paths: [1, 0, 7, 4, 3, 6, 5, 2],
-			rotation: 0
-		}, {
-			id: 16,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_16.png?alt=media&token=e33b3cd9-9207-4cb8-969b-5ce60f91537f",
-			paths: [1, 0, 5, 6, 7, 2, 3, 4],
-			rotation: 0
-		}, {
-			id: 17,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_17.png?alt=media&token=200d6cab-df31-49b8-ba95-ad52d7c79e8b",
-			paths: [3, 5, 6, 0, 7, 1, 2, 4],
-			rotation: 0
-		}, {
-			id: 18,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_18.png?alt=media&token=1c7bf515-9941-47cd-9ecb-479d66f2612b",
-			paths: [2, 7, 0, 4, 3, 6, 5, 1],
-			rotation: 0
-		}, {
-			id: 19,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_19.png?alt=media&token=f5cc625c-73c0-49f7-932c-0e65d31d2bf7",
-			paths: [4, 3, 6, 1, 0, 7, 2, 5],
-			rotation: 0
-		}, {
-			id: 20,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_20.png?alt=media&token=5b9b4455-2c09-41e4-a2f2-f60bedc470ad",
-			paths: [3, 7, 4, 0, 2, 6, 5, 1],
-			rotation: 0
-		}, {
-			id: 21,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_21.png?alt=media&token=6d5646d7-b1b1-49c9-bf87-00be9e7b8e2c",
-			paths: [2, 3, 0, 1, 7, 6, 5, 4],
-			rotation: 0
-		}, {
-			id: 22,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_22.png?alt=media&token=5a587359-831c-4dcd-a9c5-e7085c5a3079",
-			paths: [2, 6, 0, 5, 7, 3, 1, 4],
-			rotation: 0
-		}, {
-			id: 23,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_23.png?alt=media&token=4cb9750b-0f50-429d-9367-170b0855c6c4",
-			paths: [1, 0, 6, 4, 3, 7, 2, 5],
-			rotation: 0
-		}, {
-			id: 24,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_24.png?alt=media&token=a80b7f5b-c572-4430-ab8a-3d3656e4c643",
-			paths: [5, 6, 7, 4, 3, 0, 1, 2],
-			rotation: 0
-		}, {
-			id: 25,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_25.png?alt=media&token=9b8e853d-962b-4d32-b679-622e8ae7be6a",
-			paths: [1, 0, 3, 2, 7, 6, 5, 4],
-			rotation: 0
-		}, {
-			id: 26,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_26.png?alt=media&token=d84cb7d3-4bd5-4a17-8b7a-6df857975c45",
-			paths: [1, 0, 6, 7, 5, 4, 2, 3],
-			rotation: 0
-		}, {
-			id: 27,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_27.png?alt=media&token=d0eaf631-8a0e-4aa9-8dd2-778e9be1fec6",
-			paths: [2, 4, 0, 7, 1, 6, 5, 3],
-			rotation: 0
-		}, {
-			id: 28,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_28.png?alt=media&token=ee42cc11-19d2-4476-887b-7a29817430fc",
-			paths: [4, 2, 1, 7, 0, 6, 5, 3],
-			rotation: 0
-		}, {
-			id: 29,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_29.png?alt=media&token=a60766a5-5e0c-49ad-9240-20b1d539fa2f",
-			paths: [1, 0, 3, 2, 5, 4, 7, 6],
-			rotation: 0
-		}, {
-			id: 30,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_30.png?alt=media&token=dea26808-d49d-43b0-b81c-174c1e098c1e",
-			paths: [2, 3, 0, 1, 6, 7, 4, 5],
-			rotation: 0
-		}, {
-			id: 31,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_31.png?alt=media&token=4cb9edd7-95ab-4e2f-aeda-d251f7015a0d",
-			paths: [3, 6, 5, 0, 7, 2, 1, 4],
-			rotation: 0
-		}, {
-			id: 32,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_32.png?alt=media&token=4f19788f-ad85-4e6f-82ac-7fef4c8f0419",
-			paths: [1, 0, 6, 5, 7, 3, 2, 4],
-			rotation: 0
-		}, {
-			id: 33,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_33.png?alt=media&token=0914028d-ea25-4613-82f6-eab574e69f70",
-			paths: [1, 0, 3, 2, 6, 7, 4, 5],
-			rotation: 0
-		}, {
-			id: 34,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_34.png?alt=media&token=3714e87a-942e-436e-ae5b-bc0a23de33d1",
-			paths: [4, 5, 7, 6, 0, 1, 3, 2],
-			rotation: 0
-		}, {
-			id: 35,
-			imageUrl: "https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_35.png?alt=media&token=aa9dda97-edee-472a-8b24-8bb0b69dfa9a",
-			paths: [1, 0, 7, 5, 6, 3, 4, 2],
-			rotation: 0
-		}],
+    return {
+        tiles: {
+            1: {
+                id: 1,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_01.png?alt=media&token=ffcfa546-f1cf-4bbe-9cf0-ac067aa3c406',
+                paths: [5, 6, 4, 7, 2, 0, 1, 3],
+                rotation: 0
+            },
+            2: {
+                id: 2,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_02.png?alt=media&token=89b2f893-0c61-4257-9e24-c5c0f34da9b4',
+                paths: [1, 0, 4, 7, 2, 6, 5, 3],
+                rotation: 0
+            },
+            3: {
+                id: 3,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_03.png?alt=media&token=c17c6ddf-39c8-4a7b-a912-427284fa7e3e',
+                paths: [1, 0, 4, 6, 2, 7, 3, 5],
+                rotation: 0
+            },
+            4: {
+                id: 4,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_04.png?alt=media&token=0c752582-8949-47f7-8bfc-90c8a4b2308f',
+                paths: [2, 5, 0, 7, 6, 1, 4, 3],
+                rotation: 0
+            },
+            5: {
+                id: 5,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_05.png?alt=media&token=aaf16e79-05e4-4423-bb9c-0327962934ba',
+                paths: [4, 2, 1, 6, 0, 7, 3, 5],
+                rotation: 0
+            },
+            6: {
+                id: 6,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_06.png?alt=media&token=6d190fdb-8d17-460b-b787-d1414aaae097',
+                paths: [1, 0, 5, 7, 6, 2, 4, 3],
+                rotation: 0
+            },
+            7: {
+                id: 7,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_07.png?alt=media&token=0c1e9b3c-307a-4c36-8fa5-d21e9f385292',
+                paths: [2, 4, 0, 6, 1, 7, 3, 5],
+                rotation: 0
+            },
+            8: {
+                id: 8,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_08.png?alt=media&token=0084c7f0-c4a6-40c5-b8b5-587c7ba73fef',
+                paths: [4, 7, 5, 6, 0, 2, 3, 1],
+                rotation: 0
+            },
+            9: {
+                id: 9,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_09.png?alt=media&token=0f898f82-bbc0-4edf-ae8a-953ec4c63a43',
+                paths: [1, 0, 7, 6, 5, 4, 3, 2],
+                rotation: 0
+            },
+            10: {
+                id: 10,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_10.png?alt=media&token=17252a8a-365e-4c8d-847f-1e96de7ae695',
+                paths: [4, 5, 6, 7, 0, 1, 2, 3],
+                rotation: 0
+            },
+            11: {
+                id: 11,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_11.png?alt=media&token=239eb887-5e2c-4bf5-9065-1aa0bf0528da',
+                paths: [7, 2, 1, 4, 3, 6, 5, 0],
+                rotation: 0
+            },
+            12: {
+                id: 12,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_12.png?alt=media&token=cfbcca24-6ace-4533-885d-6b10181d5355',
+                paths: [2, 7, 0, 5, 6, 3, 4, 1],
+                rotation: 0
+            },
+            13: {
+                id: 13,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_13.png?alt=media&token=2e6d55aa-93a0-42ef-8450-8f2180ce85cc',
+                paths: [5, 4, 7, 6, 1, 0, 3, 2],
+                rotation: 0
+            },
+            14: {
+                id: 14,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_14.png?alt=media&token=9ddaf26d-1187-4236-9741-83b08a4803e5',
+                paths: [3, 2, 1, 0, 7, 6, 5, 4],
+                rotation: 0
+            },
+            15: {
+                id: 15,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_15.png?alt=media&token=aefd8d1e-2981-4ab2-a0cb-e2d5ff911d84',
+                paths: [1, 0, 7, 4, 3, 6, 5, 2],
+                rotation: 0
+            },
+            16: {
+                id: 16,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_16.png?alt=media&token=c04fae4b-9b52-4972-b570-f46790adad44',
+                paths: [1, 0, 5, 6, 7, 2, 3, 4],
+                rotation: 0
+            },
+            17: {
+                id: 17,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_17.png?alt=media&token=a61b34c9-61b9-4e53-8910-ba84763666f9',
+                paths: [3, 5, 6, 0, 7, 1, 2, 4],
+                rotation: 0
+            },
+            18: {
+                id: 18,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_18.png?alt=media&token=53aca221-8524-47b1-9c4b-1650c383587a',
+                paths: [2, 7, 0, 4, 3, 6, 5, 1],
+                rotation: 0
+            },
+            19: {
+                id: 19,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_19.png?alt=media&token=ae135f90-46a6-42da-b166-73b035d6fd5d',
+                paths: [4, 3, 6, 1, 0, 7, 2, 5],
+                rotation: 0
+            },
+            20: {
+                id: 20,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_20.png?alt=media&token=1bf02f10-766b-4645-b758-e5fcbe3b440d',
+                paths: [3, 7, 4, 0, 2, 6, 5, 1],
+                rotation: 0
+            },
+            21: {
+                id: 21,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_21.png?alt=media&token=94d8a157-472e-4692-8d2e-815d1a4aabc3',
+                paths: [2, 3, 0, 1, 7, 6, 5, 4],
+                rotation: 0
+            },
+            22: {
+                id: 22,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_22.png?alt=media&token=314c48e4-7efe-44fb-904a-b9e4f6e8107c',
+                paths: [2, 6, 0, 5, 7, 3, 1, 4],
+                rotation: 0
+            },
+            23: {
+                id: 23,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_23.png?alt=media&token=b3cd6be7-b544-4840-bef5-ada615f4197d',
+                paths: [1, 0, 6, 4, 3, 7, 2, 5],
+                rotation: 0
+            },
+            24: {
+                id: 24,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_24.png?alt=media&token=fd85dd7d-7c06-4bfb-8efb-240976eb7346',
+                paths: [5, 6, 7, 4, 3, 0, 1, 2],
+                rotation: 0
+            },
+            25: {
+                id: 25,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_25.png?alt=media&token=6d025e9b-7aaf-439f-9646-4f75b3a690f1',
+                paths: [1, 0, 3, 2, 7, 6, 5, 4],
+                rotation: 0
+            },
+            26: {
+                id: 26,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_26.png?alt=media&token=2b46be55-d0cf-4454-96a7-fca82e66bb07',
+                paths: [1, 0, 6, 7, 5, 4, 2, 3],
+                rotation: 0
+            },
+            27: {
+                id: 27,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_27.png?alt=media&token=42466d8d-e81a-4057-a1f1-a104d8cfa56b',
+                paths: [2, 4, 0, 7, 1, 6, 5, 3],
+                rotation: 0
+            },
+            28: {
+                id: 28,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_28.png?alt=media&token=974fd5de-b521-49d0-a3b2-e1ad9062146d',
+                paths: [4, 2, 1, 7, 0, 6, 5, 3],
+                rotation: 0
+            },
+            29: {
+                id: 29,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_29.png?alt=media&token=e5951b29-e169-401d-a3cd-6a0f6b020c39',
+                paths: [1, 0, 3, 2, 5, 4, 7, 6],
+                rotation: 0
+            },
+            30: {
+                id: 30,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_30.png?alt=media&token=ada2217d-5c7e-48f8-a815-87aabbd5e8ad',
+                paths: [2, 3, 0, 1, 6, 7, 4, 5],
+                rotation: 0
+            },
+            31: {
+                id: 31,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_31.png?alt=media&token=53443bed-f1cf-44a1-bf3b-dbcafa56f40a',
+                paths: [3, 6, 5, 0, 7, 2, 1, 4],
+                rotation: 0
+            },
+            32: {
+                id: 32,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_32.png?alt=media&token=97a95751-e663-4659-8354-aed05f2063f4',
+                paths: [1, 0, 6, 5, 7, 3, 2, 4],
+                rotation: 0
+            },
+            33: {
+                id: 33,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_33.png?alt=media&token=38d30d0f-fed4-4204-809d-15940b98a488',
+                paths: [1, 0, 3, 2, 6, 7, 4, 5],
+                rotation: 0
+            },
+            34: {
+                id: 34,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_34.png?alt=media&token=301fcf7b-4e37-4234-b5dc-81b3dacbc06b',
+                paths: [4, 5, 7, 6, 0, 1, 3, 2],
+                rotation: 0
+            },
+            35: {
+                id: 35,
+                imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_35.png?alt=media&token=1fba1d07-44da-46aa-b85b-4c1b53e4f7cd',
+                paths: [1, 0, 7, 5, 6, 3, 4, 2],
+                rotation: 0
+            }
+        },
+        rotateTile: function (tile, rotation) {
+            console.log("rotate tile inside factory", rotation);
+            if (rotation > 0) {
+                for (var i = 1; i <= rotation; i++) {
+                    console.log("original pathes", tile.paths);
 
-		rotateTile: function (tile) {
-			let rotationDifference = tile.rotation;
-			//TODO: fix the rotation
-			if (rotationDifference<0)throw new Error;
-			//add rotationDifference
-			let	toRotate = tiles.paths.map((path)=>{
-				return path= (path +(2*rotationDifference))%8; //add the rotation difference and wrap around 8
-			});
-			// wrap around
-			tile.paths =  toRotate.slice(-2*rotationDifference).concat(toRotate.slice(0, -2*rotationDifference))
-			return tile;
-		}
-	}
-})
+                    tile.paths = tile.paths.map(function (connection) {
+                        connection = connection + 2;
+                        if (connection === 9) connection = 1;
+                        if (connection === 8) connection = 0;
+                        return connection;
+                    });
+                    console.log("after adding 2", tile.paths);
+                    tile.paths.unshift(tile.paths.pop());
+                    tile.paths.unshift(tile.paths.pop());
+                    console.log("after unshift to front", tile.paths);
+                }
+                return tile;
+            } else {
+                return tile;
+            }
+        }
+    };
+});
