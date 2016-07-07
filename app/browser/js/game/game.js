@@ -279,10 +279,10 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
         var tileId = tile.id;
         var tileImg = tile.imageUrl;
         var rotation = tile.rotation;
-        placeTileOnSpace(spacex, spacey, tileId, tileImg, rotation);
         $scope.me.tiles = $scope.me.tiles.filter(t => t.id !== tile.id);
         firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
         firebasePlayersArr.$save($scope.meIdx);
+				placeTileOnSpace(spacex, spacey, tileId, tileImg, rotation);
 
     };
 
@@ -392,6 +392,8 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 								$scope.me.tiles= $scope.me.tiles.concat(newTile);
 								console.log(`dealt new card:`, $scope.me.tiles);
 								syncDeck();
+								firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
+								firebasePlayersArr.$save($scope.meIdx);
 							}
 							console.log("deckArr and scope deck:", deckArr, $scope.game.deck);
 						}
