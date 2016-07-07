@@ -71,7 +71,10 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
             // for each key in the snapPlayer's keys, add that key and value to local player
             for (var playerproperty in snapPlayers[thisPlayer]) {
-                localPlayer[playerproperty] = snapPlayers[thisPlayer][playerproperty];
+                //if there is no 'me' (this is the beginning of the game) assign properties like normal
+                if (!$scope.me) localPlayer[playerproperty] = snapPlayers[thisPlayer][playerproperty];
+                //if there is a me and this snapplayer is me, don't update my tiles
+                else if($scope.me && snapPlayers[thisPlayer].uid !== $scope.me.uid && playerproperty !== 'tiles') localPlayer[playerproperty] = snapPlayers[thisPlayer][playerproperty];
             }
 
             //push local player to game.players
@@ -183,6 +186,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     /****************
     GAMEPLAY ACTIONS
     ****************/
+
     $scope.tryTile = function (tile) {
         if ($scope.game.board[$scope.me.y][$scope.me.x].image !== tile.imageUrl) {
             $scope.game.board[$scope.me.y][$scope.me.x].image = tile.imageUrl;
@@ -243,6 +247,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
     // these are tied to angular ng-click buttons
     $scope.rotateTileCw = function (tile) {
+        console.log('in rotate');
         tile.rotation++;
         if (tile.rotation === 4) tile.rotation = 0; //set rotation to be between 0 and 3
         $scope.tryTile(tile);
