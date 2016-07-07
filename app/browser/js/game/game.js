@@ -72,13 +72,15 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
             // for each key in the snapPlayer's keys, add that key and value to local player
             for (var playerproperty in snapPlayers[thisPlayer]) {
-                localPlayer[playerproperty] = snapPlayers[thisPlayer][playerproperty];
+                if($scope.me && snapPlayers[thisPlayer].uid !== $scope.me.uid && playerproperty !== 'tiles') localPlayer[playerproperty] = snapPlayers[thisPlayer][playerproperty];
+                else if (!$scope.me) localPlayer[playerproperty] = snapPlayers[thisPlayer][playerproperty];
             }
 
             //push local player to game.players
             if (thisIsANewPlayer) $scope.game.players.push(localPlayer);
             else $scope.game.players[existingPlayerIndex] = localPlayer;
         }
+        console.log('scope.me?', $scope.me)
         // on login, find me in the $scope.game players array
         firebase.auth().onAuthStateChanged(function (user) {
             firebasePlayersArr.$loaded()
@@ -185,11 +187,26 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
     GAMEPLAY ACTIONS
     ****************/
     $scope.tryTile = function(tile) {
+        console.log('in TRYTILE');
         if($scope.game.board[$scope.me.y][$scope.me.x].image !== tile.imageUrl) {
             $scope.game.board[$scope.me.y][$scope.me.x].image = tile.imageUrl;
         }
         $scope.game.board[$scope.me.y][$scope.me.x].rotation = tile.rotation;
         $scope.chosenTile = tile;
+
+
+        // this block stores tile rotation state in firebase. 
+        // except that it slows down the game and it breaks the animation
+        // and it doesn't solve the selected tile problem
+
+        // var tileIdx;
+        // firebasePlayersArr[$scope.meIdx].tiles.forEach(function(playerTile, i){
+        //     if (tile.id === playerTile.id) tileIdx = i;
+        // });
+        // console.log('TILE!!!', tileIdx);
+
+        // firebasePlayersArr[$scope.meIdx].tiles[tileIdx].rotation = tile.rotation;
+        // firebasePlayersArr.$save($scope.meIdx);
 
         // CMT: need this line here in order to update the $scope.spaces for the html
         $scope.spaces = _.flatten($scope.game.board);
@@ -244,6 +261,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
     // these are tied to angular ng-click buttons
     $scope.rotateTileCw = function (tile) {
+        console.log('in rotate');
         tile.rotation++;
         if (tile.rotation === 4) tile.rotation = 0; //set rotation to be between 0 and 3
         $scope.tryTile(tile);
