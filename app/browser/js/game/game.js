@@ -289,6 +289,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
     $scope.placeTile = function (tile) {
     	
         $scope.game.board[$scope.me.y][$scope.me.x].testing = false;
+
         var spacex = $scope.me.x;
         var spacey = $scope.me.y;
         var tileId = tile.id;
