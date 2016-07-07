@@ -12,7 +12,7 @@ function Player(uid,name) {
     this.i;
 
     // maximun 3 tiles
-    this.tiles = 'n';
+    this.tiles;
 
     // if a player dies, it will be changed to false
     this.canPlay = true;
@@ -42,6 +42,10 @@ Player.prototype.move = function (board) {
             currPoint.travelled = true;
             console.log(this.point);
             this.point = currPoint;
+            console.log(this.point.edge);
+            if (this.point.edge){
+                this.canPlay = false
+            }
             this.assignXYI(currPoint);
         } else {
             if (currPoint.neighbors.length === 2 || currPoint.edge) this.canPlay = false;
