@@ -287,7 +287,8 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
     // CMT: use player's and game's prototype function to place tile and then move all players
     $scope.placeTile = function (tile) {
-    	  $scope.game.board[$scope.me.y][$scope.me.x].testing = false;
+    	
+        $scope.game.board[$scope.me.y][$scope.me.x].testing = false;
 
         var spacex = $scope.me.x;
         var spacey = $scope.me.y;

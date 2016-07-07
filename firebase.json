@@ -7,9 +7,5 @@
     "ignore":[
       "package.json"
     ]
-  },
-  "rewrites": [ {
-    "source": "**",
-    "destination": "/index.html"
-          } ]
+  }
 }
