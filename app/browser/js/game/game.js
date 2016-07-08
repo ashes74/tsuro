@@ -138,7 +138,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
 			console.log("scope.game.currentPlayerIndex", $scope.game.currentPlayerIndex);
 
-			if (spaceArr.length >= 1 && $scope.game.currentPlayerIndex!==-1) {
+			if (spaceArr.length >= 1) {
 				$scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid && $scope.me.canPlay === true;
 			}
 
@@ -402,10 +402,10 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 				$firebaseArray(gameRef.child('deadPlayers')).$add({ 'name': $scope.me.name });
 			}
 
-			if ($scope.game.getCanPlay()<=1 || spaceArr.length ===35) {
-				debugger;
+			if ($scope.game.getCanPlay().length<=1 || spaceArr.length ===35) {
+				// debugger;
 				$scope.winner = $scope.game.getCanPlay();
-				if (!$scope.winner) {
+				if ($scope.winner) {
 					//Adding the winner into firebase
 					$scope.winner.forEach(winner => $firebaseArray(gameRef.child('winners')).$add({ 'name': winner.name }));
 					console.log("#winning!");
@@ -476,6 +476,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
 
 			if ($scope.me.uid === $scope.game.currentPlayer.uid && !$scope.gameOver) {
+				// console.log("on to the next one", $scope.game.nextCanPlay());
 				gameRef.update({
 					"currentPlayerIndex": $scope.game.nextCanPlay()
 				});

@@ -43,7 +43,7 @@ class Game {
 
     checkOver(spaceArr) {
         console.log(this.getCanPlay());
-        return this.getCanPlay().length <= 1 ||spaceArr.length ===35;
+        return this.getCanPlay().length <= 1;
     }
 
     //to be called at the end of a turn to set the currentPlayerIndex to the next eligible player in the players array;
@@ -59,6 +59,8 @@ class Game {
                 console.log(newIdx)
             }
             this.currentPlayerIndex = newIdx;
+						console.log("player index is now", newIdx);
+						return this.currentPlayerIndex;
     }
 
     deal(num) {
