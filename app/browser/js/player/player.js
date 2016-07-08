@@ -42,7 +42,7 @@ Player.prototype.move = function (board) {
             currPoint.travelled = true;
             console.log(this.point);
             this.point = currPoint;
-            console.log(this.point.edge);
+            console.log("edge?",this.point.edge);
             if (this.point.edge){
                 this.canPlay = false
             }
@@ -58,7 +58,7 @@ Player.prototype.move = function (board) {
 
 Player.prototype.assignXYI = function (point) {
     var self = this;
-
+		console.log("attempting to move to", point);
     console.log("self", self);
     let spaceObj = point.spaces.find(function (space) {
         return !(space.x === self.x && space.y === self.y);
