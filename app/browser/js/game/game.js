@@ -134,10 +134,10 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 		console.log("currentPlayerIndexPlayer index changes", snapshot.val())
 		$scope.game.currentPlayerIndex = snapshot.val();
 
-			$scope.game.currentPlayer = $scope.game.players[$scope.game.currentPlayerIndex];
-			if (spaceArr.length >= 1) {
-				$scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid && $scope.me.canPlay === true;
-			}
+		$scope.game.currentPlayer = $scope.game.players[$scope.game.currentPlayerIndex];
+		if (spaceArr.length >= 1) {
+			$scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid && $scope.me.canPlay === true;
+		}
 
 	});
 
@@ -492,23 +492,24 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
 	// TODO: need to remove this game room's moves from firebase?
 	$scope.reset = function () {
-		spaceObj.$remove();
+		Promise.all([
+		spaceObj.$remove(),
 
 		markersArr.$remove(0)
 		.then(function(ref) {
 			markersArr.$add(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]);
-		});
+		}),
 
 		deckArr.$remove(0)
 		.then(function(ref) {
 			var tiles = gameFactory.tiles;
-			var deck = new Deck(tiles).shuffle();
+			var deck = new Deck(tiles).shuffle().tiles;
 			deckArr.$add(deck);
-		});
+		}),
 
 		gameRef.update({
 			'currentPlayerIndex': 0
-		});
+		}),
 
 		firebasePlayersArr.$loaded().then(function (data) {
 			for (var i = 0; i < data.length; i++) {
@@ -523,10 +524,15 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 				data[i].tiles = null;
 				firebasePlayersArr.$save(i);
 			}
-		});
+		})
 
-		$state.reload();
-		console.log($scope.me);
+
+	]).then((all) => {
+			console.log($scope.me);
+			// $state.reload();
+			$state.go($state.current, {}, {reload: true});
+		})
+		.catch(console.error)
 
 	};
 
@@ -535,6 +541,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 		console.log(`syncing deck`, deckArr, `with ${$scope.game.deck.tiles}`);
 		deckArr[0] = $scope.game.deck.tiles;
 		console.log("saving the deck");
+		debugger;
 		return deckArr.$save(0);
 	}
 
