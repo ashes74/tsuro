@@ -42,6 +42,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 	// Start with first player in the array, index 0
 	$scope.game.currentPlayerIndex = 0;
 
+
 	// when the deck is loaded, local deck is the firebase deck
 	deckArr.$loaded().then(function () {
 		$scope.game.deck.tiles = deckArr[0];
@@ -343,6 +344,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 		}
 
 		if (!$scope.me) {
+			//debugger;
 			firebasePlayersArr.$loaded()
 			.then(function (players) {
 				players.forEach(function (player) {
@@ -373,12 +375,14 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
 			//if I die return my cards to the deck
 			if(!$scope.me.canPlay && $scope.me.tiles.length){
+				//debugger;
 				console.log("returning my tiles", $scope.me.tiles, "to the deck", $scope.game.deck);
 				$scope.game.deck.reload($scope.me.tiles).shuffle();
 				console.log("shuffled deck", $scope.game.deck);
 				//might cuase race condition....maybe do a $loaded here
 				syncDeck();
-				$scope.me.tiles = [];
+				console.log($scope.me.tiles);
+				// $scope.me.tiles = [];
 				//tell firebase we dont't have any more tiles
 				firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
 				firebasePlayersArr.$save($scope.meIdx);
@@ -386,13 +390,13 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 				$firebaseArray(gameRef.child('deadPlayers')).$add({ 'name': $scope.me.name });
 			}
 
-
-			if ($scope.game.checkOver(spaceArr)) {
+			if ($scope.game.getCanPlay<=1 || spaceArr.length ===35) {
+				//debugger;
 				$scope.winner = $scope.game.getCanPlay();
 				if (!$scope.winner) {
 					//Adding the winner into firebase
 					$scope.winner.forEach(winner => $firebaseArray(gameRef.child('winners')).$add({ 'name': winner.name }));
-
+					console.log("#winning!");
 				}
 				else{
 					console.log("game over, no one wins")
@@ -448,7 +452,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 				console.log(`attempting to refresh a hand`);
 				if($scope.me.tiles.length < 3 && $scope.me.canPlay){
 					let newTile = $scope.game.deal(1)
-
+					syncDeck();
 					$scope.me.tiles= $scope.me.tiles.concat(newTile);
 					firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
 					firebasePlayersArr.$save($scope.meIdx);
@@ -456,7 +460,12 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 				console.log("deckArr and scope deck:", deckArr, $scope.game.deck);
 			}
 
+
 			if ($scope.me.uid === $scope.game.currentPlayer.uid && !$scope.gameOver) {
+				debugger;
+				console.log("on to the next one");
+				let nextPlayer = $scope.game.nextCanPlay()
+				if (nextPlayer === -1) return "game over"
 				gameRef.update({
 					"currentPlayerIndex": $scope.game.nextCanPlay()
 				});
@@ -486,7 +495,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 		deckArr.$remove(0)
 		.then(function(ref) {
 			var tiles = gameFactory.tiles;
-			var deck = new Deck(tiles).shuffle().tiles;
+			var deck = new Deck(tiles).shuffle();
 			deckArr.$add(deck);
 		});
 

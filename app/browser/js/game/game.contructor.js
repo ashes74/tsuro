@@ -61,7 +61,7 @@ class Game {
         } else {
             this.currentPlayerIndex = -1;
         }
-        return newIdx;
+        return this.currentPlayerIndex;
     }
 
     deal(num) {

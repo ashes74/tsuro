@@ -8,8 +8,7 @@ class Deck {
 
 	shuffle() {
 		console.log("tiles to be shuffled", this.tiles);
-		console.log(_.shuffle(this.tiles));
-		this.tiles = _.shuffle(this.tiles)
+		this.tiles = _.shuffle(this.tiles).filter((item) => {return item!==undefined});
 		console.log("tiles shuffled", this.tiles);
 		return this;
 	}
@@ -23,8 +22,8 @@ class Deck {
 	}
 
 	reload(tiles) {
-		for (var i = 0; i < tiles.length; i++) {
-			this.tiles.push(tiles[i]);
+		while(tiles.length>0) {
+			this.tiles.push(tiles.pop())
 		}
 		return this;
 	}
