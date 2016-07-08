@@ -173,6 +173,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 	var placeMarkerFn = function (point) {
 		$scope.me.placeMarker(point, $scope.game.board);
 		$scope.me.tiles = $scope.game.deal(3);
+		syncDeck();
 		$scope.me.clicked = true;
 		// FOR SOME REASON I can't just do firebasePlayersArr[$scope.meIdx] = $scope.me;
 		firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
