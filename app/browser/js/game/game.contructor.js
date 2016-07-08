@@ -11,8 +11,8 @@ class Game {
         this.availableMarkers = ["red", "pink", "yellow", "green", "jade", "sky", "ocean", "purple"];
 
         //index of the currentPlayer in the players
-				this.deck;
         this.currentPlayerIndex;
+        this.deck = new Deck();
         this.dragon = null;
         this.moves;
     }
@@ -22,14 +22,19 @@ class Game {
         return this.players[this.currentPlayerIndex];
     }
 
-		//moveAllPlayers removed because each person will listen to their next space and move themselves
+    moveAllPlayers() {
+        this.players.forEach((player) => player.keepMoving(player))
+    }
 
     getDeadPlayerTiles() {
         var deadPlayersTiles = [];
         console.log(this.players)
         this.players.forEach(function (player) {
-            if (!player.canPlay && player.tiles.length > 0) {
-                deadPlayersTiles.push(player.tiles);
+            if (!player.canPlay && player.tiles.length > 0 && player.tiles.length < 3) {
+                console.log(player.tiles)
+                // deadPlayersTiles.push(player.tiles);
+                deadPlayersTiles.concat(player.tiles);
+
             }
         });
         console.log("deadPlayersTiles", deadPlayersTiles)
@@ -37,6 +42,7 @@ class Game {
     }
 
     checkOver() {
+        console.log(this.getCanPlay());
         return this.getCanPlay().length <= 1;
     }
 
@@ -59,18 +65,7 @@ class Game {
     }
 
     deal(num) {
-        var tiles = [];
-        for (var i = 0; i < num; i++) {
-            var tile = this.deck[0].splice(0, 1);
-            // Saving to firebase, since we use firebase deck, it comes with $save fnc
-            console.log("deck.save", this.deck)
-            this.deck.$save(0).then(function (ref) {
-                console.log('dealt a card!');
-            });
-            tiles = tiles.concat(tile);
-            console.log(tiles)
-        }
-        return tiles;
+        return this.deck.deal(num);
     }
 
     getCanPlay() {
