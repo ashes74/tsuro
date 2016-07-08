@@ -56,10 +56,12 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 		// grab the value of the snapshot (all players in game in Firebase)
 		var snapPlayers = snap.val();
 
+
 		// for each player in this collection...
 		for (var thisPlayer in snapPlayers) {
 			var existingPlayerIndex, thisIsANewPlayer;
 
+			console.log("got this player from snapshot", thisPlayer);
 			// find this 'snap' player's index in local game. find returns that value.
 			var localPlayer = $scope.game.players.find(function(plyr, plyrIdx) {
 				existingPlayerIndex = plyrIdx;
@@ -111,6 +113,8 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 				}
 			})
 		})
+
+
 	});
 
 	// when that markers array is loaded, update the available markers array on scope
@@ -129,13 +133,15 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 	currPlayerRef.on('value', function (snapshot) {
 		console.log("currentPlayerIndexPlayer index changes", snapshot.val())
 		$scope.game.currentPlayerIndex = snapshot.val();
-		$scope.game.currentPlayer = $scope.game.players[$scope.game.currentPlayerIndex];
 
-		console.log("scope.game.currentPlayerIndex", $scope.game.currentPlayerIndex);
+			$scope.game.currentPlayer = $scope.game.players[$scope.game.currentPlayerIndex];
 
-		if (spaceArr.length >= 1) {
-			$scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid && $scope.me.canPlay === true;
-		}
+			console.log("scope.game.currentPlayerIndex", $scope.game.currentPlayerIndex);
+
+			if (spaceArr.length >= 1 && $scope.game.currentPlayerIndex!==-1) {
+				$scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid && $scope.me.canPlay === true;
+			}
+
 	});
 
 
@@ -275,6 +281,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
 
 	$scope.placeTile = function (tile) {
+		if (!$scope.me.canPlay) return
 		//clearing out the deadPlayers array in firebase first
 		var deadPlayersArr = $firebaseArray(gameRef.child('deadPlayers'));
 		console.log(deadPlayersArr);
@@ -290,7 +297,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 		//         });
 		//     }
 		// })
-
+		console.log("received place tile command");
 		var rotation = tile.rotation;
 		var spacex = $scope.me.x;
 		var spacey = $scope.me.y;
@@ -304,6 +311,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
 
 	var placeTileOnSpace = function(x, y, img, rotate, tileId) {
+		console.log("assigning tile to space");
 		var spaceId = 'space' + x + y;
 		console.log(`spaceId = ${spaceId}`);
 		spaceObj[spaceId] = {
@@ -315,6 +323,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 	};
 
 	spaceRef.on('child_added', function (snapshot) {
+		console.log("making moves");
 		var addedTile = snapshot.val();
 		var spaceKey = snapshot.key;
 		var x = +spaceKey.slice(-2, -1);
@@ -344,6 +353,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 		}
 
 		if (!$scope.me) {
+			console.log("it's not me, placing others where they need to be");
 			//debugger;
 			firebasePlayersArr.$loaded()
 			.then(function (players) {
@@ -365,6 +375,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
 		if ($scope.me) {
 			if ($scope.me.x === x && $scope.me.y === y) {
+				console.log("it's me. let's move");
 				$scope.me.move($scope.game.board);
 				firebasePlayersArr[$scope.meIdx].x = $scope.me.x;
 				firebasePlayersArr[$scope.meIdx].y = $scope.me.y;
@@ -375,13 +386,14 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
 			//if I die return my cards to the deck
 			if(!$scope.me.canPlay && $scope.me.tiles.length){
+				console.log("I'm dead");
 				//debugger;
 				console.log("returning my tiles", $scope.me.tiles, "to the deck", $scope.game.deck);
 				$scope.game.deck.reload($scope.me.tiles).shuffle();
 				console.log("shuffled deck", $scope.game.deck);
 				//might cuase race condition....maybe do a $loaded here
 				syncDeck();
-				console.log($scope.me.tiles);
+				console.log("I should have no tiles", $scope.me.tiles);
 				// $scope.me.tiles = [];
 				//tell firebase we dont't have any more tiles
 				firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
@@ -390,19 +402,21 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 				$firebaseArray(gameRef.child('deadPlayers')).$add({ 'name': $scope.me.name });
 			}
 
-			if ($scope.game.getCanPlay<=1 || spaceArr.length ===35) {
-				//debugger;
+			if ($scope.game.getCanPlay()<=1 || spaceArr.length ===35) {
+				debugger;
 				$scope.winner = $scope.game.getCanPlay();
 				if (!$scope.winner) {
 					//Adding the winner into firebase
 					$scope.winner.forEach(winner => $firebaseArray(gameRef.child('winners')).$add({ 'name': winner.name }));
 					console.log("#winning!");
+
 				}
 				else{
 					console.log("game over, no one wins")
 				}
 				// TODO: disable everything, let the players reset the game
 				$scope.gameOver = true;
+				return "game over"
 			}
 
 			// //LA: I think this is duplicating the logic for death above
@@ -462,10 +476,6 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
 
 			if ($scope.me.uid === $scope.game.currentPlayer.uid && !$scope.gameOver) {
-				debugger;
-				console.log("on to the next one");
-				let nextPlayer = $scope.game.nextCanPlay()
-				if (nextPlayer === -1) return "game over"
 				gameRef.update({
 					"currentPlayerIndex": $scope.game.nextCanPlay()
 				});
@@ -588,6 +598,21 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 		[5, 5, 3]
 	];
 
+	function gameOver(){
+		$scope.winner = $scope.game.getCanPlay();
+		if (!$scope.winner) {
+			//Adding the winner into firebase
+			$scope.winner.forEach(winner => $firebaseArray(gameRef.child('winners')).$add({ 'name': winner.name }));
+			console.log("#winning!");
+
+		}
+		else{
+			console.log("game over, no one wins")
+		}
+		// TODO: disable everything, let the players reset the game
+		$scope.gameOver = true;
+		return "game over"
+	}
 });
 
 tsuro.directive('tile', function () {
