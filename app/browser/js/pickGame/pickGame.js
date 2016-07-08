@@ -25,7 +25,6 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
 			'currentPlayerIndex': 0
 		});
 
-
 		firebase.auth().onAuthStateChanged(function (user) {
 			if (user) {
 				var newPlayer = {
@@ -43,8 +42,8 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
 		var deck = new Deck(tiles).shuffle().tiles;
 		deckArr.$add(deck);
 
-		markersArr.$add(["red", "pink", "yellow", "green", "jade", "sky", "ocean", "purple"]);
-		currPlayerArr.$add([0]);
+		markersArr.$add(gameFactory.markers);
+
 
 		$state.go('game', {
 			"gameName": gameName

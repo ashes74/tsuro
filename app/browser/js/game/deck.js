@@ -5,8 +5,12 @@ class Deck {
 		this.tiles = tiles
 	}
 
+
 	shuffle() {
+		console.log("tiles to be shuffled", this.tiles);
+		console.log(_.shuffle(this.tiles));
 		this.tiles = _.shuffle(this.tiles)
+		console.log("tiles shuffled", this.tiles);
 		return this;
 	}
 
@@ -24,7 +28,7 @@ class Deck {
 		}
 		return this;
 	}
-	
+
 	length(){
 		return this.tiles.length
 	}

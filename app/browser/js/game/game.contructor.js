@@ -30,14 +30,19 @@ class Game {
         var deadPlayersTiles = [];
         console.log(this.players)
         this.players.forEach(function (player) {
-            if (!player.canPlay && player.tiles.length > 0) {
-                deadPlayersTiles.push(player.tiles);
+
+            if (!player.canPlay && player.tiles.length > 0 && player.tiles.length < 3) {
+                console.log(player.tiles)
+                // deadPlayersTiles.push(player.tiles);
+                deadPlayersTiles.concat(player.tiles);
             }
         });
+        console.log("deadPlayersTiles", deadPlayersTiles)
         return deadPlayersTiles;
     }
 
     checkOver() {
+        console.log(this.getCanPlay());
         return this.getCanPlay().length <= 1;
     }
 
@@ -60,7 +65,9 @@ class Game {
     }
 
     deal(num) {
+
 				return this.deck.deal(num);
+
     }
 
     getCanPlay() {

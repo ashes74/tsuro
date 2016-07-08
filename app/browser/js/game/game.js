@@ -45,65 +45,69 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 	// when the deck is loaded, local deck is the firebase deck
 	deckArr.$loaded().then(function () {
 		$scope.game.deck.tiles = deckArr[0];
+		console.log("new deck made: ", $scope.game.deck);
 	});
+
 
 	// don't start watching players until there is a deck in the game
 	// 'child_changed'
-	playersRef.on("value", function (snap) {
-		// grab the value of the snapshot (all players in game in Firebase)
-		var snapPlayers = snap.val();
+	playersRef.on("value", function(snap) {
+			// grab the value of the snapshot (all players in game in Firebase)
+			var snapPlayers = snap.val();
 
-		// for each player in this collection...
-		for (var thisPlayer in snapPlayers) {
-			var existingPlayerIndex, thisIsANewPlayer;
+			// for each player in this collection...
+			for (var thisPlayer in snapPlayers) {
+					var existingPlayerIndex, thisIsANewPlayer;
 
-			// find this 'snap' player's index in local game. find returns that value.
-			var localPlayer = $scope.game.players.find(function (plyr, plyrIdx) {
-				existingPlayerIndex = plyrIdx;
-				return plyr.uid === snapPlayers[thisPlayer].uid;
-			});
-
-			// if not found, create new player
-			if (!localPlayer) {
-				localPlayer = new Player(snapPlayers[thisPlayer].uid);
-				thisIsANewPlayer = true;
-			}
-
-			// for each key in the snapPlayer's keys, add that key and value to local player
-			for (var playerproperty in snapPlayers[thisPlayer]) {
-				localPlayer[playerproperty] = snapPlayers[thisPlayer][playerproperty];
-			}
-
-			//push local player to game.players
-			if (thisIsANewPlayer) $scope.game.players.push(localPlayer);
-			else $scope.game.players[existingPlayerIndex] = localPlayer;
-		}
-		// on login, find me in the $scope.game players array
-		firebase.auth().onAuthStateChanged(function (user) {
-			firebasePlayersArr.$loaded()
-			.then(function (player) {
-				if (user) {
-					$scope.me = $scope.game.players.find((player) => player.uid === user.uid);
-
-					$scope.meIdx;
-					player.find((player, i) => {
-						if (player.uid === user.uid) $scope.meIdx = i
+					// find this 'snap' player's index in local game. find returns that value.
+					var localPlayer = $scope.game.players.find(function(plyr, plyrIdx) {
+							existingPlayerIndex = plyrIdx;
+							return plyr.uid === snapPlayers[thisPlayer].uid;
 					});
 
-					$scope.me.marker = player[$scope.meIdx].marker;
-					$scope.clicked = player[$scope.meIdx].clicked;
-					$scope.me.x = player[$scope.meIdx].x;
-					$scope.me.y = player[$scope.meIdx].y;
-					$scope.me.i = player[$scope.meIdx].i;
-					$scope.game.currentPlayer = $scope.game.players[$scope.game.currentPlayerIndex];
-					$scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid;
-				} else {
-					console.log("no one is logged in");
-				}
-			})
-		})
-	});
+					// if not found, create new player
+					if (!localPlayer) {
+							console.log('i didnt find a local player!');
+							localPlayer = new Player(snapPlayers[thisPlayer].uid);
+							thisIsANewPlayer = true;
+					}
 
+					// for each key in the snapPlayer's keys, add that key and value to local player
+					for (var playerproperty in snapPlayers[thisPlayer]) {
+							localPlayer[playerproperty] = snapPlayers[thisPlayer][playerproperty];
+					}
+
+					//push local player to game.players
+					if (thisIsANewPlayer) $scope.game.players.push(localPlayer);
+					else $scope.game.players[existingPlayerIndex] = localPlayer;
+			}
+
+			// on login, find me in the $scope.game players array
+			firebase.auth().onAuthStateChanged(function(user) {
+					firebasePlayersArr.$loaded()
+							.then(function(player) {
+									if (user) {
+											$scope.me = $scope.game.players.find((player) => player.uid === user.uid);
+
+											$scope.meIdx;
+											player.find((player, i) => {
+													if (player.uid === user.uid) $scope.meIdx = i
+											});
+
+											$scope.me.marker = player[$scope.meIdx].marker;
+											$scope.clicked = player[$scope.meIdx].clicked;
+											$scope.me.x = player[$scope.meIdx].x;
+											$scope.me.y = player[$scope.meIdx].y;
+											$scope.me.i = player[$scope.meIdx].i;
+											$scope.game.currentPlayer = $scope.game.players[$scope.game.currentPlayerIndex];
+											$scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid && $scope.me.canPlay === true;
+									} else {
+											console.log("no one is logged in");
+									}
+									console.log('im here!!!!!!!!');
+							});
+			});
+		});
 
 	// when that markers array is loaded, update the available markers array on scope
 	markersArr.$loaded().then(function (data) {
@@ -117,14 +121,18 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
 	$scope.spaces = _.flatten($scope.game.board);
 
+
 	currPlayerRef.on('value', function (snapshot) {
+		console.log("currentPlayerIndexPlayer index changes", snapshot.val())
 		$scope.game.currentPlayerIndex = snapshot.val();
 		$scope.game.currentPlayer = $scope.game.players[$scope.game.currentPlayerIndex];
 
-		if (spaceArr.length >= 1) {
-			$scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid;
-		}
-	});
+  console.log("scope.game.currentPlayerIndex", $scope.game.currentPlayerIndex);
+
+	if (spaceArr.length >= 1) {
+		$scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid && $scope.me.canPlay === true;
+	}
+});
 
 	/****************
 	AVAILABLE PLAYER ACTIONS AT GAME START
@@ -190,6 +198,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 	};
 
 
+
 	$scope.playersOnThisSpace = function(space){
 		var gamePlayers = $scope.game.players;
 
@@ -200,6 +209,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 		if(playersOnThisSpace.length === 0) return null;
 		return playersOnThisSpace;
 	};
+
 
 	$scope.playerIndex = function(player){
 		if(player){
@@ -226,6 +236,11 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 		}
 	};
 
+	    $scope.markerColor = function(player) {
+	        if (player) return player.marker;
+	    };
+
+
 	// TODO: need a function to assign dragon
 	$scope.dragon;
 	$scope.dragonQueue = [];
@@ -243,7 +258,6 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 		$scope.tryTile(tile);
 	};
 
-
 	$scope.rotateTileCcw = function (tile) {
 		tile.rotation--;
 		if (tile.rotation === -4) tile.rotation = 0; //set rotation to be between -0 and -3
@@ -253,9 +267,24 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 	};
 
 
-	// CMT: use player's and game's prototype function to place tile and then move all players
-	//placeTile on the board and update Firebase
+
 	$scope.placeTile = function (tile) {
+		//clearing out the deadPlayers array in firebase first
+		var deadPlayersArr = $firebaseArray(gameRef.child('deadPlayers'));
+		console.log(deadPlayersArr);
+		console.log(deadPlayersArr.length);
+
+
+		//JUST IN CASE: if we want to remove players....
+		// deadPlayersArr.$loaded(function(players) {
+		//     console.log(players);
+		//     for (var i = 0; i < players.length; i++) {
+		//         deadPlayersArr.$remove(i).then(function(ref) {
+		//             console.log('I am removed');
+		//         });
+		//     }
+		// })
+
 		var rotation = tile.rotation;
 		var spacex = $scope.me.x;
 		var spacey = $scope.me.y;
@@ -270,6 +299,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
 	var placeTileOnSpace = function(x, y, img, rotate, tileId) {
 		var spaceId = 'space' + x + y;
+		console.log(`spaceId = ${spaceId}`);
 		spaceObj[spaceId] = {
 			'img': img,
 			'rotation': rotate,
@@ -278,8 +308,39 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 		spaceObj.$save();
 	};
 
+//from scopeMe
+function checkDeath() {
+		console.log($scope.game.getCanPlay());
+		//if all 35 cards are placed - everyone left with the canPlay property WINS
+		if (spaceArr.length === 35) {
+				console.log('everyone who canPlay wins');
+				$scope.winner = $scope.game.getCanPlay(); //returns an array of canPlay players
 
-	spaceRef.on('child_added', function (snapshot) {
+				//Adding the winner into firebase
+				$scope.winner.forEach(winner => $firebaseArray(gameRef.child('winners')).$add({ 'name': winner.name }));
+				$scope.gameOver = true;
+		}
+
+		//if only 1 last player on the board - winner
+		else if ($scope.game.getCanPlay().length === 1) {
+				console.log('game over! last one alive wins!');
+				$scope.winner = $scope.game.getCanPlay();
+				console.log($scope.game.getCanPlay());
+
+				//Adding the winner into firebase
+				console.log($scope.game.getCanPlay()[0].name);
+				$firebaseArray(gameRef.child('winners')).$add({ 'name': $scope.game.getCanPlay()[0].name });
+				$scope.gameOver = true;
+		}
+
+		//if no one is left with the canPlay property - no winner
+		else if (!$scope.game.getCanPlay().length) {
+				console.log('game over! no one wins');
+				$scope.gameOver = true;
+		}
+}
+
+spaceRef.on('child_added', function (snapshot) {
 		var addedTile = snapshot.val();
 		var spaceKey = snapshot.key;
 		var x = +spaceKey.slice(-2, -1);
@@ -293,6 +354,15 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
 
 		for (var i = 0; i < rotatedTile.paths.length; i++) {
+			////from scopeMe
+			// if ($scope.game.players.length) {
+			// 		$scope.game.players.forEach(function(player) {
+			// 				if (player.x === x && player.y === y && player.i === i) {
+			// 						space.points[i].travelled = true;
+			// 				}
+			// 		});
+			// }
+			/////
 			// if the point doesn't have neighbors... set to empty array
 			if (!space.points[i].neighbors) space.points[i].neighbors = [];
 			// set each point's neighbors to it's corresponding point
@@ -315,6 +385,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 				})
 			});
 		}
+
 		// trigger move
 
 		if ($scope.me) {
@@ -328,12 +399,19 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 			}
 
 			//if I die return my cards to the deck
-			if(!$scope.me.canPlay){
+			if(!$scope.me.canPlay && $scope.me.tiles.length){
 				$scope.game.deck.reload($scope.me.tiles).shuffle();
 				//might cuase race condition....maybe do a $loaded here
 				syncDeck();
 				$scope.me.tiles = [];
+				//tell firebase we dont't have any more tiles
+				firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
+				firebasePlayersArr.$save($scope.meIdx);
+				//add me to list of deadPlayers for this round
+				$firebaseArray(gameRef.child('deadPlayers')).$add({ 'name': $scope.me.name });
 			}
+
+			checkDeath();
 
 			if ($scope.game.checkOver()) {
 				if ($scope.game.getCanPlay().length === 1) {
@@ -403,7 +481,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 				console.log("deckArr and scope deck:", deckArr, $scope.game.deck);
 			}
 
-			if ($scope.me.uid === $scope.game.currentPlayer.uid) {
+			if ($scope.me.uid === $scope.game.currentPlayer.uid && !$scope.gameOver) {
 				gameRef.update({
 					"currentPlayerIndex": $scope.game.nextCanPlay()
 				});
@@ -460,6 +538,14 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 		console.log($scope.me);
 
 	};
+
+
+	function syncDeck() {
+		console.log(`syncing deck`, deckArr);
+		console.log($scope.game.deck.tiles);
+		deckArr[0] = $scope.game.deck.tiles;
+		return deckArr.$save(0);
+	}
 
 	$scope.starttop = [
 		[0, 0, 0],
