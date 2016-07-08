@@ -41,9 +41,9 @@ class Game {
         return deadPlayersTiles;
     }
 
-    checkOver() {
+    checkOver(spaceArr) {
         console.log(this.getCanPlay());
-        return this.getCanPlay().length <= 1;
+        return this.getCanPlay().length <= 1 ||spaceArr.length ===35;
     }
 
     //to be called at the end of a turn to set the currentPlayerIndex to the next eligible player in the players array;
