@@ -292,7 +292,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 		//         });
 		//     }
 		// })
-		console.log("received place tile command");
+		console.log("received place tile command, tile:", tile.id, "rotation", tile.rotation);
 		var rotation = tile.rotation;
 		var spacex = $scope.me.x;
 		var spacey = $scope.me.y;
@@ -306,7 +306,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
 
 	var placeTileOnSpace = function(x, y, img, rotate, tileId) {
-		console.log("assigning tile to space", `spaceId = ${spaceId}`);
+		console.log("assigning tile to space", `spaceId = ${spaceId}`, "tile:", tile.id, "rotation", tile.rotation);
 		var spaceId = 'space' + x + y;
 		spaceObj[spaceId] = {
 			'img': img,
@@ -317,7 +317,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 	};
 
 	spaceRef.on('child_added', function (snapshot) {
-		console.log("making moves");
+		console.log("making moves with tile:", tile.id, "rotation", tile.rotation);
 		var addedTile = snapshot.val();
 		var spaceKey = snapshot.key;
 		var x = +spaceKey.slice(-2, -1);
@@ -327,19 +327,12 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 		space.image = addedTile.img;
 		space.rotation = addedTile.rotation;
 		var tile = gameFactory.tiles[addedTile.tileId]; // look up tile by id
+		console.log("tile", tile);
 		var rotatedTile = gameFactory.rotateTile(tile, snapshot.val().rotation); // rotate tile
 
 
 		for (var i = 0; i < rotatedTile.paths.length; i++) {
-			////from scopeMe
-			// if ($scope.game.players.length) {
-			// 		$scope.game.players.forEach(function(player) {
-			// 				if (player.x === x && player.y === y && player.i === i) {
-			// 						space.points[i].travelled = true;
-			// 				}
-			// 		});
-			// }
-			/////
+
 			// if the point doesn't have neighbors... set to empty array
 			if (!space.points[i].neighbors) space.points[i].neighbors = [];
 			// set each point's neighbors to it's corresponding point
@@ -376,28 +369,30 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 				firebasePlayersArr[$scope.meIdx].i = $scope.me.i;
 				firebasePlayersArr[$scope.meIdx].canPlay = $scope.me.canPlay;
 				firebasePlayersArr.$save($scope.meIdx);
+				if(!$scope.me.canPlay){
+					$scope.myTurn=false;
+					console.log("I'm dead");
+					//add me to list of deadPlayers for this round
+					$firebaseArray(gameRef.child('deadPlayers')).$add({ 'name': $scope.me.name });
+				}
 			}
 
 			//if I die return my cards to the deck
-			if(!$scope.me.canPlay && $scope.me.tiles.length){
-				console.log("I'm dead");
+			if(!$scope.me.canPlay && $scope.me.tiles.length>0){
 				//debugger;
 				console.log("returning my tiles", $scope.me.tiles, "to the deck", $scope.game.deck);
 				$scope.game.deck.reload($scope.me.tiles).shuffle();
 				console.log("shuffled deck", $scope.game.deck);
 				syncDeck();
 				console.log("I should have no tiles", $scope.me.tiles);
-				// $scope.me.tiles = [];
 				//tell firebase we dont't have any more tiles
 				firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
 				firebasePlayersArr.$save($scope.meIdx);
-				$scope.myTurn=false;
-				//add me to list of deadPlayers for this round
-				$firebaseArray(gameRef.child('deadPlayers')).$add({ 'name': $scope.me.name });
 			}
 
 			console.log("viable players:", $scope.game.getCanPlay());
-			if ($scope.game.getCanPlay().length<=1 || spaceArr.length ===35) {
+			// TODO: faking winner remember to revert to 35
+			if ($scope.game.getCanPlay().length<=1 || spaceArr.length ===20) {
 				// debugger;
 				console.log("I believe we have an ending");
 				$scope.winner = $scope.game.getCanPlay();
@@ -538,10 +533,13 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
 
 	function syncDeck() {
+		deckArr = $firebaseArray(deckRef)
 		console.log(`syncing deck`, deckArr, `with ${$scope.game.deck.tiles}`);
+
+		//look out for deck reset now
 		deckArr[0] = $scope.game.deck.tiles;
-		console.log("saving the deck");
-		debugger;
+		console.log("saving the deck", deckArr);
+		// debugger;
 		return deckArr.$save(0);
 	}
 

@@ -214,7 +214,7 @@ tsuro.factory('gameFactory', function () {
             }
         },
         rotateTile: function (tile, rotation) {
-            console.log("rotate tile inside factory", rotation);
+            console.log("rotate tile inside factory", tile, rotation);
             if (rotation > 0) {
                 for (var i = 1; i <= rotation; i++) {
                     console.log("original pathes", tile.paths);
