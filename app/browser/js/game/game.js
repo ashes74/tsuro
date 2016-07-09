@@ -6,7 +6,7 @@ tsuro.config(function ($stateProvider) {
     });
 });
 
-tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stateParams, $firebaseObject, $firebaseArray, $state, gameFactory) {
+tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stateParams, $firebaseObject, $firebaseArray, $state, gameFactory, $window) {
     var ref = firebase.database().ref();
     var obj = $firebaseObject(ref);
 
@@ -102,7 +102,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                         });
 
                         $scope.me.marker = player[$scope.meIdx].marker;
-                        $scope.clicked = player[$scope.meIdx].clicked;
                         $scope.me.x = player[$scope.meIdx].x;
                         $scope.me.y = player[$scope.meIdx].y;
                         $scope.me.i = player[$scope.meIdx].i;
@@ -166,8 +165,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             });
     }
 
-    // once placed the marker, cannot place again
-    $scope.clicked = false;
 
     //  Have player pick their start point
     $scope.placeMarker = function (point) {
@@ -178,14 +175,11 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         $scope.me.placeMarker(point, $scope.game.board);
         $scope.me.tiles = $scope.game.deal(3);
         syncDeck();
-        $scope.me.clicked = true;
         // FOR SOME REASON I can't just do firebasePlayersArr[$scope.meIdx] = $scope.me;
         firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
-        // firebasePlayersArr[$scope.meIdx].point = $scope.me.point;
         firebasePlayersArr[$scope.meIdx].x = $scope.me.x;
         firebasePlayersArr[$scope.meIdx].y = $scope.me.y;
         firebasePlayersArr[$scope.meIdx].i = $scope.me.i;
-        firebasePlayersArr[$scope.meIdx].clicked = true;
         firebasePlayersArr[$scope.meIdx].canPlay = true;
         firebasePlayersArr.$save($scope.meIdx);
 
@@ -306,7 +300,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
 
     var placeTileOnSpace = function (x, y, img, rotate, tileId) {
-        console.log("assigning tile to space", `spaceId = ${spaceId}`, "tile:", tile.id, "rotation", tile.rotation);
+        // console.log("assigning tile to space", `spaceId = ${spaceId}`, "tile:", tile.id, "rotation", tile.rotation);
         var spaceId = 'space' + x + y;
         spaceObj[spaceId] = {
             'img': img,
@@ -317,7 +311,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     };
 
     spaceRef.on('child_added', function (snapshot) {
-        console.log("making moves with tile:", tile.id, "rotation", tile.rotation);
         var addedTile = snapshot.val();
         var spaceKey = snapshot.key;
         var x = +spaceKey.slice(-2, -1);
@@ -489,55 +482,53 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
         $state.go('pickGame');
     };
+    var resetRef = gameRef.child('reset')
+
+    resetRef.on('value', function (snapshot) {
+        console.log("SNAPSHOT", snapshot.val())
+        if (snapshot.val() === true) {
+            gameRef.update({
+                'reset': false
+            })
+            $window.location.reload();
+            console.log("reseted!")
+        }
+    })
 
     // TODO: need to remove this game room's moves from firebase?
     $scope.reset = function () {
-        Promise.all([
-                spaceObj.$remove(),
+        spaceObj.$remove();
 
-                markersArr.$remove(0)
-                .then(function (ref) {
-                    markersArr.$add(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]);
-                }),
+        markersArr.$remove(0)
+            .then(function (ref) {
+                markersArr.$add(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]);
+            });
 
-                deckArr.$remove(0)
-                .then(function (ref) {
-                    var tiles = gameFactory.tiles;
-                    var deck = new Deck(tiles).shuffle().tiles;
-                    deckArr.$add(deck);
-                }),
+        deckArr.$remove(0)
+            .then(function (ref) {
+                var tiles = gameFactory.tiles;
+                var deck = new Deck(tiles).shuffle().tiles;
+                deckArr.$add(deck);
+            });
 
-                gameRef.update({
-                    'currentPlayerIndex': 0
-                }),
+        gameRef.update({
+            'currentPlayerIndex': 0,
+            'reset': true
+        });
 
-                firebasePlayersArr.$loaded().then(function (data) {
-                    for (var i = 0; i < data.length; i++) {
-                        data[i].clicked = true;
-                        data[i].i = null;
-                        data[i].x = null;
-                        data[i].y = null;
-                        data[i].clicked = false;
-                        data[i].canPlay = null;
-                        data[i].marker = null;
-                        data[i].point = null;
-                        data[i].tiles = null;
-                        firebasePlayersArr.$save(i);
-                    }
-                })
-
-
-            ]).then((all) => {
-                console.log($scope.me);
-                // $state.reload();
-                $state.go($state.current, {}, {
-                    reload: true
-                });
-            })
-            .catch(console.error)
-
+        firebasePlayersArr.$loaded().then(function (data) {
+            for (var i = 0; i < data.length; i++) {
+                data[i].clicked = true;
+                data[i].i = null;
+                data[i].x = null;
+                data[i].y = null;
+                data[i].clicked = false;
+                data[i].canPlay = null;
+                data[i].tiles = null;
+                firebasePlayersArr.$save(i);
+            }
+        });
     };
-
 
     function syncDeck() {
         deckArr = $firebaseArray(deckRef)
