@@ -1,9 +1,19 @@
 <section id="gamelist" class="wrapper">
     <main id="list">
-        <div class="game" ng-repeat="game in gameNames">
-            <p class="gamename">{{game[0]}}</p>
-            <p><span ng-repeat="player in game[1].players">{{player.name || 'Mystery Player'}}{{$last ? '' : ', '}}</span></p>
-        <div class="join-button" ng-click="join(game[0])">Join This Game</div>
+        <div class="game" ng-repeat="game in games">
+            <p class="gamename">{{game.gameName}}</p>
+            <p><span ng-repeat="player in game.players">{{player.name || 'Mystery Player'}}{{$last ? '' : ', '}}</span></p>
+            <div
+                class="join-button"
+                ng-click="join(game[0])">
+                Join This Game
+            </div>
+            <button
+                class="delete-game" ng-show="game.myGame"
+                ng-click="delete(game)">
+                Delete
+            </button>
+
         </div>
     </main>
 </section>
