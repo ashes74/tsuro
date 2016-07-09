@@ -202,7 +202,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     };
 
 
-
     $scope.playersOnThisSpace = function (space) {
         var gamePlayers = $scope.game.players;
 
@@ -212,6 +211,21 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
         if (playersOnThisSpace.length === 0) return null;
         return playersOnThisSpace;
+    };
+
+    $scope.playerOnThisStartingPoint = function (start) {
+        console.log('start', start);
+        var playerOnThisStart = $scope.game.players.find(function(player){
+            return player.x === start[0] && player.y === start[1] && player.i === start[2];
+        });
+        if(playerOnThisStart) {
+            console.log(true);
+            return true;
+        } else {
+            console.log(false);
+            return false;
+        }
+
     };
 
 
