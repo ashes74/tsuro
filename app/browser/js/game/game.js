@@ -13,9 +13,6 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 	var gameRef = ref.child('games').child($stateParams.gameName);
 	var gameArr = gameRef.child($stateParams.gameName);
 
-	var initialDeckRef = ref.child('games').child($stateParams.gameName).child('initialDeck');
-	var initialDeckArr = $firebaseArray(initialDeckRef);
-
 	var deckRef = gameRef.child('deck');
 	var deckArr = $firebaseArray(deckRef);
 
