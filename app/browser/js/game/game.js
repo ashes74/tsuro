@@ -273,20 +273,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
     $scope.placeTile = function (tile) {
         if (!$scope.me.canPlay) return
-            //clearing out the deadPlayers array in firebase first
-        var deadPlayersArr = $firebaseArray(gameRef.child('deadPlayers'));
-        console.log(deadPlayersArr, deadPlayersArr.length);
-
-        //JUST IN CASE: if we want to remove players....
-        // deadPlayersArr.$loaded(function(players) {
-        //     console.log(players);
-        //     for (var i = 0; i < players.length; i++) {
-        //         deadPlayersArr.$remove(i).then(function(ref) {
-        //             console.log('I am removed');
-        //         });
-        //     }
-        // })
-        console.log("received place tile command, tile:", tile.id, "rotation", tile.rotation);
+   
         var rotation = tile.rotation;
         var spacex = $scope.me.x;
         var spacey = $scope.me.y;
@@ -300,7 +287,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
 
     var placeTileOnSpace = function (x, y, img, rotate, tileId) {
-        // console.log("assigning tile to space", `spaceId = ${spaceId}`, "tile:", tile.id, "rotation", tile.rotation);
         var spaceId = 'space' + x + y;
         spaceObj[spaceId] = {
             'img': img,
@@ -376,7 +362,8 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             if (!$scope.me.canPlay && $scope.me.tiles.length > 0) {
                 //debugger;
                 console.log("returning my tiles", $scope.me.tiles, "to the deck", $scope.game.deck);
-                $scope.game.deck.reload($scope.me.tiles).shuffle();
+                // $scope.game.deck.reload($scope.me.tiles).shuffle();
+                $scope.game.deck.reload($scope.me.tiles);
                 console.log("shuffled deck", $scope.game.deck);
                 syncDeck();
                 console.log("I should have no tiles", $scope.me.tiles);
