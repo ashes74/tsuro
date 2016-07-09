@@ -5,7 +5,7 @@
             <p><span ng-repeat="player in game.players">{{player.name || 'Mystery Player'}}{{$last ? '' : ', '}}</span></p>
             <div
                 class="join-button"
-                ng-click="join(game[0])">
+                ng-click="join(game)">
                 Join This Game
             </div>
             <button

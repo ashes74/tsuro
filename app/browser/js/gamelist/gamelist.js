@@ -41,8 +41,8 @@ tsuro.controller('gameList', function ($scope, firebaseUrl, $firebaseObject, $st
         synchronizedArr.$remove(game.index)
     }
 
-    $scope.join = function (gameName) {
-        var gameNameRef = ref.child('games').child(gameName);
+    $scope.join = function (game) {
+        var gameNameRef = ref.child('games').child(game.gameName);
         var playersRef = gameNameRef.child('players');
         var firebasePlayersArr = $firebaseArray(playersRef);
 
@@ -68,7 +68,7 @@ tsuro.controller('gameList', function ($scope, firebaseUrl, $firebaseObject, $st
                 })
                 .then(function () {
                     $state.go('game', {
-                        "gameName": gameName
+                        "gameName": game.gameName
                     });
                 });
         });
