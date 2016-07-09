@@ -6,7 +6,7 @@ tsuro.config(function ($stateProvider) {
     });
 });
 
-tsuro.controller('gameList', function ($scope, firebaseUrl, $firebaseObject, $state, $firebaseAuth, $firebaseArray) {
+tsuro.controller('gameList', function ($scope, firebaseUrl, $firebaseObject, $state, $firebaseAuth, $firebaseArray, $window) {
     //For synchronizingGameList...
     var ref = firebase.database().ref();
     var obj = $firebaseObject(ref);
@@ -17,6 +17,7 @@ tsuro.controller('gameList', function ($scope, firebaseUrl, $firebaseObject, $st
     var synchRef = ref.child("games");
     var synchronizedArr = $firebaseArray(synchRef);
 
+    var synchronizedObj = $firebaseObject(synchRef);
 
     // This returns a promise...you can.then() and assign value to $scope.variable
     // gamelist is whatever we are calling it in the angular html.
@@ -25,16 +26,30 @@ tsuro.controller('gameList', function ($scope, firebaseUrl, $firebaseObject, $st
             .then(function (games) {
                 if (user) {
                     for (var i = 0; i < games.length; i++) {
-                        var playerKey = Object.keys(games[i].players)[0];
-                        games[i].index = i;
-                        if (user.uid === games[i].players[playerKey].uid) {
-                            games[i].myGame = true;
+                        if (games[i].players) {
+                            var playerKey = Object.keys(games[i].players)[0];
+                            games[i].index = i;
+                            if (user.uid === games[i].players[playerKey].uid) {
+                                games[i].myGame = true;
+                            }
+                        }
+
+                        if (!games[i].gameName || !games[i].players) {
+                            synchronizedArr.$remove(i);
+                            console.log("revoming invalid games")
                         }
                     }
                 }
                 $scope.games = games
-                console.log($scope.games)
             })
+    })
+
+    synchRef.on('child_changed', function (snapshot) {
+        console.log(snapshot.val())
+        var game = snapshot.val();
+        if (!game.gameName || !game.players) {
+            $window.location.reload();
+        }
     })
 
     $scope.delete = function (game) {
