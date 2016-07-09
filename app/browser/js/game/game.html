@@ -6,16 +6,14 @@
     <!-- top row -->
     <div class="corner"></div>
     <div class="frame horizontal">
-      <div ng-repeat="start in starttop" class="startpoints" ng-hide="!me || me.i || me.i === 0" ng-click="placeMarker(start)">
-        <span>◌</span>
+      <div ng-repeat="start in starttop" class="startpoints {{me.marker}}" ng-hide="!me || me.i || me.i === 0" ng-click="placeMarker(start)">
       </div>
     </div>
     <div class="corner"></div>
 
     <!-- middle row -->
     <div class="frame vertical">
-      <div ng-repeat="start in startleft" class="startpoints" ng-hide="!me || me.i || me.i === 0" ng-click="placeMarker(start)">
-        <span>◌</span>
+      <div ng-repeat="start in startleft" class="startpoints {{me.marker}}" ng-hide="!me || me.i || me.i === 0" ng-click="placeMarker(start)">
       </div>
     </div>
     <div class="space-container">
@@ -34,23 +32,21 @@
 
 
     <div class="frame vertical">
-      <div ng-repeat="start in startright" class="startpoints" ng-hide="!me || me.i || me.i === 0" ng-click="placeMarker(start)">
-        <span>◌</span>
+      <div ng-repeat="start in startright" class="startpoints {{me.marker}}" ng-hide="!me || me.i || me.i === 0" ng-click="placeMarker(start)">
       </div>
     </div>
     
     <!-- bottom row -->
     <div class="corner"></div>
     <div class="frame horizontal">
-      <div ng-repeat="start in startbottom" class="startpoints" ng-hide="!me || me.i || me.i === 0" ng-click="placeMarker(start)">
-        <span>◌</span>
+      <div ng-repeat="start in startbottom" class="startpoints {{me.marker}}" ng-hide="!me || me.i || me.i === 0" ng-click="placeMarker(start)">
       </div>
     </div>
     <div class="corner"></div>
   </main>
   
   <aside class="playerDrawer">
-    <div class="player {{player.marker}}" ng-class="{currentPlayer: game.currentPlayer.uid === player.uid, dead: !player.canPlay}" ng-repeat="player in game.players">
+    <div class="player {{player.marker}}" ng-class="{currentPlayer: game.currentPlayer.uid === player.uid, itsMyTurn: game.currentPlayer.uid === me.uid, dead: !player.canPlay}" ng-repeat="player in game.players">
       <p>{{player.name}}</p>
   
   </div>
@@ -63,8 +59,12 @@
 
 </section>
 <div class="markermodal" ng-show="!me.marker">
-  <p>Choose your marker and pick a starting point along the board edge.</p>
+  <p>Choose your color:</p>
   <div ng-repeat="marker in game.availableMarkers" class="circle {{marker}}" ng-disable="me.marker || !me" ng-click="pickMarker(marker)"></div>
+</div>
+
+<div class="startpointmodal" ng-show="me.marker && !me.x && me.x !== 0">
+  <p>Choose your starting point along the edge of the board.</p>
 </div>
 
 <!-- <div class="game-notifications">

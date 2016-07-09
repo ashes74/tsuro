@@ -24,6 +24,28 @@ $paper: #f4f1df;
   }
 }
 
+@mixin centering($positioning){
+  position: $positioning;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+}
+
+@mixin startpoints(){
+  position: relative;
+  background-clip: padding-box;
+  box-sizing: border-box;
+  // background-color: $yellow;
+  cursor: pointer;
+  animation-name: opacityshift;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+@keyframes opacityshift{
+  from{ opacity: 1; }
+  to {opacity: .5;}
+}
+
 @mixin button(){
   width: 100%;
   padding: 2%;
@@ -167,10 +189,20 @@ section.wrapper {
         width: 98%;
 
         .startpoints {
+          @include startpoints();
+
           height: 100%;
           width: calc(100%/12);
           display: inline-block;
-          position: relative;
+          border-left: 3px solid transparent;
+          border-right: 3px solid transparent;
+         
+          span {
+            width: 34%;
+            height: 250%;
+            border-radius: 50%;
+            @include centering(absolute);
+          }
         }
       }
       &.vertical {
@@ -178,20 +210,19 @@ section.wrapper {
         width: 1%;
 
         .startpoints {
+          @include startpoints();
+
           width: 100%;
           height: calc(100%/12);
-          display: inline-block;
-          position: relative;
+          border-top: 3px solid transparent;
+          border-bottom: 3px solid transparent;
+          span {
+            width: 250%;
+            height: 34%;
+            border-radius: 50%;
+            @include centering(absolute);
+          }
         }
-      }
-      .startpoints span {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%,-50%);
-        color: $mountain;
-        margin: 0;
-        cursor: pointer;
       }
     }
     .space-container {
@@ -393,11 +424,14 @@ section.wrapper {
       
       &.currentPlayer {
         font-weight: 600;
-        @include throbbing(currentPlayer)
+        transform: scale(1.25);
+        &.itsMyTurn{
+          @include throbbing(smallscaleup)
+        }
       }
-      @keyframes currentPlayer {
+      @keyframes smallscaleup {
         from { transform: scale(1)  }
-        to { transform: scale(1.15) }
+        to { transform: scale(1.25) }
       }
       &.dead {
         background-color: $gray;
@@ -428,15 +462,14 @@ section.wrapper {
 
 /////MARKER MODAL/////
 .markermodal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 50vw;
-  padding: 50px;
-  background-color: #fff;
-  border-radius: 25px;
-  box-shadow: 0 0 10px #808080;
+  @include centering(absolute);
+  width: 100vw;
+  height: 100vh;
+  padding-top: 25%;
+  background-color: rgba(255,255,255,.8);
+
+  // border-radius: 25px;
+  // box-shadow: 0 0 10px #808080;
   z-index: 100;
   
   p {
@@ -453,12 +486,26 @@ section.wrapper {
   }
 }
 
+.startpointmodal {
+  @include centering(fixed);
+  width: 84vh;
+  height: 84vh;
+  padding: 2vh;
+  background-color: rgba(255,255,255,.8);
+  z-index: 100;
+  
+  p {
+    @include centering(absolute);
+    font-size: 2em;
+    margin: 0 0 40px;
+    width: 100%;
+  }
+}
+
 /////GAME NOTIFICATIONS/////
 .game-notifications {
-  position: fixed;
-  top: 50%; left: 50%;
+  @include centering(fixed);
   z-index: 15;
-  transform: translate(-50%, -50%);
   font-size: 2em;
   color: $mountain;
   p {
