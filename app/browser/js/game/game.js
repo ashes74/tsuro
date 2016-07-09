@@ -314,7 +314,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
         console.log($scope.game.getCanPlay().length);
         console.log($scope.game.getCanPlay());
         //if all 35 cards are placed - everyone left with the canPlay property WINS
-        if (spaceArr.length === 35) {
+        if (spaceArr.length === 10) {
             console.log('everyone who canPlay wins');
             $scope.winner = $scope.game.getCanPlay(); //returns an array of canPlay players
 
