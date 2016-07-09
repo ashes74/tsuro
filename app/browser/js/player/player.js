@@ -37,6 +37,7 @@ Player.prototype.move = function (board) {
 
         let nextPoint = currPoint.neighbors.find((neighbor) => !neighbor.travelled);
         console.log(nextPoint)
+
         if (nextPoint) {
             currPoint = nextPoint;
             currPoint.travelled = true;
@@ -48,6 +49,7 @@ Player.prototype.move = function (board) {
             }
             this.assignXYI(currPoint);
         } else {
+          //check collision/edge
             if (currPoint.neighbors.length === 2 || currPoint.edge) this.canPlay = false;
             console.log("can play", this.canPlay)
             end = true;

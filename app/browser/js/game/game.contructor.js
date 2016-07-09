@@ -18,7 +18,7 @@ class Game {
     }
 
     getCurrentPlayer() {
-        if (this.currentPlayerIndex === -1) return;
+
         return this.players[this.currentPlayerIndex];
     }
 
@@ -48,8 +48,6 @@ class Game {
 
     //to be called at the end of a turn to set the currentPlayerIndex to the next eligible player in the players array;
     nextCanPlay() {
-        if (this.getCanPlay().length === 1) return -1;
-
             console.log(this.currentPlayerIndex, "currentPlayerIndex", "players", this.players)
             var newIdx = this.currentPlayerIndex + 1 >= this.players.length ? 0 : this.currentPlayerIndex + 1;
             console.log("newIdx", newIdx)
