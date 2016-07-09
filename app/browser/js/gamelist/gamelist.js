@@ -26,6 +26,7 @@ tsuro.controller('gameList', function ($scope, firebaseUrl, $firebaseObject, $st
                 if (user) {
                     for (var i = 0; i < games.length; i++) {
                         var playerKey = Object.keys(games[i].players)[0];
+                        games[i].index = i;
                         if (user.uid === games[i].players[playerKey].uid) {
                             games[i].myGame = true;
                         }
@@ -35,6 +36,10 @@ tsuro.controller('gameList', function ($scope, firebaseUrl, $firebaseObject, $st
                 console.log($scope.games)
             })
     })
+
+    $scope.delete = function (game) {
+        synchronizedArr.$remove(game.index)
+    }
 
     $scope.join = function (gameName) {
         var gameNameRef = ref.child('games').child(gameName);
