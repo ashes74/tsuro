@@ -374,7 +374,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
             console.log("viable players:", $scope.game.getCanPlay());
             // TODO: faking winner remember to revert to 35
-            if ($scope.game.getCanPlay().length <= 1 || spaceArr.length === 20) {
+            if ($scope.game.getCanPlay().length <= 1 || spaceArr.length === 35) {
                 // debugger;
                 console.log("I believe we have an ending");
                 $scope.winner = $scope.game.getCanPlay();
