@@ -438,7 +438,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
                             console.log(`deck has cards`);
                             // if deck and dragon deal to dragonQueue first until players have 3 tiles
 
-                            while ($scope.dragon && $scope.deck.tiles.length > 0) {
+                            while ($scope.dragon && $scope.game.deck.tiles.length > 0) {
                                 console.log(`serving dragonQueue first`);
                                 if ($scope.dragon.tiles.length < 3) {
                                     //TODO: LA : consider _.flatten
