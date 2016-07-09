@@ -1,4 +1,4 @@
-tsuro.factory('gameFactory', function () {
+tsuro.factory('gameFactory', function ($firebaseAuth, $state) {
     return {
         markers: ["red", "purple", "yellow", "pink", "jade", "sky", "ocean", "green"],
         tiles: {
