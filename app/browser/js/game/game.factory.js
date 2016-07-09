@@ -1,5 +1,6 @@
-tsuro.factory('gameFactory', function () {
+tsuro.factory('gameFactory', function ($firebaseAuth, $state, $rootScope) {
     return {
+        markers: ["red", "purple", "yellow", "pink", "jade", "sky", "ocean", "green"],
         tiles: {
             1: {
                 id: 1,
@@ -213,7 +214,7 @@ tsuro.factory('gameFactory', function () {
             }
         },
         rotateTile: function (tile, rotation) {
-            console.log("rotate tile inside factory", rotation);
+            console.log("rotate tile inside factory", tile, rotation);
             if (rotation > 0) {
                 for (var i = 1; i <= rotation; i++) {
                     console.log("original pathes", tile.paths);
@@ -233,6 +234,16 @@ tsuro.factory('gameFactory', function () {
             } else {
                 return tile;
             }
+        },
+        logInWithGoogle: function () {
+            var auth = $firebaseAuth();
+            auth.$signInWithPopup("google").then(function (authData) {
+                console.log("Logged in as:", authData);
+                $rootScope.currentUser = authData;
+                $state.go('pickGame');
+            }).catch(function (error) {
+                console.error("Authentication failed:", error);
+            });
         }
     };
 });
