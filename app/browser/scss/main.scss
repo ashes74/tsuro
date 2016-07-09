@@ -13,15 +13,36 @@ $mountain: #122039;
 $gray: #5c6764;
 $paper: #f4f1df;
 
-@mixin throbbing($animationname){
+@mixin throbbing($animationname) {
   animation-name: $animationname;
   animation-duration: 1s;
   animation-iteration-count: infinite;
   animation-direction: alternate;
-  box-shadow: 0 0 10px $gray; 
-  &:hover {
-    animation-play-state: paused;
-  }
+  box-shadow: 0 0 10px $gray;
+  &:hover { animation-play-state: paused; }
+}
+
+@mixin centering($positioning){
+  position: $positioning;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+}
+
+@mixin startpoints(){
+  position: relative;
+  background-clip: padding-box;
+  box-sizing: border-box;
+  cursor: pointer;
+
+  animation-name: opacityshift;
+  animation-duration: 1s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+@keyframes opacityshift{
+  from{ opacity: 1; }
+  to {opacity: .5;}
 }
 
 @mixin button(){
@@ -40,26 +61,24 @@ $paper: #f4f1df;
 
 /////STRUCTURE/////
 body {
-    font-family: $geosans;
-    text-align: center;
-    background-image: url('https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-bg.jpg?alt=media&token=d0078f3a-7445-47ba-8641-3a794a1499ab');
-    background-attachment: fixed;
-    background-repeat: no-repeat;
-    background-size: cover;
+  font-family: $geosans;
+  text-align: center;
+  background-image: url('https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-bg.jpg?alt=media&token=d0078f3a-7445-47ba-8641-3a794a1499ab');
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 section.wrapper {
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-
 /////LOGIN PAGE/////
 #login {
   .login-button {
-    @include button()
-
+    @include button(); 
     &:hover {
       background-color: $red;
       color: white;
@@ -69,39 +88,34 @@ section.wrapper {
 /////PICKGAME PAGE/////
 #pickGame {
   input {
-    @include button()
+    @include button();
     vertical-align: bottom;
     display: inline-block;
-    width:74%;
+    width: 74%;
     border-radius: 10px 0 0 10px;
-
     background-color: transparent;
     color: $red;
-
     &:focus {
-      outline: 0; 
+      outline: 0;
       background-color: #fff;
     }
   }
   .create-button {
-    @include button()
+    @include button();
     background-color: $red;
     color: white;
     display: inline-block;
     width: 26%;
     border-radius: 0 10px 10px 0;
   }
-
   .join-button {
-    @include button()
-
+    @include button();
     &:hover {
       background-color: transparent;
       color: $red;
     }
   }
 }
-
 /////GAME LIST PAGE/////
 #gamelist {
   #list {
@@ -115,24 +129,24 @@ section.wrapper {
     .game {
       width: 29vw;
       margin: 2vw;
-      padding: 10px 10px 36px 10px;
+      padding: 10px 10px 36px;
       display: inline-block;
       box-sizing: border-box;
       border: 1px solid $gray;
       position: relative;
       overflow: hidden;
 
-      .gamename { 
+      .gamename {
         text-transform: uppercase;
         letter-spacing: 3px;
         font-weight: 600;
-        margin-bottom:0;
+        margin-bottom: 0;
       }
-      
       .join-button {
         @include button();
         position: absolute;
-        left: 0; bottom: 0;
+        left: 0;
+        bottom: 0;
         background-color: $gray;
         border-color: $gray;
         border-radius: 0;
@@ -141,17 +155,17 @@ section.wrapper {
         color: white;
 
         &:hover {
-          color: $gray;
-          background-color: #fff;
+            color: $gray;
+            background-color: #fff;
         }
       }
     }
   }
 }
-
 /////GAME PAGE/////
 #game {
   display: flex;
+  flex-wrap: wrap;
 
   #board {
     width: 94vh;
@@ -167,10 +181,16 @@ section.wrapper {
         width: 98%;
 
         .startpoints {
+          @include startpoints();
+
           height: 100%;
           width: calc(100%/12);
           display: inline-block;
-          position: relative;
+          border-left: 3px solid transparent;
+          border-right: 3px solid transparent;
+          &.occupied {
+            background-color: transparent !important;
+          }
         }
       }
       &.vertical {
@@ -178,22 +198,16 @@ section.wrapper {
         width: 1%;
 
         .startpoints {
+          @include startpoints();
+
           width: 100%;
           height: calc(100%/12);
-          display: inline-block;
-          position: relative;
+          border-top: 3px solid transparent;
+          border-bottom: 3px solid transparent;
         }
       }
-      .startpoints span {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%,-50%);
-        color: $mountain;
-        margin: 0;
-        cursor: pointer;
-      }
     }
+
     .space-container {
       height: 98%;
       width: 98%;
@@ -205,8 +219,6 @@ section.wrapper {
       .space {
         width: calc(100%/6);
         height: calc(100%/6);
-        // border: 1px dotted #ccc;
-        // box-sizing: border-box;
         position: relative;
 
         .placehover {
@@ -217,94 +229,41 @@ section.wrapper {
           width: 100%;
           height: 100%;
           cursor: pointer;
-          // background-color: $mountain;
-          // color: white;
-          // text-transform: uppercase;
-          // letter-spacing: 3px;
           position: absolute;
           z-index: 6;
+
           span {
             background-color: rgba(255,255,255,.7);
             padding: 2px 3px;
             border-radius: 5px;
-            // font-size: .75em;
-
             position: absolute;
             bottom: 2%;
             left: 50%;
             transform: translate(-50%,-50%);
           }
         }
-
         img {
-          width:100%;
+          width: 100%;
           position: absolute;
-          top:0; left: 0;
+          top: 0;
+          left: 0;
           z-index: 5;
           transition: all 1s;
 
-
-          &.testing {
-            transform: scale(1.15); 
-            box-shadow: 0 0 10px $gray; 
-            // border: 1px solid $gray;
+          &.testing { transform: scale(1.15); box-shadow: 0 0 10px $gray;}
+          &.east {
+            transform: rotate(90deg);
+            &.testing { transform: rotate(90deg) scale(1.15);}
           }
-          
-          &.east { 
-            transform: rotate(90deg); 
-            &.testing { 
-              transform: rotate(90deg) scale(1.15); 
-              // border: 1px solid $gray;
-            }
+          &.south {
+            transform: rotate(180deg);
+            &.testing { transform: rotate(180deg) scale(1.15);}
           }
-          &.south { 
-            transform: rotate(180deg); 
-            &.testing { 
-              transform: rotate(180deg) scale(1.15); 
-              // border: 1px solid $gray;
-            }
-          }
-          &.west { 
-            transform: rotate(270deg); 
-            &.testing {
-              transform: rotate(270deg) scale(1.15);
-              // border: 1px solid $gray;
-            }
+          &.west {
+            transform: rotate(270deg);
+            &.testing { transform: rotate(270deg) scale(1.15); }
           }
         }
-        // @keyframes north-east {
-        //   from { transform: rotate(0deg);  }
-        //   to { transform: rotate(90deg); }
-        // }
-        // @keyframes east-south {
-        //   from { transform: rotate(90deg);  }
-        //   to { transform: rotate(180deg); }
-        // }
-        // @keyframes south-west {
-        //   from { transform: rotate(180deg);  }
-        //   to { transform: rotate(270deg); }
-        // }
-        // @keyframes west-north {
-        //   from { transform: rotate(270deg);  }
-        //   to { transform: rotate(360deg); }
-        // }
-        // @keyframes north-west {
-        //   from { transform: rotate(0deg);  }
-        //   to { transform: rotate(-90deg); }
-        // }
-        // @keyframes west-south {
-        //   from { transform: rotate(-90deg);  }
-        //   to { transform: rotate(-180deg); }
-        // }
-        // @keyframes south-east {
-        //   from { transform: rotate(-180deg);  }
-        //   to { transform: rotate(-270deg); }
-        // }
-        // @keyframes east-north {
-        //   from { transform: rotate(-270deg);  }
-        //   to { transform: rotate(0deg); }
-        // }
-
         .player {
           position: absolute;
           height: 20px;
@@ -312,19 +271,15 @@ section.wrapper {
           border-radius: 50%;
           transform: translate(-50%,-50%);
           z-index: 100;
-
-          &.zero { top: 0; left: 30%; }
-          &.one { top: 0; left: 70%; }
-          &.two { top: 30%; left: 100%; }
-          &.three { top: 70%; left: 100%; }
-          &.four { top: 100%; left: 70%; }
-          &.five { top: 100%; left: 30%; }
-          &.six { left: 0; top: 70%; }
-          &.seven { left: 0; top: 30%; }
-        }
-
-        &.mynext {
-          background-color: rgba(255,255,255,.5);
+          &.zero  { top: 0;     left: 30%;  }
+          &.one   { top: 0;     left: 70%;  }
+          &.two   { top: 30%;   left: 100%; }
+          &.three { top: 70%;   left: 100%; }
+          &.four  { top: 100%;  left: 70%;  }
+          &.five  { top: 100%;  left: 30%;  }
+          &.six   { top: 70%;   left: 0;    }
+          &.seven { top: 30%;   left: 0;    }
+          &.mynext { background-color: rgba(255,255,255,.5); }
         }
       }
     }
@@ -338,8 +293,8 @@ section.wrapper {
     height: 92vh;
     padding: 4vh;
     display: flex;
-    flex-direction: column;
-    
+    flex-direction: column-reverse;
+
     tile {
       width: calc(86vh/3);
       height: calc(86vh/3);
@@ -347,31 +302,33 @@ section.wrapper {
       position: relative;
       cursor: pointer;
       box-sizing: border-box;
-      // border: 1px solid $mountain;
 
-      
-        .ccw {
-          width: 20%; height: 20%;
-          position: absolute;
-          transform: translateY(-50%);
-          left: 0; top: 50%;
-        }
-        .cw {
-          width: 20%; height: 20%;
-          position: absolute;
-          transform: translateY(-50%);
-          right: 0; top: 50%;
-        }
+      .ccw {
+        width: 20%;
+        height: 20%;
+        position: absolute;
+        transform: translateY(-50%);
+        left: 0;
+        top: 50%;
+      }
+      .cw {
+        width: 20%;
+        height: 20%;
+        position: absolute;
+        transform: translateY(-50%);
+        right: 0;
+        top: 50%;
+      }
+
+      &:first-child { margin-bottom: 0; }
       
       img.tile {
         width: 100%;
-        box-shadow: 0 0 10px $gray; 
+        box-shadow: 0 0 10px $gray;
         transition: all 1s;
-
-        &:last-child { margin-bottom: 0; }
-        &.east { transform: rotate(90deg); }
-        &.south { transform: rotate(180deg); }
-        &.west { transform: rotate(270deg); }
+        &.east { transform: rotate(90deg);}
+        &.south { transform: rotate(180deg);}
+        &.west { transform: rotate(270deg);}
       }
     }
   }
@@ -390,53 +347,50 @@ section.wrapper {
       margin-bottom: 3vh;
       padding: 5px 0;
       color: #fff;
-      
       &.currentPlayer {
         font-weight: 600;
-        @include throbbing(currentPlayer)
-      }
-      @keyframes currentPlayer {
+        transform: scale(1.25);
+        &.itsMyTurn{
+          @include throbbing(smallscaleup)
+        }
+      }      
+      @keyframes smallscaleup {
         from { transform: scale(1)  }
-        to { transform: scale(1.15) }
+        to { transform: scale(1.25) }
       }
       &.dead {
         background-color: $gray;
         opacity: .4;
       }
-
       p { margin: 0; }
-
       &:last-child { margin-bottom: 0; }
-      
     }
+
     .game-buttons {
       position: absolute;
       bottom: 0;
       margin-bottom: 4vh;
-      
-      .leave, .reset {
-        width: calc(97vh/3);
-        margin-top:2vh;
-        padding: 5px 0;
-        color: #fff;
-        background-color: $gray;
-        cursor: pointer;
-      }     
+      .leave,
+      .logout,
+      .reset {
+          width: calc(97vh/3);
+          margin-top: 2vh;
+          padding: 5px 0;
+          color: #fff;
+          background-color: $gray;
+          cursor: pointer;
+      }
     }
   }
 }
 
 /////MARKER MODAL/////
 .markermodal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 50vw;
-  padding: 50px;
-  background-color: #fff;
-  border-radius: 25px;
-  box-shadow: 0 0 10px #808080;
+  @include centering(absolute);
+  width: 100vw;
+  height: 100vh;
+  padding-top: 25%;
+  background-color: rgba(255,255,255,.8);
   z-index: 100;
   
   p {
@@ -452,33 +406,75 @@ section.wrapper {
     margin: 10px;
   }
 }
+.loginmodal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(255,255,255,.9);
+  z-index: 100;
+  .main {
+  @include centering(absolute);
+    width: 100%;
+    max-width: 600px;
+    // p {
+    //   font-size: 2em;
+    //   margin: 0 0 40px;
+    //   max-width: 600px;
+    //   width: 100%;
+    // }
+    .login-button {
+      max-width: 600px;
+
+      @include button(); 
+      &:hover {
+        background-color: $red;
+        color: white;
+      }
+    }
+  }
+}
+/////STARTPOINT MODAL/////
+.startpointmodal {
+  @include centering(fixed);
+  width: 84vh;
+  height: 84vh;
+  padding: 2vh;
+  background-color: rgba(255,255,255,.8);
+  z-index: 100;
+  
+  p {
+    @include centering(absolute);
+    font-size: 2em;
+    margin: 0 0 40px;
+    width: 100%;
+  }
+}
 
 /////GAME NOTIFICATIONS/////
 .game-notifications {
-  position: fixed;
-  top: 50%; left: 50%;
+  @include centering(fixed);
   z-index: 15;
-  transform: translate(-50%, -50%);
   font-size: 2em;
   color: $mountain;
   p {
     @include throbbing(deadPlayers);
     @keyframes deadPlayers {
-        from { transform: scale(1); }
-        to { transform: scale(1.15);}
+      from { transform: scale(1); }
+      to { transform: scale(1.15);}
     }
-    box-shadow: none;
   }
 }
-
 .loader {
-  width: 100%; height: 100%;
+  width: 100%;
+  height: 100%;
   position: fixed;
-  top: 0; left: 0;
+  top: 0;
+  left: 0;
   background-color: rgba(0,0,0,.7);
   img {
     position: relative;
-    top:50%;
+    top: 50%;
     transform: translateY(-50%);
   }
 }
@@ -494,8 +490,9 @@ h2 {
   font-size: 1.5em;
   margin-bottom: 3em;
 }
-a { text-decoration: none; }
-
+a {
+  text-decoration: none;
+}
 /////FORMS/////
 input {
   width: 100%;

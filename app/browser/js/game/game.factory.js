@@ -1,4 +1,4 @@
-tsuro.factory('gameFactory', function () {
+tsuro.factory('gameFactory', function ($firebaseAuth, $state, $rootScope) {
     return {
         markers: ["red", "purple", "yellow", "pink", "jade", "sky", "ocean", "green"],
         tiles: {
@@ -234,6 +234,16 @@ tsuro.factory('gameFactory', function () {
             } else {
                 return tile;
             }
+        },
+        logInWithGoogle: function () {
+            var auth = $firebaseAuth();
+            auth.$signInWithPopup("google").then(function (authData) {
+                console.log("Logged in as:", authData);
+                $rootScope.currentUser = authData;
+                $state.go('pickGame');
+            }).catch(function (error) {
+                console.error("Authentication failed:", error);
+            });
         }
     };
 });
