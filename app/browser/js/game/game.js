@@ -369,6 +369,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 				if(!$scope.me.canPlay){
 					$scope.myTurn=false;
 					console.log("I'm dead");
+					firebasePlayersArr[$scope.meIdx].dead = true;
 					//add me to list of deadPlayers for this round
 					$firebaseArray(gameRef.child('deadPlayers')).$add({ 'name': $scope.me.name });
 				}
@@ -526,7 +527,14 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 		.catch(console.error)
 
 	};
-
+///DEATH
+// TODO: return cards to deck
+playersRef.on("child_changed", function(snapshot){
+	var player = snapshot.val();
+	if (player.dead && player.uid === $scope.me.uid && $scope.me.tiles.length>0){
+		// deckArr do something
+	}
+})
 
 	function syncDeck() {
 		// deckArr = $firebaseArray(deckRef)
