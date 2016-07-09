@@ -306,7 +306,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
 
 	var placeTileOnSpace = function(x, y, img, rotate, tileId) {
-		console.log("assigning tile to space", `spaceId = ${spaceId}`, "tile:", tile.id, "rotation", tile.rotation);
+		console.log("assigning tile to space", `spaceId = ${spaceId}`, "tile:", tileId, "rotation", rotate);
 		var spaceId = 'space' + x + y;
 		spaceObj[spaceId] = {
 			'img': img,
@@ -317,7 +317,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 	};
 
 	spaceRef.on('child_added', function (snapshot) {
-		console.log("making moves with tile:", tile.id, "rotation", tile.rotation);
+		// console.log("making moves with tile:", tile.id, "rotation", tile.rotation);
 		var addedTile = snapshot.val();
 		var spaceKey = snapshot.key;
 		var x = +spaceKey.slice(-2, -1);
@@ -391,8 +391,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 			}
 
 			console.log("viable players:", $scope.game.getCanPlay());
-			// TODO: faking winner remember to revert to 35
-			if ($scope.game.getCanPlay().length<=1 || spaceArr.length ===20) {
+			if ($scope.game.getCanPlay().length<=1 || spaceArr.length ===35) {
 				// debugger;
 				console.log("I believe we have an ending");
 				$scope.winner = $scope.game.getCanPlay();
@@ -533,9 +532,8 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
 
 	function syncDeck() {
-		deckArr = $firebaseArray(deckRef)
+		// deckArr = $firebaseArray(deckRef)
 		console.log(`syncing deck`, deckArr, `with ${$scope.game.deck.tiles}`);
-
 		//look out for deck reset now
 		deckArr[0] = $scope.game.deck.tiles;
 		console.log("saving the deck", deckArr);
