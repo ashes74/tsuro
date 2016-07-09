@@ -13,12 +13,13 @@ class Deck {
 		return this;
 	}
 
-	dealThree() {
-		return this.tiles.splice(0, 3);
-	}
-
 	deal(num) {
-		return this.tiles.splice(0, num);
+		let cardsToDeal = [];
+		//splicing causes weird empty array slots that clutters the deck
+		for (var i = 0; i < num; i++) {
+			cardsToDeal.push(this.tiles.shift());
+		}
+		return cardsToDeal;
 	}
 
 	reload(tiles) {
