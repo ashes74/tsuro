@@ -6,7 +6,7 @@ tsuro.config(function ($stateProvider) {
     });
 });
 
-tsuro.controller('gameList', function ($scope, firebaseUrl, $firebaseObject, $state, $firebaseAuth, $firebaseArray) {
+tsuro.controller('gameList', function ($scope, firebaseUrl, $firebaseObject, $state, $firebaseAuth, $firebaseArray, $window) {
     //For synchronizingGameList...
     var ref = firebase.database().ref();
     var obj = $firebaseObject(ref);
@@ -15,26 +15,49 @@ tsuro.controller('gameList', function ($scope, firebaseUrl, $firebaseObject, $st
     var firebaseUser = auth.$getAuth();
 
     var synchRef = ref.child("games");
-    var synchronizedObj = $firebaseObject(synchRef);
+    var synchronizedArr = $firebaseArray(synchRef);
 
+    var synchronizedObj = $firebaseObject(synchRef);
 
     // This returns a promise...you can.then() and assign value to $scope.variable
     // gamelist is whatever we are calling it in the angular html.
-    synchronizedObj.$bindTo($scope, "gamelist")
-        .then(function () {
-            var gamelist = [];
-            for (var i in $scope.gamelist) {
-                gamelist.push([i, $scope.gamelist[i]]);
-            }
-            $scope.gameNames = gamelist.slice(2);
-            console.log($scope.gameNames);
-        });
+    firebase.auth().onAuthStateChanged(function (user) {
+        synchronizedArr.$loaded()
+            .then(function (games) {
+                if (user) {
+                    for (var i = 0; i < games.length; i++) {
+                        if (games[i].players) {
+                            var playerKey = Object.keys(games[i].players)[0];
+                            games[i].index = i;
+                            if (user.uid === games[i].players[playerKey].uid) {
+                                games[i].myGame = true;
+                            }
+                        }
 
+                        if (!games[i].gameName || !games[i].players) {
+                            synchronizedArr.$remove(i);
+                            console.log("revoming invalid games")
+                        }
+                    }
+                }
+                $scope.games = games
+            })
+    })
 
+    synchRef.on('child_changed', function (snapshot) {
+        console.log(snapshot.val())
+        var game = snapshot.val();
+        if (!game.gameName || !game.players) {
+            $window.location.reload();
+        }
+    })
 
+    $scope.delete = function (game) {
+        synchronizedArr.$remove(game.index)
+    }
 
-    $scope.join = function (gameName) {
-        var gameNameRef = ref.child('games').child(gameName);
+    $scope.join = function (game) {
+        var gameNameRef = ref.child('games').child(game.gameName);
         var playersRef = gameNameRef.child('players');
         var firebasePlayersArr = $firebaseArray(playersRef);
 
@@ -60,7 +83,7 @@ tsuro.controller('gameList', function ($scope, firebaseUrl, $firebaseObject, $st
                 })
                 .then(function () {
                     $state.go('game', {
-                        "gameName": gameName
+                        "gameName": game.gameName
                     });
                 });
         });

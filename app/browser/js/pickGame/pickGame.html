@@ -2,8 +2,12 @@
 	<main>
 		<h1>PATH PARADOX</h1>
 		<h2>Forging your own path has its consequences...</h2>
-		<input ng-model="gameName" placeholder="game name" /><!--
-		--><div class="create-button" ng-click="createGame(gameName)">Create</div>
-		<div class="join-button" ng-click="goToGameList()">Join a Game</div>
+		<input ng-model="gameName" placeholder="game name"/><!--
+		--><div class="create-button" ng-click="cannotJoinGame || createGame(gameName)">Create</div>
+		<div class="join-button" ng-click="cannotJoinGame || goToGameList()">Join a Game</div>
 	</main>
 </section>
+<div id="login" class="markermodal" ng-show="cannotJoinGame">
+    <p>Please log in to play</p>
+	<div class="login-button" ng-click="logInWithGoogle()">Login/Sign-up with Google</div>
+</div>

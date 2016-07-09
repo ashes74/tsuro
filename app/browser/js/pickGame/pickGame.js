@@ -10,6 +10,17 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
     var ref = firebase.database().ref();
     var obj = $firebaseObject(ref);
 
+    firebase.auth().onAuthStateChanged(function (user) {
+        if (!user) {
+            $scope.cannotJoinGame = true;
+            console.log("must sign in")
+        } else {
+            $scope.cannotJoinGame = false;
+            console.log("welcome, please join or create a game")
+        }
+
+    })
+    $scope.logInWithGoogle = gameFactory.logInWithGoogle;
 
     $scope.createGame = function (gameName) {
         var gameRef = ref.child('games').child(gameName);
@@ -19,12 +30,11 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
         var deckRef = gameRef.child('deck');
         var deckArr = $firebaseArray(deckRef);
         var currPlayerRef = gameRef.child('currentPlayerIndex');
-
+        var currPlayerArr = $firebaseArray(currPlayerRef);
         gameRef.set({
             "gameName": gameName,
             'currentPlayerIndex': 0
         });
-
 
         firebase.auth().onAuthStateChanged(function (user) {
             if (user) {
@@ -43,7 +53,8 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
         var deck = new Deck(tiles).shuffle().tiles;
         deckArr.$add(deck);
 
-        markersArr.$add(["red", "pink", "yellow", "green", "jade", "sky", "ocean", "purple"]);
+        markersArr.$add(gameFactory.markers);
+
 
         $state.go('game', {
             "gameName": gameName
