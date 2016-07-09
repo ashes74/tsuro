@@ -35,6 +35,6 @@ class Deck {
     }
 
     length() {
-        return this.tiles.length
+        return this.tiles.length;
     }
 }

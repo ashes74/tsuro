@@ -311,6 +311,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
 
     function checkDeath() {
+        console.log($scope.game.getCanPlay().length);
         console.log($scope.game.getCanPlay());
         //if all 35 cards are placed - everyone left with the canPlay property WINS
         if (spaceArr.length === 35) {
@@ -321,7 +322,6 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
             $scope.winner.forEach(winner => $firebaseArray(gameRef.child('winners')).$add({ 'name': winner.name }));
             $scope.gameOver = true;
         }
-
         //if only 1 last player on the board - winner
         else if ($scope.game.getCanPlay().length === 1) {
             console.log('game over! last one alive wins!');
@@ -329,7 +329,13 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
             console.log($scope.game.getCanPlay());
 
             //Adding the winner into firebase
-            console.log($scope.game.getCanPlay()[0].name);
+            console.log($scope.game.getCanPlay()[0].uid);
+            console.log($scope.me.uid);
+
+            // if ($scope.game.getCanPlay()[0].uid === $scope.me.uid) {
+            //     $firebaseArray(gameRef.child('winners')).$add({ 'name': $scope.game.getCanPlay()[0].name });
+            // }
+
             $firebaseArray(gameRef.child('winners')).$add({ 'name': $scope.game.getCanPlay()[0].name });
             $scope.gameOver = true;
         }
@@ -342,6 +348,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
     }
 
     spaceRef.on('child_added', function(snapshot) {
+
         console.log("got a tile", snapshot.val());
         var addedTile = snapshot.val();
         var spaceKey = snapshot.key;
@@ -413,17 +420,20 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
             let dragonRef = gameRef.child('dragon');
             //DRAGON
             //if no card in the deck push in dragonQueue;
-            if ($scope.game.deck.length() === 0) {
+            console.log($scope.game.deck.length());
+            if (!$scope.game.deck.length()) {
+
                 console.log("deck is empty");
                 $scope.dragonQueue.push($scope.me)
                     //push to Firebase
-                $firebaseDragonArr.$add($scope.me.uid);
+                firebaseDragonArr.$add($scope.me.uid);
                 console.log(`added myself to the dragonQueue`);
                 //scope.dragon =current dragon or next in queue;
                 $scope.dragon = $scope.dragon || $scope.dragonQueue.shift();
-                console.log(`current dragon is ${scope.dragon}`);
+                // console.log(`current dragon is ${scope.dragon}`);
                 //upload dragon info to Firebase - uid
-                gameRef.set({ 'dragon': $scope.dragon.uid })
+
+                dragonRef.set({ 'uid': $scope.me.uid })
             } else {
                 console.log(`deck has cards`);
                 // // if deck and dragon deal to dragonQueue first until players have 3 tiles
@@ -437,9 +447,10 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
                 console.log(`attempting to refresh a hand`);
                 console.log($scope.me.tiles);
                 if ($scope.me.tiles.length < 3 && $scope.me.canPlay) {
-                    let newTile = $scope.game.deal(1)
-                    console.log("getting card", newTile);
-                    $scope.me.tiles = $scope.me.tiles.concat(newTile);
+
+                    $scope.me.tiles = $scope.me.tiles.concat($scope.game.deal(1));
+
+                    console.log('what is $scope.game.deck equal to', $scope.game.deck)
                     syncDeck();
 
                     firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
@@ -450,6 +461,12 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
                 //TODO: add dragon and dragonQueue changes locally
                 // dragonRef.on('value', (arguments) => {})
             }
+
+            if ($scope.me.uid !== $scope.game.currentPlayer.uid) {
+                //we need to update the local version every time someone makes a space.. the local deck version is updated when someone makes a move
+                $scope.game.deal(1);
+                console.log($scope.game.deck);
+            };
 
             //for multiple players
             if ($scope.me.uid === $scope.game.currentPlayer.uid && !$scope.gameOver) {
@@ -513,9 +530,16 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
     function syncDeck() {
         console.log(`syncing deck`, deckArr);
+        console.log(deckArr.length);
         console.log($scope.game.deck.tiles);
-        deckArr[0] = $scope.game.deck.tiles;
-        return deckArr.$save(0);
+
+        if (deckArr.length) {
+            deckArr[0] = $scope.game.deck.tiles;
+            return deckArr.$save(0);
+        } else {
+            console.log($scope.game.deck.tiles);
+            deckArr.$add($scope.game.deck.tiles);
+        }
     }
 
 
