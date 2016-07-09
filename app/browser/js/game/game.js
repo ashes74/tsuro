@@ -108,7 +108,8 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                         $scope.game.currentPlayer = $scope.game.players[$scope.game.currentPlayerIndex];
                         $scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid;
                     } else {
-                        console.log("no one is logged in");
+                        $state.go('login')
+                        console.log("must sign in")
                     }
                 })
         })
@@ -273,7 +274,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
     $scope.placeTile = function (tile) {
         if (!$scope.me.canPlay) return
-   
+
         var rotation = tile.rotation;
         var spacex = $scope.me.x;
         var spacey = $scope.me.y;
