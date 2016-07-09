@@ -12,15 +12,13 @@ tsuro.controller('pickGameCtrl', function ($scope, $state, $firebaseArray, $fire
 
     firebase.auth().onAuthStateChanged(function (user) {
         if (!user) {
-            $scope.cannotJoinGame = true;
+            $state.go('login')
             console.log("must sign in")
         } else {
-            $scope.cannotJoinGame = false;
             console.log("welcome, please join or create a game")
         }
 
     })
-    $scope.logInWithGoogle = gameFactory.logInWithGoogle;
 
     $scope.createGame = function (gameName) {
         var gameRef = ref.child('games').child(gameName);
