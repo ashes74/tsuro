@@ -23,8 +23,14 @@ class Deck {
 
 	reload(tiles) {
 		while(tiles.length>0) {
-			this.tiles.push(tiles.pop())
+			console.log(this.tiles.length-1);
+			this.tiles.push(tiles.pop());
 		}
+		var temp = [];
+		for (let i of this.tiles) i && temp.push(i);
+		this.tiles = temp;
+		delete window.temp;
+		console.log(this.tiles);
 		return this;
 	}
 
