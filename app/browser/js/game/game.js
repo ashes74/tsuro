@@ -53,7 +53,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
     // don't start watching players until there is a deck in the game
     // 'child_changed'
-    playersRef.on("value", function (snap) {
+    playersRef.on("value", function(snap) {
         // grab the value of the snapshot (all players in game in Firebase)
         var snapPlayers = snap.val();
 
@@ -63,7 +63,7 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
             // console.log("got this player from snapshot", thisPlayer);
             // find this 'snap' player's index in local game. find returns that value.
-            var localPlayer = $scope.game.players.find(function (plyr, plyrIdx) {
+            var localPlayer = $scope.game.players.find(function(plyr, plyrIdx) {
                 existingPlayerIndex = plyrIdx;
                 return plyr.uid === snapPlayers[thisPlayer].uid;
             });
@@ -90,9 +90,9 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
         }
 
         // on login, find me in the $scope.game players array
-        firebase.auth().onAuthStateChanged(function (user) {
+        firebase.auth().onAuthStateChanged(function(user) {
             firebasePlayersArr.$loaded()
-                .then(function (player) {
+                .then(function(player) {
                     if (user) {
                         $scope.me = $scope.game.players.find((player) => player.uid === user.uid);
 
@@ -332,19 +332,19 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
 
         if (!$scope.me) {
             firebasePlayersArr.$loaded()
-            .then(function(players) {
-                players.forEach(function(player) {
-                    var playerCurrentPoint = $scope.game.board[player.y][player.x].points[player.i]
-                    if (playerCurrentPoint.neighbors) {
-                        var neighborSpace = {
-                            y: +playerCurrentPoint.neighbors[0].spaceId.slice(5, -2),
-                            x: +playerCurrentPoint.neighbors[0].spaceId.slice(6, -1),
-                            i: +playerCurrentPoint.neighbors[0].spaceId.slice(-1),
+                .then(function(players) {
+                    players.forEach(function(player) {
+                        var playerCurrentPoint = $scope.game.board[player.y][player.x].points[player.i]
+                        if (playerCurrentPoint.neighbors) {
+                            var neighborSpace = {
+                                y: +playerCurrentPoint.neighbors[0].spaceId.slice(5, -2),
+                                x: +playerCurrentPoint.neighbors[0].spaceId.slice(6, -1),
+                                i: +playerCurrentPoint.neighbors[0].spaceId.slice(-1),
+                            }
+                            $scope.game.board[neighborSpace.y][neighborSpace.x].points[neighborSpace.i].travelled = true;
                         }
-                        $scope.game.board[neighborSpace.y][neighborSpace.x].points[neighborSpace.i].travelled = true;
-                    }
-                })
-            });
+                    })
+                });
         }
 
 
@@ -504,13 +504,12 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
                     firebasePlayersArr.$save($scope.meIdx);
                     syncDeck();
                 };
-            });
-
-            //updating the turn for the next player
-            gameRef.update({
-                "currentPlayerIndex": $scope.game.nextCanPlay()
-            });
+            })
         }
+
+        gameRef.update({
+            "currentPlayerIndex": $scope.game.nextCanPlay()
+        });
     });
 
     $scope.leaveGame = function() {
@@ -569,19 +568,20 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
             }
         });
 
-    firebasePlayersArr.$loaded().then(function(data) {
-        for (var i = 0; i < data.length; i++) {
-            data[i].clicked = true;
-            data[i].i = null;
-            data[i].x = null;
-            data[i].y = null;
-            data[i].clicked = false;
-            data[i].canPlay = null;
-            data[i].tiles = null;
-            firebasePlayersArr.$save(i);
-        }
-    });
+        firebasePlayersArr.$loaded().then(function(data) {
+            for (var i = 0; i < data.length; i++) {
+                data[i].clicked = true;
+                data[i].i = null;
+                data[i].x = null;
+                data[i].y = null;
+                data[i].clicked = false;
+                data[i].canPlay = null;
+                data[i].tiles = null;
+                firebasePlayersArr.$save(i);
+            }
+        });
     };
+
     function syncDeck() {
         console.log(`syncing deck`, deckArr);
         console.log(deckArr.length);
