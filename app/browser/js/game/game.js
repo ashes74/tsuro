@@ -215,18 +215,14 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     };
 
     $scope.playerOnThisStartingPoint = function (start) {
-        console.log('start', start);
         var playerOnThisStart = $scope.game.players.find(function (player) {
             return player.x === start[0] && player.y === start[1] && player.i === start[2];
         });
         if (playerOnThisStart) {
-            console.log(true);
             return true;
         } else {
-            console.log(false);
             return false;
         }
-
     };
 
 
@@ -375,18 +371,16 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
             //if I die return my cards to the deck
             if (!$scope.me.canPlay && $scope.me.tiles.length > 0) {
-                //debugger;
                 console.log("returning my tiles", $scope.me.tiles, "to the deck", $scope.game.deck, 'tiles', $scope.game.deck.tiles);
-                // $scope.game.deck.reload($scope.me.tiles).shuffle();
                 console.log('checking for deck from firebase', $scope.game.deck.tiles);
                 if (!$scope.game.deck.tiles) {
                     $scope.game.deck.tiles = [];
                     $scope.game.deck.reload($scope.me.tiles);
-                    console.log($scope.game.deck);
                     deckArr.$add($scope.game.deck.tiles);
-
                 }
+
                 console.log("I should have no tiles", $scope.me.tiles);
+
                 //tell firebase we dont't have any more tiles
                 firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
                 firebasePlayersArr.$save($scope.meIdx);
@@ -395,9 +389,9 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             console.log("viable players:", $scope.game.getCanPlay());
             // TODO: faking winner remember to revert to 35            // TC: try this if statement
             if ($scope.game.getCanPlay().length === 1 || (spaceArr.length === 35 && $scope.game.getCanPlay().length > 0)) {
-                // debugger;
                 console.log("I believe we have an ending");
                 $scope.winner = $scope.game.getCanPlay();
+                console.log("winners", $scope.winner)
                 if ($scope.winner) {
                     //Adding the winner into firebase
                     $scope.winner.forEach(winner => $firebaseArray(gameRef.child('winners')).$add({
@@ -406,6 +400,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                     console.log("#winning!");
 
                 } else {
+                    console.log("losers", $scope.game.getCanPlay())
                     console.log("game over, no one wins")
                 }
                 // TODO: disable everything, let the players reset the game
