@@ -39,6 +39,9 @@ tsuro.controller('gameList', function ($scope, firebaseUrl, $firebaseObject, $st
                             console.log("revoming invalid games")
                         }
                     }
+                } else {
+                    $state.go('login')
+                    console.log("must sign in")
                 }
                 $scope.games = games
             })
