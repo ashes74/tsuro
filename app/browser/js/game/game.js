@@ -403,6 +403,10 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
                             }
                         });
                 }
+
+                gameRef.update({
+                    "currentPlayerIndex": $scope.game.nextCanPlay()
+                });
             }
         }
 
@@ -506,10 +510,6 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
                 };
             })
         }
-
-        gameRef.update({
-            "currentPlayerIndex": $scope.game.nextCanPlay()
-        });
     });
 
     $scope.leaveGame = function() {
@@ -553,19 +553,6 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
         gameRef.update({
             'currentPlayerIndex': 0,
             'reset': true
-        });
-
-        firebasePlayersArr.$loaded().then(function(data) {
-            for (var i = 0; i < data.length; i++) {
-                data[i].clicked = true;
-                data[i].i = null;
-                data[i].x = null;
-                data[i].y = null;
-                data[i].clicked = false;
-                data[i].canPlay = null;
-                data[i].tiles = null;
-                firebasePlayersArr.$save(i);
-            }
         });
 
         firebasePlayersArr.$loaded().then(function(data) {
