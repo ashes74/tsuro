@@ -377,6 +377,16 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                     $scope.game.deck.tiles = [];
                     $scope.game.deck.reload($scope.me.tiles);
                     deckArr.$add($scope.game.deck.tiles);
+                } else {
+                    $scope.game.deck.reload($scope.me.tiles);
+                    // Taffy: This only removes the deckArr[0] but not adding the $scope.game.deck.tiles.
+                    // deckArr.$remove(0)
+                    //     .then(function () {
+                    //         deckArr.$add($scope.game.deck.tiles);
+                    //     })
+
+                    // Need to console.log see if there's tiles in there or just undefined
+                    console.log("game deck after returning the tiles", $scope.game.deck.tiles)
                 }
 
                 console.log("I should have no tiles", $scope.me.tiles);
