@@ -512,17 +512,13 @@ tsuro.controller('gameCtrl', function($scope, $firebaseAuth, firebaseUrl, $state
                             firebasePlayersArr.$save($scope.meIdx);
                             syncDeck();
                         };
-                    }
-                    console.log("deckArr and scope deck:", deckArr, $scope.game.deck);
-                });
+            });
 
             //updating the turn for the next player
             gameRef.update({
                 "currentPlayerIndex": $scope.game.nextCanPlay()
             });
         }
-
-    }
 });
 
 $scope.leaveGame = function() {
@@ -594,7 +590,6 @@ firebasePlayersArr.$loaded().then(function(data) {
         firebasePlayersArr.$save(i);
     }
 });
-};
 
 function syncDeck() {
     console.log(`syncing deck`, deckArr);
