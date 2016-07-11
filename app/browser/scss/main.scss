@@ -460,17 +460,31 @@ section.wrapper {
 }
 
 /////GAME NOTIFICATIONS/////
-.game-notifications {
-  @include centering(fixed);
-  z-index: 15;
-  font-size: 2em;
-  color: $mountain;
-  p {
-    @include throbbing(deadPlayers);
-    @keyframes deadPlayers {
-      from { transform: scale(1); }
-      to { transform: scale(1.15);}
-    }
+.game-notification{
+  background-color: rgba(255,255,255,.9);
+  padding: 0 20px;
+  position: fixed;
+  top: 10px; left: 50%;
+  z-index: 100;
+  transform: translateX(-50%);
+  box-shadow: 0 0 10px $gray;
+  animation-name: slidedown;
+  animation-duration: 5s;
+  animation-fill-mode: forwards;
+
+  &.winner {
+    animation-name: slide-and-stay;
+    animation-duration: .5s;
+  }
+  @keyframes slidedown {
+    0% { top: -20vh;  }
+    10% { top: 10px; }
+    90% { top: 10px; }
+    100% { top: -20vh; }
+  }
+  @keyframes slide-and-stay {
+    from { top: -20vh;  }
+    to { top: 10px; }
   }
 }
 .loader {
@@ -486,6 +500,15 @@ section.wrapper {
     transform: translateY(-50%);
   }
 }
+
+#learntoplay main{
+  max-width: 600px;
+  margin: 0 auto 50px auto;
+  h3, p { 
+    text-align: left; 
+    margin-top: 0;
+  }
+}
 /////TYPOGRAPHY/////
 h1 {
   font-size: 3em;
@@ -497,6 +520,9 @@ h2 {
   font-weight: 300;
   font-size: 1.5em;
   margin-bottom: 3em;
+}
+h3 {
+  margin-bottom: 0;
 }
 a {
   text-decoration: none;

@@ -43,7 +43,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     // Start with first player in the array, index 0
     $scope.game.currentPlayerIndex = 0;
 
-
     // when the deck is loaded, local deck is the firebase deck
     deckArr.$loaded().then(function () {
         $scope.game.deck.tiles = deckArr[0];
@@ -214,14 +213,12 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     };
 
     $scope.playerOnThisStartingPoint = function (start) {
+
         var playerOnThisStart = $scope.game.players.find(function (player) {
             return player.x === start[0] && player.y === start[1] && player.i === start[2];
         });
-        if (playerOnThisStart) {
-            return true;
-        } else {
-            return false;
-        }
+        if (playerOnThisStart) return true;
+        else return false;
     };
 
 
@@ -283,7 +280,8 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
 
     $scope.placeTile = function (tile) {
-        if (!$scope.me.canPlay) return
+        if (!$scope.me.canPlay) return;
+        // $scope.losingPlayers = []; //Reset losingPlayers
 
         var rotation = tile.rotation;
         var spacex = $scope.me.x;
@@ -406,7 +404,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                         });
                 } else {
                     // deal to me if I dont have three.
-                    // if ($scope.game.deck.tiles) {
                     if ($scope.me.tiles.length < 3 && $scope.game.deck.tiles) {
                         let newTile = $scope.game.deal(1);
                         $scope.me.tiles = $scope.me.tiles.concat(newTile);
@@ -414,7 +411,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                         firebasePlayersArr.$save($scope.meIdx);
                         syncDeck();
                     };
-                    // }
                 }
                 gameRef.update({
                     "currentPlayerIndex": $scope.game.nextCanPlay()
@@ -422,7 +418,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             }
         }
 
-        //if a dead player is added and changes the deck...make sure all the players refresh their deck to the newly created deck
+        // if a dead player is added and changes the deck...make sure all the players refresh their deck to the newly created deck
         deckRef.on("child_added", function (snap) {
             console.log("updated deck", snap.val());
             deckArr.$loaded()
@@ -522,39 +518,39 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         }
     })
 
-    $scope.reset = function () {
-        spaceObj.$remove();
-
-        markersArr.$remove(0)
-            .then(function (ref) {
-                markersArr.$add(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]);
-            });
-
-        deckArr.$remove(0)
-            .then(function (ref) {
-                var tiles = gameFactory.tiles;
-                var deck = new Deck(tiles).shuffle().tiles;
-                deckArr.$add(deck);
-            });
-
-        gameRef.update({
-            'currentPlayerIndex': 0,
-            'reset': true
-        });
-
-        firebasePlayersArr.$loaded().then(function (data) {
-            for (var i = 0; i < data.length; i++) {
-                data[i].clicked = true;
-                data[i].i = null;
-                data[i].x = null;
-                data[i].y = null;
-                data[i].clicked = false;
-                data[i].canPlay = null;
-                data[i].tiles = null;
-                firebasePlayersArr.$save(i);
-            }
-        });
-    };
+    // $scope.reset = function () {
+    //     spaceObj.$remove();
+    //
+    //     markersArr.$remove(0)
+    //         .then(function (ref) {
+    //             markersArr.$add(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]);
+    //         });
+    //
+    //     deckArr.$remove(0)
+    //         .then(function (ref) {
+    //             var tiles = gameFactory.tiles;
+    //             var deck = new Deck(tiles).shuffle().tiles;
+    //             deckArr.$add(deck);
+    //         });
+    //
+    //     gameRef.update({
+    //         'currentPlayerIndex': 0,
+    //         'reset': true
+    //     });
+    //
+    //     firebasePlayersArr.$loaded().then(function (data) {
+    //         for (var i = 0; i < data.length; i++) {
+    //             data[i].clicked = true;
+    //             data[i].i = null;
+    //             data[i].x = null;
+    //             data[i].y = null;
+    //             data[i].clicked = false;
+    //             data[i].canPlay = null;
+    //             data[i].tiles = null;
+    //             firebasePlayersArr.$save(i);
+    //         }
+    //     });
+    // };
 
     function syncDeck() {
         console.log(`syncing deck`, deckArr);
@@ -649,7 +645,17 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         // remove the player from firebase
         firebasePlayersArr.$remove(firebasePlayersArr[$scope.meIdx]);
         $state.go('login');
-    }
+
+    };
+
+    gameRef.child('deadPlayers').on('value', function (losingPlayer) {
+        $scope.losingPlayers = losingPlayer.val();
+    });
+
+    gameRef.child('winners').on('value', function (winningPlayers) {
+        console.log('winners', winningPlayers.val());
+        $scope.winners = winningPlayers.val();
+    });
 });
 
 tsuro.directive('tile', function () {
