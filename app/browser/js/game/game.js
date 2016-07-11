@@ -42,7 +42,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     // Start with first player in the array, index 0
     $scope.game.currentPlayerIndex = 0;
 
-
     // when the deck is loaded, local deck is the firebase deck
     deckArr.$loaded().then(function () {
         $scope.game.deck.tiles = deckArr[0];
@@ -214,17 +213,11 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     };
 
     $scope.playerOnThisStartingPoint = function (start) {
-        console.log('start', start);
         var playerOnThisStart = $scope.game.players.find(function(player){
             return player.x === start[0] && player.y === start[1] && player.i === start[2];
         });
-        if(playerOnThisStart) {
-            console.log(true);
-            return true;
-        } else {
-            console.log(false);
-            return false;
-        }
+        if(playerOnThisStart) return true;
+        else return false;
 
     };
 
@@ -287,7 +280,8 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
 
     $scope.placeTile = function (tile) {
-        if (!$scope.me.canPlay) return
+        if (!$scope.me.canPlay) return;
+        // $scope.losingPlayers = []; //Reset losingPlayers
 
         var rotation = tile.rotation;
         var spacex = $scope.me.x;
@@ -627,8 +621,15 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
         $state.go('login');
 
-    }
+    };
+    gameRef.child('deadPlayers').on('value', function(losingPlayer){
+        $scope.losingPlayers=losingPlayer.val();
+    });
 
+    gameRef.child('winners').on('value', function(winningPlayers){
+        console.log('winners', winningPlayers.val());
+        $scope.winners = winningPlayers.val();
+    });
 });
 
 tsuro.directive('tile', function () {
