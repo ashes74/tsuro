@@ -133,9 +133,9 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         $scope.game.currentPlayerIndex = snapshot.val();
 
         $scope.game.currentPlayer = $scope.game.players[$scope.game.currentPlayerIndex];
-        // if (spaceArr.length >= 1 && $scope.game.getCanPlay().length) {
-        $scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid && $scope.me.canPlay === true;
-        // }
+        if (spaceArr.length >= 1 && $scope.game.getCanPlay().length) {
+            $scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid && $scope.me.canPlay === true;
+        }
 
     });
 
@@ -518,39 +518,39 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         }
     })
 
-    // $scope.reset = function () {
-    //     spaceObj.$remove();
-    //
-    //     markersArr.$remove(0)
-    //         .then(function (ref) {
-    //             markersArr.$add(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]);
-    //         });
-    //
-    //     deckArr.$remove(0)
-    //         .then(function (ref) {
-    //             var tiles = gameFactory.tiles;
-    //             var deck = new Deck(tiles).shuffle().tiles;
-    //             deckArr.$add(deck);
-    //         });
-    //
-    //     gameRef.update({
-    //         'currentPlayerIndex': 0,
-    //         'reset': true
-    //     });
-    //
-    //     firebasePlayersArr.$loaded().then(function (data) {
-    //         for (var i = 0; i < data.length; i++) {
-    //             data[i].clicked = true;
-    //             data[i].i = null;
-    //             data[i].x = null;
-    //             data[i].y = null;
-    //             data[i].clicked = false;
-    //             data[i].canPlay = null;
-    //             data[i].tiles = null;
-    //             firebasePlayersArr.$save(i);
-    //         }
-    //     });
-    // };
+    $scope.reset = function () {
+        spaceObj.$remove();
+
+        markersArr.$remove(0)
+        markersArr.$add(gameFactory.markers);
+
+
+        deckArr.$remove(0)
+
+        var tiles = gameFactory.tiles;
+        var deck = new Deck(tiles).shuffle().tiles;
+        console.log("reset deck", deck)
+        deckArr.$add(deck);
+
+
+        gameRef.update({
+            'currentPlayerIndex': 0,
+            'reset': true
+        });
+
+        firebasePlayersArr.$loaded().then(function (data) {
+            for (var i = 0; i < data.length; i++) {
+                data[i].clicked = false;
+                data[i].marker = null;
+                data[i].i = null;
+                data[i].x = null;
+                data[i].y = null;
+                data[i].canPlay = null;
+                data[i].tiles = null;
+                firebasePlayersArr.$save(i);
+            }
+        });
+    };
 
     function syncDeck() {
         console.log(`syncing deck`, deckArr);
