@@ -550,6 +550,10 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 firebasePlayersArr.$save(i);
             }
         });
+
+        $firebaseObject(gameRef.child('winners')).$remove();
+        $firebaseObject(gameRef.child('deadPlayers')).$remove();
+
     };
 
     function syncDeck() {
