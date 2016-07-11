@@ -129,7 +129,7 @@ section.wrapper {
     .game {
       width: 29vw;
       margin: 2vw;
-      padding: 10px 10px 36px;
+      padding: 10px;
       display: inline-block;
       box-sizing: border-box;
       border: 1px solid $gray;
@@ -144,19 +144,27 @@ section.wrapper {
       }
       .join-button {
         @include button();
-        position: absolute;
+        margin-bottom: 0;
         left: 0;
         bottom: 0;
         background-color: $gray;
         border-color: $gray;
         border-radius: 0;
-        margin: -1px;
         width: 101%;
         color: white;
 
         &:hover {
-            color: $gray;
-            background-color: #fff;
+          color: $gray;
+          background-color: #fff;
+        }
+      }
+      .delete-game {
+        @extend .join-button;
+        background-color: $red;
+        border-color: $red;
+        &:hover {
+          color: $red;
+          background-color: #fff;
         }
       }
     }
@@ -492,6 +500,15 @@ section.wrapper {
     transform: translateY(-50%);
   }
 }
+
+#learntoplay main{
+  max-width: 600px;
+  margin: 0 auto 50px auto;
+  h3, p { 
+    text-align: left; 
+    margin-top: 0;
+  }
+}
 /////TYPOGRAPHY/////
 h1 {
   font-size: 3em;
@@ -503,6 +520,9 @@ h2 {
   font-weight: 300;
   font-size: 1.5em;
   margin-bottom: 3em;
+}
+h3 {
+  margin-bottom: 0;
 }
 a {
   text-decoration: none;
