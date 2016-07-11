@@ -133,9 +133,9 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         $scope.game.currentPlayerIndex = snapshot.val();
 
         $scope.game.currentPlayer = $scope.game.players[$scope.game.currentPlayerIndex];
-        if (spaceArr.length >= 1 && $scope.game.getCanPlay().length) {
-            $scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid && $scope.me.canPlay === true;
-        }
+        // if (spaceArr.length >= 1 && $scope.game.getCanPlay().length) {
+        $scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid && $scope.me.canPlay === true;
+        // }
 
     });
 
