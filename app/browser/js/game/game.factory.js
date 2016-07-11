@@ -55,7 +55,8 @@ tsuro.factory('gameFactory', function ($firebaseAuth, $state, $rootScope) {
                 imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_09.png?alt=media&token=0f898f82-bbc0-4edf-ae8a-953ec4c63a43',
                 paths: [1, 0, 7, 6, 5, 4, 3, 2],
                 rotation: 0
-            },
+            }
+            ,
             10: {
                 id: 10,
                 imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_10.png?alt=media&token=17252a8a-365e-4c8d-847f-1e96de7ae695',
