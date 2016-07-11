@@ -406,13 +406,15 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                         });
                 } else {
                     // deal to me if I dont have three.
-                    if ($scope.me.tiles.length < 3 && $scope.game.deck.tiles.length) {
-                        let newTile = $scope.game.deal(1);
-                        $scope.me.tiles = $scope.me.tiles.concat(newTile);
-                        firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
-                        firebasePlayersArr.$save($scope.meIdx);
-                        syncDeck();
-                    };
+                    if ($scope.game.deck.tiles) {
+                        if ($scope.me.tiles.length < 3 && $scope.game.deck.tiles.length) {
+                            let newTile = $scope.game.deal(1);
+                            $scope.me.tiles = $scope.me.tiles.concat(newTile);
+                            firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
+                            firebasePlayersArr.$save($scope.meIdx);
+                            syncDeck();
+                        };
+                    }
                 }
                 gameRef.update({
                     "currentPlayerIndex": $scope.game.nextCanPlay()
@@ -422,12 +424,12 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
         //if a dead player is added and changes the deck...make sure all the players refresh their deck to the newly created deck
         deckRef.on("child_added", function (snap) {
-            console.log(snap.val());
-            deckArr.$loaded()
-                .then(function (deck) {
-                    console.log(deck);
-                    $scope.game.deck.tiles = deckArr[0];
-                });
+            console.log("updated deck", snap.val());
+            // deckArr.$loaded()
+            //     .then(function (deck) {
+            //         console.log(deck);
+            $scope.game.deck.tiles = snap.val();
+            // });
         });
 
 
@@ -461,7 +463,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
             // deckArr.$loaded()
             //     .then(function (deck) {
             // console.log(deck);
-            $scope.game.deck.tiles = deckArr[0];
+            // $scope.game.deck.tiles = deckArr[0];
             console.log('this is the deck with tiles that were added', $scope.game.deck, $scope.game.deck.tiles);
             if (!$scope.game.deck.tiles && $scope.me.tiles.length < 3) {
                 console.log("deck is empty, and I don't have 3 tiles");
