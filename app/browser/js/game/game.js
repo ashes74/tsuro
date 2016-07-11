@@ -213,17 +213,11 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     };
 
     $scope.playerOnThisStartingPoint = function (start) {
-        console.log('start', start);
         var playerOnThisStart = $scope.game.players.find(function(player){
             return player.x === start[0] && player.y === start[1] && player.i === start[2];
         });
-        if(playerOnThisStart) {
-            console.log(true);
-            return true;
-        } else {
-            console.log(false);
-            return false;
-        }
+        if(playerOnThisStart) return true;
+        else return false;
 
     };
 
@@ -628,13 +622,8 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         $state.go('login');
 
     };
-    $scope.losingPlayers = [];
-    gameRef.child('deadPlayers').on('child_added', function(losingPlayer){
-        $scope.losingPlayers.push(losingPlayer.val());
-        $timeout(function(){
-            $scope.losingPlayers = [];
-        }, 15000);
-
+    gameRef.child('deadPlayers').on('value', function(losingPlayer){
+        $scope.losingPlayers=losingPlayer.val();
     });
 
     gameRef.child('winners').on('value', function(winningPlayers){
