@@ -23,6 +23,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
     var playersRef = gameRef.child('players');
     var firebasePlayersArr = $firebaseArray(playersRef);
+    var deadPlayersRef = gameRef.child('deadPlayers');
 
     var markersRef = gameRef.child('availableMarkers');
     var markersArr = $firebaseArray(markersRef);
@@ -33,7 +34,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
 
     /****************
-    INITIALIZING GAME
+    INITIALIZING GAME\
     ****************/
 
     // new local game with game name defined by url
@@ -49,12 +50,12 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     });
 
 
+
     // don't start watching players until there is a deck in the game
     // 'child_changed'
     playersRef.on("value", function (snap) {
         // grab the value of the snapshot (all players in game in Firebase)
         var snapPlayers = snap.val();
-
 
         // for each player in this collection...
         for (var thisPlayer in snapPlayers) {
@@ -112,8 +113,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                     }
                 })
         })
-
-
     });
 
     // when that markers array is loaded, update the available markers array on scope
@@ -134,7 +133,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         $scope.game.currentPlayerIndex = snapshot.val();
 
         $scope.game.currentPlayer = $scope.game.players[$scope.game.currentPlayerIndex];
-        if (spaceArr.length >= 1) {
+        if (spaceArr.length >= 1 && $scope.game.getCanPlay().length) {
             $scope.myTurn = $scope.me.uid === $scope.game.currentPlayer.uid && $scope.me.canPlay === true;
         }
 
@@ -202,6 +201,7 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
 
     $scope.playersOnThisSpace = function (space) {
+
         var gamePlayers = $scope.game.players;
 
         var playersOnThisSpace = gamePlayers.filter(function (player) {
@@ -213,12 +213,12 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
     };
 
     $scope.playerOnThisStartingPoint = function (start) {
-        var playerOnThisStart = $scope.game.players.find(function(player){
+
+        var playerOnThisStart = $scope.game.players.find(function (player) {
             return player.x === start[0] && player.y === start[1] && player.i === start[2];
         });
-        if(playerOnThisStart) return true;
+        if (playerOnThisStart) return true;
         else return false;
-
     };
 
 
@@ -305,7 +305,9 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         spaceObj.$save();
     };
 
+
     spaceRef.on('child_added', function (snapshot) {
+
         var addedTile = snapshot.val();
         var spaceKey = snapshot.key;
         var x = +spaceKey.slice(-2, -1);
@@ -328,8 +330,6 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         }
 
         if (!$scope.me) {
-            console.log("it's not me, placing others where they need to be");
-            //debugger;
             firebasePlayersArr.$loaded()
                 .then(function (players) {
                     players.forEach(function (player) {
@@ -346,8 +346,8 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 });
         }
 
-        // trigger move
 
+        // trigger move
         if ($scope.me) {
             if ($scope.me.x === x && $scope.me.y === y) {
                 console.log("it's me. let's move");
@@ -360,85 +360,130 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                 if (!$scope.me.canPlay) {
                     $scope.myTurn = false;
                     console.log("I'm dead");
-                    //add me to list of deadPlayers for this round
+                    // add me to list of deadPlayers for this round
                     $firebaseArray(gameRef.child('deadPlayers')).$add({
-                        'name': $scope.me.name
-                    });
-                }
-            }
-
-            //if I die return my cards to the deck
-            if (!$scope.me.canPlay && $scope.me.tiles.length > 0) {
-                //debugger;
-                console.log("returning my tiles", $scope.me.tiles, "to the deck", $scope.game.deck);
-                // $scope.game.deck.reload($scope.me.tiles).shuffle();
-                $scope.game.deck.reload($scope.me.tiles);
-                console.log("shuffled deck", $scope.game.deck);
-                syncDeck();
-                console.log("I should have no tiles", $scope.me.tiles);
-                //tell firebase we dont't have any more tiles
-                firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
-                firebasePlayersArr.$save($scope.meIdx);
-            }
-
-            console.log("viable players:", $scope.game.getCanPlay());
-            // TODO: faking winner remember to revert to 35
-            if ($scope.game.getCanPlay().length <= 1 || spaceArr.length === 20) {
-                // debugger;
-                console.log("I believe we have an ending");
-                $scope.winner = $scope.game.getCanPlay();
-                if ($scope.winner) {
-                    //Adding the winner into firebase
-                    $scope.winner.forEach(winner => $firebaseArray(gameRef.child('winners')).$add({
-                        'name': winner.name
-                    }));
-                    console.log("#winning!");
-
+                            'name': $scope.me.name
+                        })
+                        .then(function () {
+                            console.log($scope.game.deck.tiles)
+                            if (!$scope.game.deck.tiles) {
+                                $scope.game.deck.tiles = [];
+                                $scope.game.deck.reload($scope.me.tiles);
+                                console.log($scope.game.deck);
+                                deckArr.$add($scope.game.deck.tiles);
+                            } else {
+                                $scope.game.deck.reload($scope.me.tiles);
+                                console.log($scope.game.deck);
+                                deckArr.$remove(0).then(function (ref) {
+                                    console.log('did i remove the deck?');
+                                    console.log(ref.key);
+                                })
+                                deckArr.$add($scope.game.deck.tiles);
+                            }
+                            console.log("I should have no tiles", $scope.me.tiles);
+                            // tell firebase we dont't have any more tiles
+                            firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
+                            firebasePlayersArr.$save($scope.meIdx);
+                        })
+                        .then(function () {
+                            // this might be better since we should wait for all the players declaring their can or can't play state so that we can proceed with determining if there is or isn't going ot be a winner
+                            console.log($scope.game.getCanPlay().length);
+                            if ($scope.game.getCanPlay().length <= 1) {
+                                console.log("I believe we have an ending");
+                                $scope.winner = $scope.game.getCanPlay();
+                                if ($scope.winner) {
+                                    //Adding the winner into firebase
+                                    $scope.winner.forEach(winner => $firebaseArray(gameRef.child('winners')).$add({
+                                        'name': winner.name
+                                    }));
+                                    console.log("#winning!");
+                                }
+                                $scope.gameOver = true;
+                                return "game over";
+                            }
+                        });
                 } else {
-                    console.log("game over, no one wins")
+                    // deal to me if I dont have three.
+                    if ($scope.me.tiles.length < 3 && $scope.game.deck.tiles) {
+                        let newTile = $scope.game.deal(1);
+                        $scope.me.tiles = $scope.me.tiles.concat(newTile);
+                        firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
+                        firebasePlayersArr.$save($scope.meIdx);
+                        syncDeck();
+                    };
                 }
-                // TODO: disable everything, let the players reset the game
-                $scope.gameOver = true;
-                return "game over"
+                gameRef.update({
+                    "currentPlayerIndex": $scope.game.nextCanPlay()
+                });
             }
+        }
 
-            // //LA: I think this is duplicating the logic for death above
-            // if ($scope.game.deadPlayers().length) {
-            // 	// with new cards & need to reshuffle
-            // 	// because the deadPlayers() returns a 2D array, use reduce to flatten it
-            // 	var deadPlayerTiles = $scope.game.deadPlayers().reduce(function (a, b) {
-            // 		return a = a.concat(b);
-            // 	});
-            // 	$scope.game.deck = $scope.game.deck.concat(deadPlayerTiles);
-            // 	$scope.game.deck = $scope.game.deck.shuffle();
-            // 	deckArr.$remove()
-            // 	.then(function () {
-            // 		deckArr.$add($scope.game.deck);
-            // 	});
-            // }
+        // if a dead player is added and changes the deck...make sure all the players refresh their deck to the newly created deck
+        deckRef.on("child_added", function (snap) {
+            console.log("updated deck", snap.val());
+            deckArr.$loaded()
+                .then(function (deck) {
+                    console.log(deck);
+                    $scope.game.deck.tiles = deck[0];
+                });
+        });
 
+
+        if (spaceArr.length === 35 && $scope.game.getCanPlay().length > 0) {
+            console.log("I believe we have an ending");
+            $scope.winner = $scope.game.getCanPlay();
+            console.log("winners", $scope.winner)
+
+            if ($scope.winner) {
+                //Adding the winner into firebase
+                $scope.winner.forEach(winner => $firebaseArray(gameRef.child('winners')).$add({
+                    'name': winner.name
+                }));
+                console.log("#winning!");
+            } else {
+                console.log("losers", $scope.game.getCanPlay())
+
+                console.log("game over, no one wins")
+            }
+            // TODO: disable everything, let the players reset the game
+            $scope.gameOver = true;
+
+            return "game over"
+        }
+
+        if (!$scope.gameOver) {
             let firebaseDragonArr = $firebaseArray(gameRef.child('dragonQueue'));
             let dragonRef = gameRef.child('dragon');
-            //DRAGON
-            //if no card in the deck push in dragonQueue;
-            if ($scope.game.deck.length() === 0) {
-                console.log("deck is empty");
-                $scope.dragonQueue.push($scope.me)
-                    //push to Firebase
-                $firebaseDragonArr.$add($scope.me.uid);
-                console.log(`added myself to the dragonQueue`);
-                //scope.dragon =current dragon or next in queue;
-                $scope.dragon = $scope.dragon || $scope.dragonQueue.shift();
-                console.log(`current dragon is ${scope.dragon}`);
-                //upload dragon info to Firebase - uid
-                gameRef.set({
-                    'dragon': $scope.dragon.uid
+            // DRAGON
+            // if no card in the deck push in dragonQueue;
+            // deckArr.$loaded()
+            //     .then(function (deck) {
+            // console.log(deck);
+            // $scope.game.deck.tiles = deckArr[0];
+            console.log('this is the deck with tiles that were added', $scope.game.deck, $scope.game.deck.tiles);
+            if (!$scope.game.deck.tiles && $scope.me.tiles.length < 3) {
+                console.log("deck is empty, and I don't have 3 tiles");
+                // this is necessary b/c we only want the players to push their uid into firebase and dragon quenue if they aren't already in there
+                $scope.dragonQueue.forEach(function (awaitingDragon) {
+                    if (awaitingDragon.uid !== $scope.me.uid) {
+                        $scope.dragonQueue.push($scope.me);
+                        //push to Firebase
+                        firebaseDragonArr.$add($scope.me.uid);
+                        console.log(`added myself to the dragonQueue`);
+                    }
                 })
 
+                // scope.dragon = current dragon or next in queue;
+                $scope.dragon = $scope.dragon || $scope.dragonQueue.shift();
+                // console.log(`current dragon is ${scope.dragon}`);
+                // upload dragon info to Firebase - uid
+                dragonRef.set({
+                    'uid': $scope.me.uid
+                });
             } else {
                 console.log(`deck has cards`);
                 // if deck and dragon deal to dragonQueue first until players have 3 tiles
-                while ($scope.dragon && $scope.deck.length > 0) {
+                while ($scope.dragon && $scope.game.deck.tiles.length > 0) {
                     console.log(`serving dragonQueue first`);
                     if ($scope.dragon.tiles.length < 3) {
                         //TODO: LA : consider _.flatten
@@ -446,27 +491,9 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
                     }
                     console.log(`${$scope.dragon} dealt card`);
                     $scope.dragon = $scope.dragonQueue.shift()
-                }
-                //deal to me if I dont have three.
-                console.log(`attempting to refresh a hand`);
-                if ($scope.me.tiles.length < 3 && $scope.me.canPlay) {
-                    let newTile = $scope.game.deal(1)
-                    syncDeck();
-                    $scope.me.tiles = $scope.me.tiles.concat(newTile);
-                    firebasePlayersArr[$scope.meIdx].tiles = $scope.me.tiles;
-                    firebasePlayersArr.$save($scope.meIdx);
-                }
-                console.log("deckArr and scope deck:", deckArr, $scope.game.deck);
+                };
             }
-
-
-            if ($scope.me.uid === $scope.game.currentPlayer.uid && !$scope.gameOver) {
-                // console.log("on to the next one", $scope.game.nextCanPlay());
-                gameRef.update({
-                    "currentPlayerIndex": $scope.game.nextCanPlay()
-                });
-            }
-
+            // })
         }
     });
 
@@ -491,21 +518,20 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
         }
     })
 
-    // TODO: need to remove this game room's moves from firebase?
     $scope.reset = function () {
         spaceObj.$remove();
 
         markersArr.$remove(0)
-            .then(function (ref) {
-                markersArr.$add(["red", "orange", "yellow", "green", "aqua", "blue", "navy", "purple"]);
-            });
+        markersArr.$add(gameFactory.markers);
+
 
         deckArr.$remove(0)
-            .then(function (ref) {
-                var tiles = gameFactory.tiles;
-                var deck = new Deck(tiles).shuffle().tiles;
-                deckArr.$add(deck);
-            });
+
+        var tiles = gameFactory.tiles;
+        var deck = new Deck(tiles).shuffle().tiles;
+        console.log("reset deck", deck)
+        deckArr.$add(deck);
+
 
         gameRef.update({
             'currentPlayerIndex': 0,
@@ -514,27 +540,31 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
         firebasePlayersArr.$loaded().then(function (data) {
             for (var i = 0; i < data.length; i++) {
-                data[i].clicked = true;
+                data[i].clicked = false;
+                data[i].marker = null;
                 data[i].i = null;
                 data[i].x = null;
                 data[i].y = null;
-                data[i].clicked = false;
                 data[i].canPlay = null;
                 data[i].tiles = null;
                 firebasePlayersArr.$save(i);
             }
         });
+
+        $firebaseObject(gameRef.child('winners')).$remove();
+        $firebaseObject(gameRef.child('deadPlayers')).$remove();
+
     };
 
     function syncDeck() {
-        deckArr = $firebaseArray(deckRef)
-        console.log(`syncing deck`, deckArr, `with ${$scope.game.deck.tiles}`);
+        console.log(`syncing deck`, deckArr);
+        console.log(deckArr.length);
+        console.log($scope.game.deck.tiles.length);
 
-        //look out for deck reset now
+        console.log($scope.game.deck.tiles);
         deckArr[0] = $scope.game.deck.tiles;
-        console.log("saving the deck", deckArr);
-        // debugger;
-        return deckArr.$save(0);
+        deckArr.$save(0);
+
     }
 
     $scope.starttop = [
@@ -618,15 +648,15 @@ tsuro.controller('gameCtrl', function ($scope, $firebaseAuth, firebaseUrl, $stat
 
         // remove the player from firebase
         firebasePlayersArr.$remove(firebasePlayersArr[$scope.meIdx]);
-
         $state.go('login');
 
     };
-    gameRef.child('deadPlayers').on('value', function(losingPlayer){
-        $scope.losingPlayers=losingPlayer.val();
+
+    gameRef.child('deadPlayers').on('value', function (losingPlayer) {
+        $scope.losingPlayers = losingPlayer.val();
     });
 
-    gameRef.child('winners').on('value', function(winningPlayers){
+    gameRef.child('winners').on('value', function (winningPlayers) {
         console.log('winners', winningPlayers.val());
         $scope.winners = winningPlayers.val();
     });

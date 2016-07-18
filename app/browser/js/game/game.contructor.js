@@ -12,7 +12,7 @@ class Game {
 
         //index of the currentPlayer in the players
         this.currentPlayerIndex;
-				this.deck = new Deck();
+		this.deck = new Deck();
         this.dragon = null;
         this.moves;
     }

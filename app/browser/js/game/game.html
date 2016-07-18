@@ -29,7 +29,7 @@
     <div class="frame vertical">
       <div ng-repeat="start in startright" class="startpoints {{me.marker}}" ng-class="{occupied: playerOnThisStartingPoint(start)}" ng-hide="!me || me.i || me.i === 0" ng-click="playerOnThisStartingPoint(start) || placeMarker(start)" ng-disabled="playerOnThisStartingPoint(start)"></div>
     </div>
-    
+
     <!-- bottom row -->
     <div class="corner"></div>
     <div class="frame horizontal">
@@ -38,14 +38,14 @@
     <div class="corner"></div>
 
   </main>
-  
+
   <aside class="playerDrawer">
     <div class="player {{player.marker}}" ng-class="{currentPlayer: game.currentPlayer.uid === player.uid, itsMyTurn: game.currentPlayer.uid === me.uid, dead: !player.canPlay}" ng-repeat="player in game.players">
       <p>{{player.name}}</p>
     </div>
 
     <div class="game-buttons">
-      <div ng-click="reset()" class="reset">reset game</div>
+      <div ng-click="reset()" class="reset">restart game</div>
       <div ng-click="leaveGame()" class="leave">leave game</div>
       <div ng-click="logout()" class="logout">log out</div>
     </div>
@@ -68,4 +68,3 @@
 <div class="game-notification winner" ng-show="winners">
   <p><span ng-repeat="winner in winners">{{winner.name}}{{$last ? '' : ' & '}}</span> won!</p>
 </div>
-
