@@ -1,4 +1,4 @@
-tsuro.factory('gameFactory', function ($firebaseAuth, $state, $rootScope) {
+tsuro.factory('gameFactory', function($firebaseAuth, $state, $rootScope) {
     return {
         markers: ["red", "purple", "yellow", "pink", "jade", "sky", "ocean", "green"],
         tiles: {
@@ -55,8 +55,7 @@ tsuro.factory('gameFactory', function ($firebaseAuth, $state, $rootScope) {
                 imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_09.png?alt=media&token=0f898f82-bbc0-4edf-ae8a-953ec4c63a43',
                 paths: [1, 0, 7, 6, 5, 4, 3, 2],
                 rotation: 0
-            }
-            ,
+            },
             10: {
                 id: 10,
                 imageUrl: 'https://firebasestorage.googleapis.com/v0/b/the-paths-of-dragons.appspot.com/o/tsuro-tile_10.png?alt=media&token=17252a8a-365e-4c8d-847f-1e96de7ae695',
@@ -214,35 +213,86 @@ tsuro.factory('gameFactory', function ($firebaseAuth, $state, $rootScope) {
                 rotation: 0
             }
         },
-        rotateTile: function (tile, rotation) {
+        starttop: [
+            [0, 0, 0],
+            [0, 0, 1],
+            [1, 0, 0],
+            [1, 0, 1],
+            [2, 0, 0],
+            [2, 0, 1],
+            [3, 0, 0],
+            [3, 0, 1],
+            [4, 0, 0],
+            [4, 0, 1],
+            [5, 0, 0],
+            [5, 0, 1]
+        ],
+        startleft: [
+            [0, 0, 7],
+            [0, 0, 6],
+            [0, 1, 7],
+            [0, 1, 6],
+            [0, 2, 7],
+            [0, 2, 6],
+            [0, 3, 7],
+            [0, 3, 6],
+            [0, 4, 7],
+            [0, 4, 6],
+            [0, 5, 7],
+            [0, 5, 6]
+        ],
+        startbottom: [
+            [0, 5, 5],
+            [0, 5, 4],
+            [1, 5, 5],
+            [1, 5, 4],
+            [2, 5, 5],
+            [2, 5, 4],
+            [3, 5, 5],
+            [3, 5, 4],
+            [4, 5, 5],
+            [4, 5, 4],
+            [5, 5, 5],
+            [5, 5, 4]
+        ],
+        startright: [
+            [5, 0, 2],
+            [5, 0, 3],
+            [5, 1, 2],
+            [5, 1, 3],
+            [5, 2, 2],
+            [5, 2, 3],
+            [5, 3, 2],
+            [5, 3, 3],
+            [5, 4, 2],
+            [5, 4, 3],
+            [5, 5, 2],
+            [5, 5, 3]
+        ],
+        rotateTile: function(tile, rotation) {
             console.log("rotate tile inside factory", tile, rotation);
             if (rotation > 0) {
                 for (var i = 1; i <= rotation; i++) {
-                    console.log("original pathes", tile.paths);
-
-                    tile.paths = tile.paths.map(function (connection) {
+                    tile.paths = tile.paths.map(function(connection) {
                         connection = connection + 2;
                         if (connection === 9) connection = 1;
                         if (connection === 8) connection = 0;
                         return connection;
                     });
-                    console.log("after adding 2", tile.paths);
                     tile.paths.unshift(tile.paths.pop());
                     tile.paths.unshift(tile.paths.pop());
-                    console.log("after unshift to front", tile.paths);
                 }
                 return tile;
             } else {
                 return tile;
             }
         },
-        logInWithGoogle: function () {
+        logInWithGoogle: function() {
             var auth = $firebaseAuth();
-            auth.$signInWithPopup("google").then(function (authData) {
-                console.log("Logged in as:", authData);
+            auth.$signInWithPopup("google").then(function(authData) {
                 $rootScope.currentUser = authData;
                 $state.go('pickGame');
-            }).catch(function (error) {
+            }).catch(function(error) {
                 console.error("Authentication failed:", error);
             });
         }

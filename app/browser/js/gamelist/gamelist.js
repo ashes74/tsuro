@@ -10,13 +10,10 @@ tsuro.controller('gameList', function ($scope, firebaseUrl, $firebaseObject, $st
     //For synchronizingGameList...
     var ref = firebase.database().ref();
     var obj = $firebaseObject(ref);
-
     var auth = $firebaseAuth();
     var firebaseUser = auth.$getAuth();
-
     var synchRef = ref.child("games");
     var synchronizedArr = $firebaseArray(synchRef);
-
     var synchronizedObj = $firebaseObject(synchRef);
 
     // This returns a promise...you can.then() and assign value to $scope.variable
@@ -33,7 +30,6 @@ tsuro.controller('gameList', function ($scope, firebaseUrl, $firebaseObject, $st
                                 games[i].myGame = true;
                             }
                         }
-
                         if (!games[i].gameName || !games[i].players) {
                             synchronizedArr.$remove(i);
                             console.log("revoming invalid games")
